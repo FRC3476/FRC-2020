@@ -4,7 +4,6 @@ package frc.subsystem;
 
 import frc.robot.Constants;
 import frc.utility.LazyTalonSRX;
-import frc.utility.OrangeUtility;
 import frc.utility.Threaded;
 import frc.utility.control.RateLimiter;
 
