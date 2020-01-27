@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
   public Controller stick = new Controller(1);
   public Controller buttonPanel = new Controller(2);
   TelemetryServer telemetryServer = TelemetryServer.getInstance();
-  //Elevator elevator = Elevator.getInstance();
+  Elevator elevator = Elevator.getInstance();
  
   JetsonUDP jetsonUDP = JetsonUDP.getInstance();
   

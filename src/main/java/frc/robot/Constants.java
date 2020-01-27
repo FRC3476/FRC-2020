@@ -273,6 +273,11 @@ public final class Constants {
 	public static final Color kYellowTarget = ColorMatch.makeColor(0.276, 0.489, 0.233); //0.312, 0.564, 0.122
 	public static final Color kWhiteTarget = ColorMatch.makeColor(0.250, 0.483, 0.265); //0.250, 0.483, 0.265
 	
+	public static final int wheelSpinnerId = 99;
+	public static final int spinnerWheelReduction = 1/160;
+
+	
+
 	
 
 
