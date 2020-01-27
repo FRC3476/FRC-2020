@@ -8,7 +8,7 @@ public abstract class Subsystem implements Runnable {
 		ALIVE, PAUSED, DEAD
 	}
 
-    private static Subsystem instance;
+    protected static Subsystem instance;
 
     Subsystem(int period) {
         if(period != -1) new Thread(this).start();
@@ -32,9 +32,9 @@ public abstract class Subsystem implements Runnable {
         signal = ThreadSignal.DEAD;
     }
 
-    public void update() {
-        
-    }
+    public abstract void update();
+
+    
 
     public void run() {
         while(signal != ThreadSignal.DEAD) {
