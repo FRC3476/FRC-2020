@@ -2,6 +2,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
+import com.revrobotics.ColorMatch;
+
 public final class Constants {
 
 	public static final boolean steeringWheel = false;
@@ -10,6 +14,7 @@ public final class Constants {
 	public static final String DriverStationIPv4 = "10.34.76.5"; // Temporary
 	public static final int JetsonPort = 5805;
 	public static final String JetsonIPv4 = "10.34.76.8";
+
 
 	// CAN IDs
 	public static final int DriveLeftMasterId = 3;
@@ -256,6 +261,23 @@ public final class Constants {
 	public static final double cameraYOffset = 6.36;//5.310 + 1.25;//5.310 + 1.25;
 	public static final double cameraXOffset = -4.75;//-4.815 + 1.6 - 1.0;
 
+
+
+	//Color Wheel
+	public static final char[] colorWheelOrder = {'R', 'Y', 'B', 'G', 'R', 'Y', 'B', 'G'};
+	public static final I2C.Port colorSensorPort = I2C.Port.kOnboard;
+
+	public static final Color kBlueTarget = ColorMatch.makeColor(0.219, 0.465, 0.315); //0.113, 0.422, 0.463
+	public static final Color kGreenTarget = ColorMatch.makeColor(0.236, 0.483, 0.280); //0.163, 0.580, 0.256
+	public static final Color kRedTarget = ColorMatch.makeColor(0.269, 0.463, 0.265); // 0.521, 0.345, 0.133
+	public static final Color kYellowTarget = ColorMatch.makeColor(0.276, 0.489, 0.233); //0.312, 0.564, 0.122
+	public static final Color kWhiteTarget = ColorMatch.makeColor(0.250, 0.483, 0.265); //0.250, 0.483, 0.265
+	
+	
+
+
+	
+	
 	private Constants() {
 	}
 }
