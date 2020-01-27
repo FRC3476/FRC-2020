@@ -19,7 +19,25 @@ public final class Constants {
 	public static final int DriveRightSlave1Id = 6;
 	public static final int DriveRightSlave2Id = 13;//not currently used
 
+	//Shooter constants
+	public final static int ShooterMasterId = 0;
+	public final static int ShooterSlaveId1 = 1;
+	public final static int ShooterSlaveId2 = 2;
+	public final static int ShooterSlaveId3 = 3;
 	
+	public static final int ShooterIntegralZone = 1000;
+	public static final double kShooterP = 0.40;
+	public static final double kShooterI = 0.0;
+	public static final double kShooterD = 0.3;
+	public static final double ShooterGain = 1;
+
+	public static final int HoodMotorId = 4;
+	public static final double kHoodP = 0;
+	public static final double kHoodI = 0;
+	public static final double kHoodD = 0;
+	public static final double kHoodF = 0;
+	public static final int HoodTicksPerDegree = 100;
+
 
 	public static final int HatchIntakeMotorId = 23;
 	public static final int HatchIntakeDeployMotorId = 22;
