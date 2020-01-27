@@ -3,6 +3,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.tables.ITable;
@@ -36,7 +37,7 @@ import frc.utility.VisionTarget;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
   public static final boolean profileTeleop = true;
 
   Drive drive = Drive.getInstance();
@@ -284,4 +285,5 @@ public class Robot extends IterativeRobot {
       //System.out.println("cant get vision");
     }
   }
+
 }
