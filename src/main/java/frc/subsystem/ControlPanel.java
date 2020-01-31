@@ -11,6 +11,7 @@ import java.time.Duration;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.*;
@@ -30,23 +31,81 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class ControlPanel extends Subsystem{
 
-
     private final ColorSensorV3 m_colorSensor = new ColorSensorV3(Constants.colorSensorPort);
     private final ColorMatch m_colorMatcher = new ColorMatch();
+    char colorString;
 
     int wheelPosition = 0;
     int wheelRotation = 0;
+    int colorConfirmCycle = 0;
 
     private static LazyCANSparkMax  spinner;
 
+    char feildColorData = 'E';
 
 
     public enum SpinnerState {
-		OFF, SPINNING, DONE
+		OFF, SPINNING, FINDINGCOLOR, CONFIRMINGCOLOR
     }
     
     public SpinnerState spinnerState;
 
+
+    //getting color data from feild
+    private char getFeildColorData(){
+        String gameData;
+        gameData = DriverStation.getInstance().getGameSpecificMessage();
+        if(gameData.length() > 0)
+        {
+            switch (gameData.charAt(0))
+            {
+                case 'B' :
+                    return 'B';
+                case 'G' :
+                    return 'G';
+                case 'R' :
+                    return 'R';
+                case 'Y' :
+                    return 'Y';
+                default :
+                    //corupt Data
+                    return 'E';
+            }
+        } else {
+            //No value recived yet
+            return 'E';
+        }
+
+    }
+
+    private char getColorSesorData(){
+
+        Color detectedColor = m_colorSensor.getColor();
+                char colorData;
+                ColorMatchResult match  = m_colorMatcher.matchClosestColor(detectedColor);
+
+                //get Color Looking at
+                if (match.color == Constants.kBlueTarget) {
+                    colorData = 'B';
+                } else if (match.color == Constants.kRedTarget) {
+                    colorData = 'R';
+                } else if (match.color == Constants.kGreenTarget) {
+                    colorData = 'G';
+                } else if (match.color == Constants.kYellowTarget) {
+                    colorData = 'Y';
+                } else {
+                    colorData = 'U';
+                }
+
+                return colorData;
+
+
+
+    }
+    
+
+
+    //init
     ControlPanel(int period) {
         super(period);
 
@@ -64,7 +123,6 @@ public class ControlPanel extends Subsystem{
 
         
     }
-    //instance = new ControlPanel();
 
 	public SpinnerState getSpinnerState() {
 		return spinnerState;
@@ -72,7 +130,6 @@ public class ControlPanel extends Subsystem{
 
 
     public void MoveArmDown() {
-
 
     }
 
@@ -83,8 +140,24 @@ public class ControlPanel extends Subsystem{
 
     
 
-    public void SpinWheel(){
+    public void LevelTwoSpin(){
+        spinnerState = SpinnerState.SPINNING;
 
+        
+    }
+
+    public void LevelThreeSpin(){
+
+        feildColorData = getFeildColorData();
+
+        if (feildColorData != 'E'){
+            System.out.println(feildColorData);
+            spinnerState = SpinnerState.FINDINGCOLOR;
+
+        } else {
+            System.out.println("No Data Recived or Corupted Data");
+        }
+        
 
         
     }
@@ -94,42 +167,28 @@ public class ControlPanel extends Subsystem{
 
 
 
-    public void Update(){
+    public void update(){
 
         switch(spinnerState){ 
             case SPINNING:
-                spinner.set(1.0);
+                spinner.set(Constants.wheelSpinnerLevelTwoSpeed);
 
-                Color detectedColor = m_colorSensor.getColor();
-                char colorString;
-                ColorMatchResult match  = m_colorMatcher.matchClosestColor(detectedColor);
-
-                //get Color Looking at
-                if (match.color == Constants.kBlueTarget) {
-                    colorString = 'B';
-                } else if (match.color == Constants.kRedTarget) {
-                    colorString = 'R';
-                } else if (match.color == Constants.kGreenTarget) {
-                    colorString = 'G';
-                } else if (match.color == Constants.kYellowTarget) {
-                    colorString = 'Y';
-                } else {
-                    colorString = 'U';
-                }
-
+                colorString = getColorSesorData();
+                
                 //check that color is not unknown
                 if (colorString!='U'){
-            
+                    
                     //loop until we find the color we are looking at
                     while (true){
-                    
+                        
+                        
                         //check if we reached the curent color the sensor sees
                         if (Constants.colorWheelOrder[wheelPosition] == colorString){
                             //if we do exit
                             break;
                         }
                     
-                    wheelPosition++;
+                        wheelPosition++;
 
                         //check if we completed a rotation
                         if (wheelPosition == Constants.colorWheelOrder.length ){
@@ -140,18 +199,58 @@ public class ControlPanel extends Subsystem{
                     }
 
                     if (wheelRotation >= 4){
-                        spinnerState = spinnerState.DONE;
+                        spinnerState = spinnerState.OFF;
                         spinner.set(0.0);
+                        System.out.println("Control Panel Spun 4 times");
 
                     }
             
                 } 
+                break;
             
+            
+            case FINDINGCOLOR:
+                colorString = getColorSesorData();
+
+                if (colorString != feildColorData ){
+                    spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
+
+                } else {
+                    spinner.set(0.0);
+                    colorConfirmCycle = 0;
+                    spinnerState = SpinnerState.CONFIRMINGCOLOR;
+
+
+                }
+                    
+
+                break;
+                //ensure we stay at the correct color
+            case CONFIRMINGCOLOR:
+                spinner.set(0.0);
+                colorConfirmCycle++;
+
+                colorString = getColorSesorData();
+                if (colorString != feildColorData){
+                    spinnerState = SpinnerState.FINDINGCOLOR;
+
+                }
+
+
+                if (colorConfirmCycle >= Constants.colorConfirmCycles){
+
+                    spinnerState = SpinnerState.OFF;
+                }
+                break;
+
             case OFF:
                 spinner.set(0.0);
+                break;
             
-            case DONE:
-                spinner.set(0.0);
+
+            
+
+
  
 
         }
@@ -195,7 +294,6 @@ public class ControlPanel extends Subsystem{
 
 
     }
-
 
 
 
