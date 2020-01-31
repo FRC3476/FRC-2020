@@ -2,27 +2,13 @@ package frc.subsystem;
 
 import frc.robot.Constants;
 import frc.utility.LazyCANSparkMax;
-import frc.utility.LazyTalonSRX;
-import frc.utility.Threaded;
-import frc.utility.control.RateLimiter;
-
-import java.time.Duration;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.*;
 
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -141,9 +127,7 @@ public class ControlPanel extends Subsystem{
     
 
     public void LevelTwoSpin(){
-        spinnerState = SpinnerState.SPINNING;
-
-        
+        spinnerState = SpinnerState.SPINNING;    
     }
 
     public void LevelThreeSpin(){
@@ -170,6 +154,7 @@ public class ControlPanel extends Subsystem{
     public void update(){
 
         switch(spinnerState){ 
+            //spin wheel 4 times
             case SPINNING:
                 spinner.set(Constants.wheelSpinnerLevelTwoSpeed);
 
@@ -208,7 +193,7 @@ public class ControlPanel extends Subsystem{
                 } 
                 break;
             
-            
+            //Move to color specified by FMS
             case FINDINGCOLOR:
                 colorString = getColorSesorData();
 
@@ -223,9 +208,9 @@ public class ControlPanel extends Subsystem{
 
                 }
                     
-
                 break;
-                //ensure we stay at the correct color
+
+            //ensure we stay at the correct color
             case CONFIRMINGCOLOR:
                 spinner.set(0.0);
                 colorConfirmCycle++;
@@ -246,35 +231,12 @@ public class ControlPanel extends Subsystem{
             case OFF:
                 spinner.set(0.0);
                 break;
-            
-
-            
-
-
- 
-
         }
 
-
-
-
     }
 
 
 
-
-
-
-
-
-
-
-
-
-    public void goToColor(){
-        
-        
-    }
 
     @Override
     public void selfTest() {
@@ -291,14 +253,5 @@ public class ControlPanel extends Subsystem{
     @Override
     public void logMotorCurrent() {
         // TODO Auto-generated method stub
-
-
     }
-
-
-
-
-
-
-
 }
