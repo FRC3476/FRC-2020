@@ -1,30 +1,40 @@
 package frc.subsystem;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.utility.LazyCANSparkMax;
+import frc.utility.LazyTalonFX;
+import frc.utility.LazyTalonSRX;
 
 import frc.robot.Constants;
 
 public class Shooter {
-    private static TalonFX shooterMaster, shooterSlave1, shooterSlave2, shooterSlave3; //Motor controller objects
+    private static LazyTalonFX shooterMaster, shooterSlave1, shooterSlave2, shooterSlave3; //Motor controller objects
+    private static LazyTalonSRX feederMotor;
     private static CANPIDController hoodPID;
+    private static CANEncoder hoodEncoder;
     private static LazyCANSparkMax hoodMotor;
     private static double tbh = 0;
     private static double prevError = 0;
 
     public Shooter(){
         //Shooter Talon ports
-        shooterMaster = new TalonFX(Constants.ShooterMasterId);
-        shooterSlave1 = new TalonFX(Constants.ShooterSlaveId1);
-        shooterSlave2 = new TalonFX(Constants.ShooterSlaveId2);
-        shooterSlave3 = new TalonFX(Constants.ShooterSlaveId3);
+        shooterMaster = new LazyTalonFX(Constants.ShooterMasterId);
+        shooterSlave1 = new LazyTalonFX(Constants.ShooterSlaveId1);
+        shooterSlave2 = new LazyTalonFX(Constants.ShooterSlaveId2);
+        shooterSlave3 = new LazyTalonFX(Constants.ShooterSlaveId3);
+        feederMotor = new LazyTalonSRX(Constants.FeederMotorId);
         hoodMotor = new LazyCANSparkMax(Constants.HoodMotorId,MotorType.kBrushless);
+        hoodEncoder = hoodMotor.getEncoder();
 
         configPID();
+    }
+
+    public enum ShooterState {
+        OFF, SHOOTING
     }
 
     public void configPID(){
@@ -45,6 +55,11 @@ public class Shooter {
         shooterSlave2.config_kD(0, Constants.kShooterD, Constants.TimeoutMs);
         shooterSlave3.config_IntegralZone(0, Constants.ShooterIntegralZone, Constants.TimeoutMs);
 
+        feederMotor.config_kP(0, Constants.kFeederP, Constants.TimeoutMs);
+        feederMotor.config_kI(0, Constants.kFeederI, Constants.TimeoutMs);
+        feederMotor.config_kD(0, Constants.kFeederD, Constants.TimeoutMs);
+        feederMotor.config_IntergralZone(0, Constants)
+
         hoodPID = hoodMotor.getPIDController();
         hoodPID.setP(Constants.kHoodP, 0);
 		hoodPID.setD(Constants.kHoodD, 0);
@@ -56,22 +71,9 @@ public class Shooter {
         shooterMaster.set(ControlMode.Velocity, speed);
     }
 
-    public static void setAngle(int angle) {
+    public static void setEjectAngle(int angle) {
+        //  hoodMotor.setPosition();
         
-    }
-
-    public static void TBH(int speed){
-        double error = speed - shooterMaster.getSelectedSensorVelocity(0);
-        double output = 0;
-        output += error*Constants.ShooterGain;
-
-        if(Math.sin(error)*Math.sin(prevError)>0) {
-            output = 0.5 * (output+tbh);
-            tbh = output;
-            prevError = error;
-        }
-
-        shooterMaster.set(ControlMode.Velocity, output);
     }
 
 }
