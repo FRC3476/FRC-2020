@@ -2,6 +2,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
+import com.revrobotics.ColorMatch;
+
 public final class Constants {
 
 	public static final boolean steeringWheel = false;
@@ -11,6 +15,7 @@ public final class Constants {
 	public static final int JetsonPort = 5805;
 	public static final String JetsonIPv4 = "10.34.76.8";
 
+
 	// CAN IDs
 	public static final int DriveLeftMasterId = 3;
 	public static final int DriveLeftSlave1Id = 4;
@@ -19,7 +24,31 @@ public final class Constants {
 	public static final int DriveRightSlave1Id = 6;
 	public static final int DriveRightSlave2Id = 13;//not currently used
 
-	
+	//Shooter constants
+	public final static int ShooterMasterId = 0;
+	public final static int ShooterSlaveId1 = 1;
+	public final static int ShooterSlaveId2 = 2;
+	public final static int ShooterSlaveId3 = 3;
+
+	public static final int FeederMotorId = 15;
+	public static final double kFeederP = 0.40;
+	public static final double kFeederI = 0.0;
+	public static final double kFeederD = 0.3;
+	public static final int FeederIntegralZone = 1000;
+
+	public static final int ShooterIntegralZone = 1000;
+	public static final double kShooterP = 0.40;
+	public static final double kShooterI = 0.0;
+	public static final double kShooterD = 0.3;
+	public static final double ShooterGain = 1;
+
+	public static final int HoodMotorId = 4;
+	public static final double kHoodP = 0;
+	public static final double kHoodI = 0;
+	public static final double kHoodD = 0;
+	public static final double kHoodF = 0;
+	public static final int HoodTicksPerDegree = 100;
+
 
 	public static final int HatchIntakeMotorId = 23;
 	public static final int HatchIntakeDeployMotorId = 22;
@@ -256,6 +285,30 @@ public final class Constants {
 	public static final double cameraYOffset = 6.36;//5.310 + 1.25;//5.310 + 1.25;
 	public static final double cameraXOffset = -4.75;//-4.815 + 1.6 - 1.0;
 
+
+
+	//Color Wheel
+	public static final char[] colorWheelOrder = {'R', 'Y', 'B', 'G', 'R', 'Y', 'B', 'G'};
+	public static final I2C.Port colorSensorPort = I2C.Port.kOnboard;
+	public static final Color kBlueTarget = ColorMatch.makeColor(0.219, 0.465, 0.315); //0.113, 0.422, 0.463
+	public static final Color kGreenTarget = ColorMatch.makeColor(0.236, 0.483, 0.280); //0.163, 0.580, 0.256
+	public static final Color kRedTarget = ColorMatch.makeColor(0.269, 0.463, 0.265); // 0.521, 0.345, 0.133
+	public static final Color kYellowTarget = ColorMatch.makeColor(0.276, 0.489, 0.233); //0.312, 0.564, 0.122
+	public static final Color kWhiteTarget = ColorMatch.makeColor(0.250, 0.483, 0.265); //0.250, 0.483, 0.265
+	public static final int wheelSpinnerId = 99; //temp
+	public static final double wheelSpinnerLevelTwoSpeed = 1.0;
+	public static final double wheelSpinnerLevelThreeSpeed = 0.5; //temp
+	public static final double colorConfirmCycles = 20;
+	public static final int spinnerWheelReduction = 1/160;
+	public static final int spinnerSolenoidID = 34; //temp
+
+	
+
+	
+
+
+	
+	
 	private Constants() {
 	}
 }
