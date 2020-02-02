@@ -3,7 +3,6 @@
 /gradle/*
 /vendordeps/*
 .project
-build.gradle
 gradlew
 gradlew.bat
 settings.gradle
