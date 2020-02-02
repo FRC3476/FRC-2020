@@ -1,8 +1,10 @@
 package frc.subsystem;
 
+import com.ctre.phoenix.CANifier.PinValues;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.utility.LazyCANSparkMax;
@@ -19,6 +21,10 @@ public class Shooter {
     private static LazyCANSparkMax hoodMotor;
     private static double tbh = 0;
     private static double prevError = 0;
+    private static int targetShooterSpeed;
+    private static int targetHoodPosition;
+
+    public static ShooterState shooterState = ShooterState.OFF;
 
     public Shooter(){
         //Shooter Talon ports
@@ -58,7 +64,7 @@ public class Shooter {
         feederMotor.config_kP(0, Constants.kFeederP, Constants.TimeoutMs);
         feederMotor.config_kI(0, Constants.kFeederI, Constants.TimeoutMs);
         feederMotor.config_kD(0, Constants.kFeederD, Constants.TimeoutMs);
-        feederMotor.config_IntergralZone(0, Constants)
+        feederMotor.config_IntegralZone(0, Constants.FeederIntegralZone);
 
         hoodPID = hoodMotor.getPIDController();
         hoodPID.setP(Constants.kHoodP, 0);
@@ -68,12 +74,54 @@ public class Shooter {
     }
 
     public static void setSpeed(int speed) {
+        targetShooterSpeed = speed;
         shooterMaster.set(ControlMode.Velocity, speed);
     }
 
+     public static void Shoot(){
+        shooterState = ShooterState.SHOOTING;
+
+     }
+
+     public static void StopShoot(){        
+        shooterState = ShooterState.OFF;
+    }
+
+
+    public void update(){
+        if (shooterState == ShooterState.SHOOTING) {
+            //TODO Take Back Half
+
+            hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
+            
+            //check if motor has sped up
+            if(!(shooterMaster.getSelectedSensorVelocity() < targetShooterSpeed - Constants.ShooterMaxDeviation||shooterMaster.getSelectedSensorVelocity() > targetShooterSpeed + Constants.ShooterMaxDeviation )){
+                if(!(hoodEncoder.getPosition() <targetHoodPosition - Constants.HoodMaxDeviation || hoodEncoder.getPosition()> targetHoodPosition + Constants.HoodMaxDeviation)){
+                    feederMotor.set(ControlMode.Velocity, Constants.FeederMotorSpeed);
+
+                } else {
+                    feederMotor.set(ControlMode.Velocity, Constants.FeederMotorSpeed);
+
+                }
+
+            } else {
+                System.out.println("Shooter above max RPM deviation");
+                feederMotor.set(ControlMode.Velocity,0);
+            }
+        } else{
+
+            feederMotor.set(ControlMode.Velocity, 0);
+            hoodPID.setReference(0, ControlType.kPosition);
+            
+        }
+            
+
+
+     }
+
     public static void setEjectAngle(int angle) {
-        //  hoodMotor.setPosition();
-        
+        //hoodMotor.setPosition();
+        targetHoodPosition = angle*Constants.HoodRotationsConversion;
     }
 
 }
