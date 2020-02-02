@@ -132,6 +132,8 @@ public class ControlPanel extends Subsystem{
 
     public void LevelTwoSpin(){
         if( spinnerSolenoid.get()){
+            wheelPosition = 0;
+            wheelRotation = 0;
             spinnerState = SpinnerState.SPINNING; 
         } else {
 
@@ -155,10 +157,12 @@ public class ControlPanel extends Subsystem{
         } else {
             System.out.println("Still Down");
         }
-            
         
+    }
 
-        
+    public void StopSpin(){
+        spinnerState = SpinnerState.OFF;
+        spinner.set(0);
     }
 
 
