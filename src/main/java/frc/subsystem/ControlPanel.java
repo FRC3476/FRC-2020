@@ -4,6 +4,7 @@ import frc.robot.Constants;
 import frc.utility.LazyCANSparkMax;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.util.Color;
 
 import com.revrobotics.ColorSensorV3;
@@ -14,12 +15,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 
 
-
 public class ControlPanel extends Subsystem{
 
     private final ColorSensorV3 m_colorSensor = new ColorSensorV3(Constants.colorSensorPort);
     private final ColorMatch m_colorMatcher = new ColorMatch();
-    char colorString;
+    private char colorString;
 
     int wheelPosition = 0;
     int wheelRotation = 0;
@@ -28,6 +28,8 @@ public class ControlPanel extends Subsystem{
     private static LazyCANSparkMax  spinner;
 
     char feildColorData = 'E';
+
+    private Solenoid spinnerSolenoid;
 
 
     public enum SpinnerState {
@@ -103,6 +105,8 @@ public class ControlPanel extends Subsystem{
 
         spinner = new LazyCANSparkMax(Constants.wheelSpinnerId, MotorType.kBrushless);
         spinner.setIdleMode(IdleMode.kBrake);
+
+        spinnerSolenoid = new Solenoid(Constants.spinnerSolenoidID);
         
         spinnerState = SpinnerState.OFF;
 
@@ -115,32 +119,43 @@ public class ControlPanel extends Subsystem{
 	}
 
 
-    public void MoveArmDown() {
-
+    public void MoveDown() {
+        spinnerSolenoid.set(false);
     }
 
-    public void MoveArmUp() {
-
+    public void MoveUp() {
+        spinnerSolenoid.set(true);
 
     }
 
     
 
     public void LevelTwoSpin(){
-        spinnerState = SpinnerState.SPINNING;    
+        if( spinnerSolenoid.get()){
+            spinnerState = SpinnerState.SPINNING; 
+        } else {
+
+            System.out.println("Still Down");
+        }
+           
     }
 
     public void LevelThreeSpin(){
+        if( spinnerSolenoid.get()){
+            feildColorData = getFeildColorData();
 
-        feildColorData = getFeildColorData();
+            if (feildColorData != 'E'){
+                System.out.println(feildColorData);
+                spinnerState = SpinnerState.FINDINGCOLOR;
 
-        if (feildColorData != 'E'){
-            System.out.println(feildColorData);
-            spinnerState = SpinnerState.FINDINGCOLOR;
+            } else {
+                System.out.println("No Data Recived or Corupted Data");
+            }
 
         } else {
-            System.out.println("No Data Recived or Corupted Data");
+            System.out.println("Still Down");
         }
+            
         
 
         

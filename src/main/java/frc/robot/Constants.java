@@ -284,21 +284,17 @@ public final class Constants {
 	//Color Wheel
 	public static final char[] colorWheelOrder = {'R', 'Y', 'B', 'G', 'R', 'Y', 'B', 'G'};
 	public static final I2C.Port colorSensorPort = I2C.Port.kOnboard;
-
 	public static final Color kBlueTarget = ColorMatch.makeColor(0.219, 0.465, 0.315); //0.113, 0.422, 0.463
 	public static final Color kGreenTarget = ColorMatch.makeColor(0.236, 0.483, 0.280); //0.163, 0.580, 0.256
 	public static final Color kRedTarget = ColorMatch.makeColor(0.269, 0.463, 0.265); // 0.521, 0.345, 0.133
 	public static final Color kYellowTarget = ColorMatch.makeColor(0.276, 0.489, 0.233); //0.312, 0.564, 0.122
 	public static final Color kWhiteTarget = ColorMatch.makeColor(0.250, 0.483, 0.265); //0.250, 0.483, 0.265
-	
-	public static final int wheelSpinnerId = 99;
-
+	public static final int wheelSpinnerId = 99; //temp
 	public static final double wheelSpinnerLevelTwoSpeed = 1.0;
-	public static final double wheelSpinnerLevelThreeSpeed = 0.5;
+	public static final double wheelSpinnerLevelThreeSpeed = 0.5; //temp
 	public static final double colorConfirmCycles = 20;
-
-
 	public static final int spinnerWheelReduction = 1/160;
+	public static final int spinnerSolenoidID = 34; //temp
 
 	
 
