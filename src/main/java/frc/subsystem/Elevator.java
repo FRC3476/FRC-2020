@@ -93,7 +93,7 @@ public class Elevator extends Threaded {
 			safetyEngage = true;
 			return;
 		} else safetyEngage = false;
-		*/
+		*/ 
 		requested = position;
 	}
 	
