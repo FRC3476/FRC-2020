@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 //import frc.utility.telemetry.TelemetryServer;
 import frc.utility.LazyTalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Timer;
 
 public class Intake extends Subsystem {
 
@@ -13,7 +12,7 @@ public class Intake extends Subsystem {
             DEPLOY, UNDEPLOY
     }
     public enum IntakeState {
-            ACTIVATED, UNACTIVATED, RELEASE
+            INTAKE, OFF, EJECT
     }
 
 Intake instance = new Intake();
@@ -22,7 +21,7 @@ Intake instance = new Intake();
 private final Solenoid deploySolenoid;
 private final LazyTalonSRX intakeMotor;
 private DeployState deployState = DeployState.UNDEPLOY;
-private IntakeState intakeState = IntakeState.UNACTIVATED;
+private IntakeState intakeState = IntakeState.OFF;
 
 
 
@@ -68,13 +67,23 @@ public void setIntakeState(IntakeState intakeState) {
         }
 
         switch(intakeState) {
-                case ACTIVATED:
-                        intakeMotor.set(ControlMode.PercentOutput, Constants.intakeForwardSpeed);
-                case UNACTIVATED:
-                
-                case RELEASE:
+                case INTAKE:
+                        intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPowerIntake);
+                case OFF:
+                        intakeMotor.set(ControlMode.PercentOutput, 0);
+                case EJECT: 
+                        intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPowerEject);
+
 
         }
+}
+
+public void setSpeed(double speed) {
+        intakeMotor.set(ControlMode.PercentOutput, speed);
+}
+
+public double getCurrent() {
+        return intakeMotor.getSupplyCurrent();
 }
 
 @Override
@@ -96,9 +105,7 @@ public void logMotorCurrent() {
 }
 
 @Override
-public void update() {
-	// TODO Auto-generated method stub
-	
+public void update() {	
 }
 }
 

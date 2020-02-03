@@ -69,8 +69,10 @@ public final class Constants {
 	public static final int IntakeMasterId = 25;//Random number
 	//public static final double IntakeDeployTime = 1.67;//Random number
 	public static final int IntakeSolenoidId = 1;//Random number
-	public static final double intakeForwardSpeed = 1;
-
+	public static final int intakeForwardSpeed = 1;//Random number
+	public static final double IntakeMotorPowerIntake = 0.5; //Random number
+	public static final double IntakeMotorPowerEject = 0.275;//Random number
+	
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;
 	public static final int BallIntakeSolenoidId = 7;
@@ -168,8 +170,6 @@ public final class Constants {
 	// Superstructure
 
 	// Ground Ball Intake	
-	public static final double IntakeMotorPowerIntake = 0.5; //0.5
-	public static final double IntakeMotorPowerEject = 0.275;
 	public static final double IntakeMediumRPM = 700; // Random number for now
 	public static final double IntakeFastRPM = 700; // Random number for now
 	public static final long IntakeDeployTime = 0;
