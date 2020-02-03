@@ -65,13 +65,10 @@ public final class Constants {
 	public static final int ClimberSlaveId = 16;
 
 	//Intake Constants
-	//public static final int IntakeDeployTime = 0.4; //Random number
-	public static final int IntakeMasterId = 25;//Random number
-	//public static final double IntakeDeployTime = 1.67;//Random number
-	public static final int IntakeSolenoidId = 1;//Random number
-	public static final int intakeForwardSpeed = 1;//Random number
-	public static final double IntakeMotorPowerIntake = 0.5; //Random number
-	public static final double IntakeMotorPowerEject = 0.275;//Random number
+	public static final int IntakeMasterId = 0;//Anthony number
+	public static final int IntakeSolenoidId = -1;//Crashing number
+	public static final int IntakeMotorPowerIntake = 1; //Testing number
+	public static final double IntakeMotorPowerEject = -0.5;//Tesrting number
 	
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;
