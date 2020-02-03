@@ -58,7 +58,7 @@ public class Shooter {
         feederMotor.config_kP(0, Constants.kFeederP, Constants.TimeoutMs);
         feederMotor.config_kI(0, Constants.kFeederI, Constants.TimeoutMs);
         feederMotor.config_kD(0, Constants.kFeederD, Constants.TimeoutMs);
-        feederMotor.config_IntergralZone(0, Constants)
+        //feederMotor.config_IntergralZone(0, Constants);
 
         hoodPID = hoodMotor.getPIDController();
         hoodPID.setP(Constants.kHoodP, 0);

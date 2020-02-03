@@ -12,7 +12,6 @@ import frc.subsystem.*;
 
 //import frc.robot.subsystem.Drive;
 import frc.utility.math.*;
-import frc.utility.telemetry.TelemetryServer;
 import frc.utility.control.motion.Path;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Sendable;
@@ -47,7 +46,6 @@ public class Robot extends TimedRobot {
   //public static Joystick xbox = new Joystick(0);
   public Controller stick = new Controller(1);
   public Controller buttonPanel = new Controller(2);
-  TelemetryServer telemetryServer = TelemetryServer.getInstance();
   Elevator elevator = Elevator.getInstance();
  
   JetsonUDP jetsonUDP = JetsonUDP.getInstance();

@@ -2,12 +2,11 @@ package frc.subsystem;
 
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import frc.utility.telemetry.TelemetryServer;
 import frc.utility.LazyTalonSRX;
-import frc.utility.LazySparkSRX;
+//import frc.utility.LazySparkSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 
-public class Intake extends Subsystem {
+public class Intake { /*
 
     public enum DeployState {
             DEPLOY, UNDEPLOY, DEPLOYING
@@ -26,5 +25,7 @@ private DeployState deployState = DeployState.UNDEPLOY;
 private DeployState deployState = DeployState.UNACTIVATED;
 
 private double lastDeployCommandTime;
-
-private Intake() {
+}*/
+}
+//private Intake() {
+        
