@@ -181,33 +181,6 @@ public final class Constants {
 	public static final double kHatchI = 0.00;
 	public static final double kHatchD = 0.0;
 
-	// Turret
-	public static final int TurretCollisionRange = 0;
-	public static final double maxTurretOverTravel = 20;
-	public static final int turretLimitId = 8;//Random channel for now
-	public static final int maxTurretHomingAngle = 45;//Random degrees for now
-	public static final double turretHomingSpeed = 0.2;//Random percent for now
-	public static final int TurretMotorId = 7;
-//	public static final double kTurretP = 0.25;
-	public static final double TurretTargetError = 3;
-	public static final double AutoScoreDistance = 36 - 5.25;
-	public static final double AutoScoreDistanceBallClose = 34.5 - 8;
-	public static final double AutoScoreDistanceBallFar = 45 - 8;
-	public static final double MaxVisionScoreAngle = 10;
-
-
-
-	public static final int TurretMaxHomingAngle = 45;//Random degrees for now
-	public static final double TurretHomingPower = 0.4;//Random percent for now
-	public static final double kTurretP = 1.6;
-
-
-	public static final double kTurretI = 0.00;
-	public static final double kTurretD = 1.0;
-
-	public static final double kTurretManual = 3.0;
-
-
 	// Elevator
 	public static final double ElevatorHomeSpeed = -0.1;
 	public static final double ElevatorInchesPerMotorRotation = 8;
@@ -272,10 +245,17 @@ public final class Constants {
 	public static final double HandoffHoldTime = 0;
 	
 	// Climber
-	public static final double ClimberMaxAngle = 90; //207
-	public static final double ClimberMinAngle = -40; //82;//82; //4
-	public static final double ClimberStartAngle = 2; //no
 	public static final int ClimberSolenoidID = 3;
+	public static final int ClimberMotorID = 3;
+	public static final double kClimberP = .10;
+	public static final double kClimberI = .10;
+	public static final double kClimberD = .10;
+	public static final int ClimberIntergralZone = 10;
+
+	public static final int ClimberMaxTarget = 10000;
+	public static final int ClimberClimbedHeight = 5000;
+	public static final int ClimberHookingMaxVel = 100;
+	public static final int ClimberHookingMaxAcel = 100;
 	
 	
 	// Camera

@@ -20,7 +20,7 @@ public class Shooter {
     private static CANEncoder hoodEncoder;
     private static LazyCANSparkMax hoodMotor;
     private static double tbh = 0;
-    private static double prevError = 0;
+    private static double prevError = 0; 
     private static int targetShooterSpeed;
     private static int targetHoodPosition;
 
@@ -57,9 +57,9 @@ public class Shooter {
 
         //Config PID constants
         shooterMaster.config_kP(0, Constants.kShooterP, Constants.TimeoutMs);
-		shooterSlave1.config_kI(0, Constants.kShooterI, Constants.TimeoutMs);
-        shooterSlave2.config_kD(0, Constants.kShooterD, Constants.TimeoutMs);
-        shooterSlave3.config_IntegralZone(0, Constants.ShooterIntegralZone, Constants.TimeoutMs);
+		shooterMaster.config_kI(0, Constants.kShooterI, Constants.TimeoutMs);
+        shooterMaster.config_kD(0, Constants.kShooterD, Constants.TimeoutMs);
+        shooterMaster.config_IntegralZone(0, Constants.ShooterIntegralZone, Constants.TimeoutMs);
 
         feederMotor.config_kP(0, Constants.kFeederP, Constants.TimeoutMs);
         feederMotor.config_kI(0, Constants.kFeederI, Constants.TimeoutMs);
