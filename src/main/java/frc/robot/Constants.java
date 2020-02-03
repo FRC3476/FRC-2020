@@ -61,7 +61,14 @@ public final class Constants {
 	
 	public static final int ClimberMasterId = 15;
 	public static final int ClimberSlaveId = 16;
-	
+
+	//Intake Constants
+	//public static final int IntakeDeployTime = 0.4; //Random number
+	public static final int IntakeMasterId = 25;//Random number
+	//public static final double IntakeDeployTime = 1.67;//Random number
+	public static final int IntakeSolenoidId = 1;//Random number
+	public static final double intakeForwardSpeed = 1;
+
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;
 	public static final int BallIntakeSolenoidId = 7;
@@ -301,6 +308,9 @@ public final class Constants {
 	public static final double colorConfirmCycles = 20;
 	public static final int spinnerWheelReduction = 1/160;
 	public static final int spinnerSolenoidID = 34; //temp
+
+	//Update Period Constants
+	public static final int intakePeriod = -1;
 
 	
 
