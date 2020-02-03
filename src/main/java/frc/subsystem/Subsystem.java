@@ -1,8 +1,11 @@
 package frc.subsystem;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+
 public abstract class Subsystem implements Runnable {
     int period = 50;
     ThreadSignal signal = ThreadSignal.PAUSED;
+    public JsonObject dataPacket[];
 
     public enum ThreadSignal {
 		ALIVE, PAUSED, DEAD

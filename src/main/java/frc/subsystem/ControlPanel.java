@@ -5,6 +5,7 @@ import frc.utility.LazyCANSparkMax;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 
 import com.revrobotics.ColorSensorV3;
@@ -13,111 +14,98 @@ import com.revrobotics.ColorMatchResult;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+public class ControlPanel extends Subsystem {
 
-
-public class ControlPanel extends Subsystem{
-
-    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(Constants.colorSensorPort);
-    private final ColorMatch m_colorMatcher = new ColorMatch();
+    private final ColorSensorV3 colorSensor = new ColorSensorV3(Constants.colorSensorPort);
+    private final ColorMatch colorMatcher = new ColorMatch();
     private char colorString;
 
     int wheelPosition = 0;
     int wheelRotation = 0;
     int colorConfirmCycle = 0;
 
-    private static LazyCANSparkMax  spinner;
+    private static LazyCANSparkMax spinner;
 
     char feildColorData = 'E';
 
     private Solenoid spinnerSolenoid;
 
-
     public enum SpinnerState {
-		OFF, SPINNING, FINDINGCOLOR, CONFIRMINGCOLOR
+        OFF, SPINNING, FINDINGCOLOR, CONFIRMINGCOLOR
     }
-    
+
     public SpinnerState spinnerState;
 
-
-    //getting color data from feild
-    private char getFeildColorData(){
+    // getting color data from feild
+    private char getFeildColorData() {
         String gameData;
         gameData = DriverStation.getInstance().getGameSpecificMessage();
-        if(gameData.length() > 0)
-        {
-            switch (gameData.charAt(0))
-            {
-                case 'B' :
-                    return 'B';
-                case 'G' :
-                    return 'G';
-                case 'R' :
-                    return 'R';
-                case 'Y' :
-                    return 'Y';
-                default :
-                    //corupt Data
-                    return 'E';
+        if (gameData.length() > 0) {
+            switch (gameData.charAt(0)) {
+            case 'B':
+                return 'B';
+            case 'G':
+                return 'G';
+            case 'R':
+                return 'R';
+            case 'Y':
+                return 'Y';
+            default:
+                // corupt Data
+                return 'E';
             }
         } else {
-            //No value recived yet
+            // No value recived yet
             return 'E';
         }
 
     }
 
-    private char getColorSesorData(){
+    private char getColorSesorData() {
 
-        Color detectedColor = m_colorSensor.getColor();
-                char colorData;
-                ColorMatchResult match  = m_colorMatcher.matchClosestColor(detectedColor);
+        Color detectedColor = colorSensor.getColor();
+        char colorData;
+        ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
 
-                //get Color Looking at
-                if (match.color == Constants.kBlueTarget) {
-                    colorData = 'B';
-                } else if (match.color == Constants.kRedTarget) {
-                    colorData = 'R';
-                } else if (match.color == Constants.kGreenTarget) {
-                    colorData = 'G';
-                } else if (match.color == Constants.kYellowTarget) {
-                    colorData = 'Y';
-                } else {
-                    colorData = 'U';
-                }
+        // get Color Looking at
+        if (match.color == Constants.kBlueTarget) {
+            colorData = 'B';
+        } else if (match.color == Constants.kRedTarget) {
+            colorData = 'R';
+        } else if (match.color == Constants.kGreenTarget) {
+            colorData = 'G';
+        } else if (match.color == Constants.kYellowTarget) {
+            colorData = 'Y';
+        } else {
+            colorData = 'U';
+        }
 
-                return colorData;
-
-
+        return colorData;
 
     }
-    
 
-
-    //init
+    // init
     ControlPanel(int period) {
         super(period);
 
-        m_colorMatcher.addColorMatch(Constants.kBlueTarget);
-        m_colorMatcher.addColorMatch(Constants.kGreenTarget);
-        m_colorMatcher.addColorMatch(Constants.kRedTarget);
-        m_colorMatcher.addColorMatch(Constants.kYellowTarget);   
-        m_colorMatcher.addColorMatch(Constants.kWhiteTarget);
+        colorMatcher.addColorMatch(Constants.kBlueTarget);
+        colorMatcher.addColorMatch(Constants.kGreenTarget);
+        colorMatcher.addColorMatch(Constants.kRedTarget);
+        colorMatcher.addColorMatch(Constants.kYellowTarget);
+        colorMatcher.addColorMatch(Constants.kWhiteTarget);
 
         spinner = new LazyCANSparkMax(Constants.wheelSpinnerId, MotorType.kBrushless);
         spinner.setIdleMode(IdleMode.kBrake);
 
         spinnerSolenoid = new Solenoid(Constants.spinnerSolenoidID);
-        
+
         spinnerState = SpinnerState.OFF;
 
-
-        
     }
 
-	public SpinnerState getSpinnerState() {
-		return spinnerState;
-	}
-
+    public SpinnerState getSpinnerState() {
+        return spinnerState;
+    }
 
     public void MoveDown() {
         spinnerSolenoid.set(false);
@@ -128,138 +116,129 @@ public class ControlPanel extends Subsystem{
 
     }
 
-    
+    public void LevelTwoSpin() {
+        wheelPosition = 0;
+        wheelRotation = 0;
+        spinnerState = SpinnerState.SPINNING;
 
-    public void LevelTwoSpin(){
-        if( spinnerSolenoid.get()){
-            wheelPosition = 0;
-            wheelRotation = 0;
-            spinnerState = SpinnerState.SPINNING; 
-        } else {
-
-            System.out.println("Still Down");
-        }
-           
     }
 
-    public void LevelThreeSpin(){
-        if( spinnerSolenoid.get()){
-            feildColorData = getFeildColorData();
+    public void LevelThreeSpin() {
+        feildColorData = getFeildColorData();
 
-            if (feildColorData != 'E'){
-                System.out.println(feildColorData);
-                spinnerState = SpinnerState.FINDINGCOLOR;
-
-            } else {
-                System.out.println("No Data Recived or Corupted Data");
-            }
+        if (feildColorData != 'E') {
+            System.out.println(feildColorData);
+            spinnerState = SpinnerState.FINDINGCOLOR;
 
         } else {
-            System.out.println("Still Down");
+            System.out.println("No Data Recived or Corupted Data");
         }
-        
+
     }
 
-    public void StopSpin(){
+    public void stopSpin() {
         spinnerState = SpinnerState.OFF;
         spinner.set(0);
     }
 
+    public void update() {
 
+        switch (spinnerState) {
+        // spin wheel 4 times
+        case SPINNING:
+            spinner.set(Constants.wheelSpinnerLevelTwoSpeed);
 
+            colorString = getColorSesorData();
 
+            // check that color is not unknown
+            if (colorString != 'U') {
 
+                // loop until we find the color we are looking at
+                while (!(Constants.colorWheelOrder[wheelPosition] == colorString)) {
 
-    public void update(){
+                    wheelPosition++;
 
-        switch(spinnerState){ 
-            //spin wheel 4 times
-            case SPINNING:
-                spinner.set(Constants.wheelSpinnerLevelTwoSpeed);
-
-                colorString = getColorSesorData();
-                
-                //check that color is not unknown
-                if (colorString!='U'){
-                    
-                    //loop until we find the color we are looking at
-                    while (true){
-                        
-                        
-                        //check if we reached the curent color the sensor sees
-                        if (Constants.colorWheelOrder[wheelPosition] == colorString){
-                            //if we do exit
-                            break;
-                        }
-                    
-                        wheelPosition++;
-
-                        //check if we completed a rotation
-                        if (wheelPosition == Constants.colorWheelOrder.length ){
-                            wheelPosition = 0;
-                            wheelRotation++;
-                        }
-            
+                    // check if we completed a rotation
+                    if (wheelPosition == Constants.colorWheelOrder.length) {
+                        wheelPosition = 0;
+                        wheelRotation++;
                     }
 
-                    if (wheelRotation >= 4){
-                        spinnerState = spinnerState.OFF;
-                        spinner.set(0.0);
-                        System.out.println("Control Panel Spun 4 times");
-
-                    }
-            
-                } 
-                break;
-            
-            //Move to color specified by FMS
-            case FINDINGCOLOR:
-                colorString = getColorSesorData();
-
-                if (colorString != feildColorData ){
-                    spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
-
-                } else {
-                    spinner.set(0.0);
-                    colorConfirmCycle = 0;
-                    spinnerState = SpinnerState.CONFIRMINGCOLOR;
-
-
                 }
-                    
-                break;
 
-            //ensure we stay at the correct color
-            case CONFIRMINGCOLOR:
-                spinner.set(0.0);
-                colorConfirmCycle++;
-
-                colorString = getColorSesorData();
-                if (colorString != feildColorData){
-                    spinnerState = SpinnerState.FINDINGCOLOR;
+                if (wheelRotation >= 4) {
+                    spinnerState = spinnerState.OFF;
+                    System.out.println("Control Panel Spun 4 times");
 
                 }
 
+            }
+            break;
 
-                if (colorConfirmCycle >= Constants.colorConfirmCycles){
+        // Move to color specified by FMS
+        case FINDINGCOLOR:
+            colorString = getColorSesorData();
 
-                    spinnerState = SpinnerState.OFF;
-                }
-                break;
+            if (colorString != feildColorData) {
+                spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
 
-            case OFF:
-                spinner.set(0.0);
-                break;
+            } else {
+                colorConfirmCycle = 0;
+                spinnerState = SpinnerState.CONFIRMINGCOLOR;
+
+            }
+
+            break;
+
+        // ensure we stay at the correct color
+        case CONFIRMINGCOLOR:
+            spinner.set(0.0);
+            colorConfirmCycle++;
+
+            colorString = getColorSesorData();
+            if (colorString != feildColorData) {
+                spinnerState = SpinnerState.FINDINGCOLOR;
+
+            }
+
+            if (colorConfirmCycle >= Constants.colorConfirmCycles) {
+
+                spinnerState = SpinnerState.OFF;
+            }
+            break;
+
+        case OFF:
+            spinner.set(0.0);
+            break;
         }
 
     }
 
-
-
-
     @Override
     public void selfTest() {
-        // TODO Auto-generated method stub
+        spinner.set(1.0);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            System.out.println("Sleep Failed" + e);
+        }
+        spinner.set(0.0);
+
+        spinnerSolenoid.set(true);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            System.out.println("Sleep Failed" + e);
+        }
+        spinnerSolenoid.set(false);
+
+        double TargetTime = Timer.getFPGATimestamp()+8;
+
+        while (Timer.getFPGATimestamp()< TargetTime){
+
+
+
+        }
 
     }
 

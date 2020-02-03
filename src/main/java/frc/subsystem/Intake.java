@@ -2,7 +2,7 @@ package frc.subsystem;
 
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import frc.utility.telemetry.TelemetryServer;
+//import frc.utility.telemetry.TelemetryServer;
 import frc.utility.LazyTalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,14 +18,15 @@ public class Intake extends Subsystem {
 
 Intake instance = new Intake();
 
-private final TelemetryServer telemetryServer = TelemetryServer.getInstance();
+//private final TelemetryServer telemetryServer = TelemetryServer.getInstance();
 private final Solenoid deploySolenoid;
 private final LazyTalonSRX intakeMotor;
 private DeployState deployState = DeployState.UNDEPLOY;
 private IntakeState intakeState = IntakeState.UNACTIVATED;
 
 
-private double lastDeployCommandTime;
+
+// private double lastDeployCommandTime;
 
 public Intake() {
         super(Constants.intakePeriod);
@@ -50,7 +51,6 @@ public IntakeState getIntakeState() {
 public void setDeployState(final DeployState deployState) {
         synchronized (this) {
                 this.deployState = deployState;
-                lastDeployCommandTime = Timer.getFPGATimestamp();
         }
 
         switch (deployState) {
@@ -101,3 +101,4 @@ public void update() {
 	
 }
 }
+

@@ -35,19 +35,21 @@ public final class Constants {
 	public static final double kFeederI = 0.0;
 	public static final double kFeederD = 0.3;
 	public static final int FeederIntegralZone = 1000;
+	public static final int FeederMotorSpeed = 1000;
 
-	public static final int ShooterIntegralZone = 1000;
 	public static final double kShooterP = 0.40;
 	public static final double kShooterI = 0.0;
 	public static final double kShooterD = 0.3;
 	public static final double ShooterGain = 1;
+	public static final int ShooterMaxDeviation = 100;
 
 	public static final int HoodMotorId = 4;
 	public static final double kHoodP = 0;
 	public static final double kHoodI = 0;
 	public static final double kHoodD = 0;
 	public static final double kHoodF = 0;
-	public static final int HoodTicksPerDegree = 100;
+	public static final int HoodRotationsConversion = (12/60)*(20/5760);//100;
+	public static final int HoodMaxDeviation = 5;
 
 
 	public static final int HatchIntakeMotorId = 23;
@@ -308,6 +310,7 @@ public final class Constants {
 	public static final double colorConfirmCycles = 20;
 	public static final int spinnerWheelReduction = 1/160;
 	public static final int spinnerSolenoidID = 34; //temp
+	public static final int ShooterIntegralZone = 0;
 
 	//Update Period Constants
 	public static final int intakePeriod = -1;
