@@ -63,6 +63,12 @@ public final class Constants {
 	
 	public static final int ClimberMasterId = 15;
 	public static final int ClimberSlaveId = 16;
+
+	//Intake Constants
+	public static final int IntakeMasterId = 0;//Anthony number
+	public static final int IntakeSolenoidId = -1;//Crashing number
+	public static final int IntakeMotorPowerIntake = 1; //Testing number
+	public static final double IntakeMotorPowerEject = -0.5;//Tesrting number
 	
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;
@@ -161,8 +167,6 @@ public final class Constants {
 	// Superstructure
 
 	// Ground Ball Intake	
-	public static final double IntakeMotorPowerIntake = 0.5; //0.5
-	public static final double IntakeMotorPowerEject = 0.275;
 	public static final double IntakeMediumRPM = 700; // Random number for now
 	public static final double IntakeFastRPM = 700; // Random number for now
 	public static final long IntakeDeployTime = 0;
@@ -284,6 +288,9 @@ public final class Constants {
 	public static final int spinnerWheelReduction = 1/160;
 	public static final int spinnerSolenoidID = 34; //temp
 	public static final int ShooterIntegralZone = 0;
+
+	//Update Period Constants
+	public static final int intakePeriod = -1;
 
 	
 
