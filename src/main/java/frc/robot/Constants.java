@@ -68,7 +68,7 @@ public final class Constants {
 	public static final int IntakeMasterId = 0;//Anthony number
 	public static final int IntakeSolenoidId = -1;//Crashing number
 	public static final int IntakeMotorPowerIntake = 1; //Testing number
-	public static final double IntakeMotorPowerEject = -0.5;//Tesrting number
+	public static final double IntakeMotorPowerEject = -0.5;//Testing number
 	
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;
