@@ -1,8 +1,9 @@
 /.gradle/*
 /.settings/*
 /gradle/*
-/vendordeps/*
 .project
 gradlew
 gradlew.bat
 settings.gradle
+/build/*
+/bin/*
