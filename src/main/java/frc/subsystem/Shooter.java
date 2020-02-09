@@ -39,6 +39,12 @@ public class Shooter {
         configPID();
     }
 
+    private static final Shooter instance = new Shooter();
+	
+	public static Shooter getInstance() {
+		return instance;
+	}
+
     public enum ShooterState {
         OFF, SHOOTING
     }

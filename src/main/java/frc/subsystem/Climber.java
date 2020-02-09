@@ -35,7 +35,7 @@ public class Climber extends Subsystem{
         
     }
 
-    void HookOn() {
+    void hookOn() {
         ClimberSolenoid.set(true);
         hookingOn = true;
 
@@ -60,7 +60,6 @@ public class Climber extends Subsystem{
 
     }
 
-    @Override
     public void logMotorCurrent() {
         // TODO Auto-generated method stub
 

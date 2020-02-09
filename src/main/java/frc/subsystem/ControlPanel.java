@@ -26,7 +26,9 @@ public class ControlPanel extends Subsystem {
 
     private static LazyCANSparkMax spinner;
 
+
     char feildColorData = 'E';
+    char usablefeildColorData;
 
     private Solenoid spinnerSolenoid;
 
@@ -84,9 +86,17 @@ public class ControlPanel extends Subsystem {
 
     }
 
+//-------------------------------------------------------------
+
+
+    private static final ControlPanel instance = new ControlPanel(); 
+    public static ControlPanel getInstance() {
+        return instance;
+    }
+
     // init
-    ControlPanel(int period) {
-        super(period);
+    ControlPanel() {
+        super(Constants.controlPanelPeriod);
 
         colorMatcher.addColorMatch(Constants.kBlueTarget);
         colorMatcher.addColorMatch(Constants.kGreenTarget);
@@ -95,6 +105,8 @@ public class ControlPanel extends Subsystem {
         colorMatcher.addColorMatch(Constants.kWhiteTarget);
 
         spinner = new LazyCANSparkMax(Constants.wheelSpinnerId, MotorType.kBrushless);
+
+
         spinner.setIdleMode(IdleMode.kBrake);
 
         spinnerSolenoid = new Solenoid(Constants.spinnerSolenoidID);
@@ -127,7 +139,19 @@ public class ControlPanel extends Subsystem {
         feildColorData = getFeildColorData();
 
         if (feildColorData != 'E') {
-            System.out.println(feildColorData);
+            
+            int pos = -1;
+            for(int i = 0; i < Constants.colorWheelOrder.length; i++) {
+                if(Constants.colorWheelOrder[i] == feildColorData) {
+                    pos = i;
+                    break;
+                }
+            }
+
+            usablefeildColorData = Constants.colorWheelOrder[pos+Constants.LevelThreeColorOffset];
+
+            System.out.println("Feild Color Data: " + feildColorData);
+            System.out.println("Using Color: " + usablefeildColorData);
             spinnerState = SpinnerState.FINDINGCOLOR;
 
         } else {
@@ -136,10 +160,14 @@ public class ControlPanel extends Subsystem {
 
     }
 
+
+
     public void stopSpin() {
         spinnerState = SpinnerState.OFF;
         spinner.set(0);
     }
+
+// --------------------------------------------------------------
 
     public void update() {
 
@@ -167,7 +195,7 @@ public class ControlPanel extends Subsystem {
                 }
 
                 if (wheelRotation >= 4) {
-                    spinnerState = spinnerState.OFF;
+                    spinnerState = SpinnerState.OFF;
                     System.out.println("Control Panel Spun 4 times");
 
                 }
@@ -175,11 +203,10 @@ public class ControlPanel extends Subsystem {
             }
             break;
 
-        // Move to color specified by FMS
         case FINDINGCOLOR:
             colorString = getColorSesorData();
 
-            if (colorString != feildColorData) {
+            if (colorString != usablefeildColorData) {
                 spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
 
             } else {
@@ -196,7 +223,7 @@ public class ControlPanel extends Subsystem {
             colorConfirmCycle++;
 
             colorString = getColorSesorData();
-            if (colorString != feildColorData) {
+            if (colorString != usablefeildColorData) {
                 spinnerState = SpinnerState.FINDINGCOLOR;
 
             }
@@ -213,6 +240,8 @@ public class ControlPanel extends Subsystem {
         }
 
     }
+
+//----------------------------------------------------------
 
     @Override
     public void selfTest() {
@@ -234,7 +263,7 @@ public class ControlPanel extends Subsystem {
 
         double TargetTime = Timer.getFPGATimestamp()+8;
 
-        while (Timer.getFPGATimestamp()< TargetTime){
+        while (Timer.getFPGATimestamp() < TargetTime){
 
 
 
@@ -248,7 +277,7 @@ public class ControlPanel extends Subsystem {
 
     }
 
-    @Override
+
     public void logMotorCurrent() {
         // TODO Auto-generated method stub
     }
