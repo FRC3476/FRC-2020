@@ -9,7 +9,7 @@ import frc.utility.math.*;
 public class TemplateAuto implements Runnable { 
     Drive drive = Drive.getInstance();
     Elevator elevator = Elevator.getInstance();
-    CollisionManager collisionManager = CollisionManager.getInstance();
+    //CollisionManager collisionManager = CollisionManager.getInstance();
     RobotTracker robotTracker = RobotTracker.getInstance();
     
     int side = 1;

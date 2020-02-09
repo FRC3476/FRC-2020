@@ -29,6 +29,7 @@ public final class Constants {
 	public final static int ShooterSlaveId1 = 1;
 	public final static int ShooterSlaveId2 = 2;
 	public final static int ShooterSlaveId3 = 3;
+	
 
 	public static final int FeederMotorId = 15;
 	public static final double kFeederP = 0.40;
@@ -51,6 +52,8 @@ public final class Constants {
 	public static final int HoodRotationsConversion = (12/60)*(20/5760);//100;
 	public static final int HoodMaxDeviation = 5;
 
+	public final static double AutoShooterOnTime = 3;
+
 
 	public static final int HatchIntakeMotorId = 23;
 	public static final int HatchIntakeDeployMotorId = 22;
@@ -69,6 +72,7 @@ public final class Constants {
 	public static final int IntakeSolenoidId = -1;//Crashing number
 	public static final int IntakeMotorPowerIntake = 1; //Testing number
 	public static final double IntakeMotorPowerEject = -0.5;//Testing number
+	public static final double IntakeOpenTime = 0.5;
 	
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;
@@ -275,22 +279,28 @@ public final class Constants {
 
 	//Color Wheel
 	public static final char[] colorWheelOrder = {'R', 'Y', 'B', 'G', 'R', 'Y', 'B', 'G'};
+
 	public static final I2C.Port colorSensorPort = I2C.Port.kOnboard;
 	public static final Color kBlueTarget = ColorMatch.makeColor(0.219, 0.465, 0.315); //0.113, 0.422, 0.463
 	public static final Color kGreenTarget = ColorMatch.makeColor(0.236, 0.483, 0.280); //0.163, 0.580, 0.256
 	public static final Color kRedTarget = ColorMatch.makeColor(0.269, 0.463, 0.265); // 0.521, 0.345, 0.133
 	public static final Color kYellowTarget = ColorMatch.makeColor(0.276, 0.489, 0.233); //0.312, 0.564, 0.122
 	public static final Color kWhiteTarget = ColorMatch.makeColor(0.250, 0.483, 0.265); //0.250, 0.483, 0.265
-	public static final int wheelSpinnerId = 99; //temp
+
+	public static final int wheelSpinnerId = 99; 
 	public static final double wheelSpinnerLevelTwoSpeed = 1.0;
-	public static final double wheelSpinnerLevelThreeSpeed = 0.5; //temp
+	public static final double wheelSpinnerLevelThreeSpeed = 0.5; 
 	public static final double colorConfirmCycles = 20;
+
 	public static final int spinnerWheelReduction = 1/160;
-	public static final int spinnerSolenoidID = 34; //temp
+	public static final int spinnerSolenoidID = 34; 
 	public static final int ShooterIntegralZone = 0;
 
+	public static final int LevelThreeColorOffset = 2;
+
 	//Update Period Constants
-	public static final int intakePeriod = -1;
+	public static final int intakePeriod = 50;
+	public static final int controlPanelPeriod = 50;
 
 	
 

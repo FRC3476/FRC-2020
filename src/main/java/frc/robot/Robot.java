@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
   public static final boolean profileTeleop = true;
 
   Drive drive = Drive.getInstance();
-  CollisionManager collisionManager = CollisionManager.getInstance();
+  //CollisionManager collisionManager = CollisionManager.getInstance();
   public Controller xbox = new Controller(0);
   public Controller wheel = new Controller(3);
   //public static Joystick xbox = new Joystick(0);
@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
 
     scheduler.schedule(drive, executor);
 		scheduler.schedule(elevator, executor);
-    scheduler.schedule(collisionManager, executor);
+    //scheduler.schedule(collisionManager, executor);
     scheduler.schedule(jetsonUDP, executor);
     scheduler.schedule(robotTracker, executor);
     

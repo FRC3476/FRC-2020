@@ -8,7 +8,7 @@ import frc.utility.Threaded;
 import frc.subsystem.*;
 
 
-public class CollisionManager extends Threaded { 
+public class VisionManager extends Threaded { 
    
     Elevator elevator = Elevator.getInstance();
     
@@ -17,14 +17,14 @@ public class CollisionManager extends Threaded {
     long prevTime;
 
    
-    private static final CollisionManager cm = new CollisionManager();
+    private static final VisionManager cm = new VisionManager();
 
    
-    public static CollisionManager getInstance() {
+    public static VisionManager getInstance() {
         return cm;
     }    
     
-    public CollisionManager() {
+    public VisionManager() {
         setPeriod(Duration.ofMillis(20));
     }
 
@@ -35,6 +35,16 @@ public class CollisionManager extends Threaded {
 
         
        
+    }
+
+    public void aim(){
+
+
+    }
+
+    public boolean isFinished(){
+
+        return true;
     }
 
 
