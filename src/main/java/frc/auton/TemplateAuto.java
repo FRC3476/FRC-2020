@@ -15,6 +15,7 @@ public class TemplateAuto implements Runnable {
     int side = 1;
 
     boolean killSwitch = false;
+    //Translation 2D is in inches.
 
     public TemplateAuto(Translation2D start) {
         RobotTracker.getInstance().setInitialTranslation(start);
