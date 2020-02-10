@@ -17,18 +17,18 @@ public final class Constants {
 
 
 	// CAN IDs
-	public static final int DriveLeftMasterId = 3;
-	public static final int DriveLeftSlave1Id = 4;
-	public static final int DriveLeftSlave2Id = 14;//not currently used
-	public static final int DriveRightMasterId = 5;
-	public static final int DriveRightSlave1Id = 6;
-	public static final int DriveRightSlave2Id = 13;//not currently used
+	public static final int DriveLeftMasterId = 10;
+	public static final int DriveLeftSlave1Id = 11;
+	//public static final int DriveLeftSlave2Id = 14;//not currently used
+	public static final int DriveRightMasterId = 12;
+	public static final int DriveRightSlave1Id = 13;
+	//public static final int DriveRightSlave2Id = 13;//not currently used
 
 	//Shooter constants
-	public final static int ShooterMasterId = 0;
-	public final static int ShooterSlaveId1 = 1;
-	public final static int ShooterSlaveId2 = 2;
-	public final static int ShooterSlaveId3 = 3;
+	public final static int ShooterMasterId = 20;
+	public final static int ShooterSlaveId1 = 21;
+	public final static int ShooterSlaveId2 = 22;
+	public final static int ShooterSlaveId3 = 23;
 	
 
 	public static final int FeederMotorId = 15;
@@ -55,17 +55,17 @@ public final class Constants {
 	public final static double AutoShooterOnTime = 3;
 
 
-	public static final int HatchIntakeMotorId = 23;
-	public static final int HatchIntakeDeployMotorId = 22;
+	public static final int HatchIntakeMotorId = 100;
+	public static final int HatchIntakeDeployMotorId = 101;
 
-	public static final int ElevatorMasterId = 9;
-	public static final int ElevatorSlaveId = 8;
+	public static final int ElevatorMasterId = 200;
+	public static final int ElevatorSlaveId = 201;
 
-	public static final int ManipulatorMotor1Id = 31;
-	public static final int ManipulatorMotor2Id = 32;
+	public static final int ManipulatorMotor1Id = 210;
+	public static final int ManipulatorMotor2Id = 211;
 	
-	public static final int ClimberMasterId = 15;
-	public static final int ClimberSlaveId = 16;
+	public static final int ClimberMasterId = 220;
+	public static final int ClimberSlaveId = 221;
 
 	//Intake Constants
 	public static final int IntakeMasterId = 0;//Anthony number
