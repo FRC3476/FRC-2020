@@ -106,10 +106,10 @@ public class Drive extends Threaded {
 		rightSparkSlave = new LazyCANSparkMax(Constants.DriveRightSlave1Id, MotorType.kBrushless);
 		//rightSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
 		//leftSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
-		leftSpark.setInverted(true);
-		rightSpark.setInverted(false);
-		leftSparkSlave.setInverted(true);
-		rightSparkSlave.setInverted(false);
+		leftSpark.setInverted(false);
+		rightSpark.setInverted(true);
+		leftSparkSlave.setInverted(false);
+		rightSparkSlave.setInverted(true);
 
 
 		

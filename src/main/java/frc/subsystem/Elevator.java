@@ -25,7 +25,7 @@ public class Elevator extends Threaded {
 		HOMING, SETPOINT
 	}
 	
-	private static final Elevator instance = new Elevator();
+	private static final Elevator instance = null;//new Elevator();
 	
 	public static Elevator getInstance() {
 		return instance;

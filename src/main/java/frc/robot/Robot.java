@@ -46,7 +46,6 @@ public class Robot extends TimedRobot {
   //public static Joystick xbox = new Joystick(0);
   public Controller stick = new Controller(1);
   public Controller buttonPanel = new Controller(2);
-  Elevator elevator = Elevator.getInstance();
  
   JetsonUDP jetsonUDP = JetsonUDP.getInstance();
   
@@ -105,13 +104,13 @@ public class Robot extends TimedRobot {
 
 
     scheduler.schedule(drive, executor);
-		scheduler.schedule(elevator, executor);
+		//scheduler.schedule(elevator, executor);
     //scheduler.schedule(collisionManager, executor);
     scheduler.schedule(jetsonUDP, executor);
     scheduler.schedule(robotTracker, executor);
     
 
-    elevator.elevHome();
+    //elevator.elevHome();
     drive.setSimpleDrive(false);
 
     Thread.currentThread().setPriority(7);
@@ -196,7 +195,7 @@ public class Robot extends TimedRobot {
       //while(!auto.isInterrupted());
       while(auto.getState() != Thread.State.TERMINATED);
    
-      elevator.setHeight(Math.max(elevator.getHeight(), Constants.HatchElevLow));
+      //elevator.setHeight(Math.max(elevator.getHeight(), Constants.HatchElevLow));
       drive.stopMovement();
       drive.setTeleop();
     }
@@ -206,7 +205,7 @@ public class Robot extends TimedRobot {
   @Override 
   public void teleopInit() {
 
-  
+    drive.setSimpleDrive(true);
   
 
     jetsonUDP.changeExp(true);
@@ -215,7 +214,7 @@ public class Robot extends TimedRobot {
     System.out.println("teleop init!");
     //drive.stopMovement();
 
-    elevator.resetDT();
+    //elevator.resetDT();
     scheduler.resume();
     //elevator.setHeight(Constants.HatchElevLow);
    // turret.homeTurret();
@@ -246,7 +245,8 @@ public class Robot extends TimedRobot {
       buttonPanel.update();
       wheel.update();
 
-      
+      drive.arcadeDrive(xbox.getRawAxis(1), -xbox.getRawAxis(4));
+
   }
 
   @Override
