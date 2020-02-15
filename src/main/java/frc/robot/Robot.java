@@ -234,6 +234,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+      System.out.println(drive.getGyroAngle());
+
       ArrayList<Double> times = new ArrayList<Double>();
       
       if(profileTeleop) times.add(Timer.getFPGATimestamp());
