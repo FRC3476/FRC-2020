@@ -156,7 +156,7 @@ public class Robot extends TimedRobot {
     else startPos = 48+18;
 
    // if(m_chooser.getSelected().equals("Cargo 1_2")&& red_blue.getSelected().equals("Red")) option = new Ship1_2Red(autoDir, startPos);
-  
+    option = new PathingTest(1, 0);
     
     auto = new Thread(option);
     auto.start();
