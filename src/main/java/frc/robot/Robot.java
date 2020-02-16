@@ -246,8 +246,16 @@ public class Robot extends TimedRobot {
       stick.update();
       buttonPanel.update();
       wheel.update();
-
       drive.arcadeDrive(xbox.getRawAxis(1), -xbox.getRawAxis(4));
+      if (xbox.getRawButtonPressed(1)){
+        Shooter.Shoot();
+
+
+      } else {
+        Shooter.StopShoot();
+
+      }
+      
 
   }
 
