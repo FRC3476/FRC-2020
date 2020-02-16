@@ -24,7 +24,7 @@ public static Intake getInstance() {
 
 //private final TelemetryServer telemetryServer = TelemetryServer.getInstance();
 private final Solenoid deploySolenoid;
-private final LazyTalonSRX intakeMotor;
+private final LazyTalonSRX IntakeMotor;
 private DeployState deployState = DeployState.UNDEPLOY;
 private IntakeState intakeState = IntakeState.OFF;
 private double allowOpenTime = 0;
@@ -36,13 +36,12 @@ private double allowOpenTime = 0;
 public Intake() {
         super(Constants.intakePeriod);
         deploySolenoid = new Solenoid(Constants.IntakeSolenoidId);
-        intakeMotor = new LazyTalonSRX(Constants.IntakeMasterId);
-        intakeMotor.setInverted(true);
-        intakeMotor.configPeakCurrentLimit(0);
-        intakeMotor.configPeakCurrentDuration(0);
-        //intakeMotor.configContinousCurrentLimit(25);
-        intakeMotor.enableCurrentLimit(true);
-
+        IntakeMotor = new LazyTalonSRX(Constants.IntakeMasterId);
+        IntakeMotor.setInverted(true);
+        IntakeMotor.configPeakCurrentLimit(0);
+        IntakeMotor.configPeakCurrentDuration(0);
+        IntakeMotor.configContinuousCurrentLimit(40);
+        IntakeMotor.enableCurrentLimit(true);
 }
 
 public DeployState getDeployState() {
@@ -57,13 +56,16 @@ public void setDeployState(final DeployState deployState) {
         synchronized (this) {
                 this.deployState = deployState;
         }
+        
 
         switch (deployState) {
                 case DEPLOY:
+                        setSpeed(0.64);
                         deploySolenoid.set(true);
                         allowOpenTime = Timer.getFPGATimestamp() + Constants.IntakeOpenTime;
                         break;
                 case UNDEPLOY:
+                        setSpeed(0.64);
                         deploySolenoid.set(false);
                         intakeState = IntakeState.OFF;
                         break;
@@ -78,11 +80,11 @@ public void setIntakeState(IntakeState intakeState) {
 }
 
 public void setSpeed(double speed) {
-        intakeMotor.set(ControlMode.PercentOutput, speed);
+        IntakeMotor.set(ControlMode.PercentOutput, speed);
 }
 
 public double getCurrent() {
-        return intakeMotor.getSupplyCurrent();
+        return IntakeMotor.getSupplyCurrent();
 }
 
 @Override
@@ -109,13 +111,13 @@ public void update() {
         switch(intakeState) {
                 case INTAKE:
                         if (allowOpenTime<Timer.getFPGATimestamp()){
-                                intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPowerIntake);
+                                IntakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPowerIntake);
                         }   
                 case OFF:
-                        intakeMotor.set(ControlMode.PercentOutput, 0);
+                        IntakeMotor.set(ControlMode.PercentOutput, 0);
                 case EJECT: 
                         if (allowOpenTime<Timer.getFPGATimestamp()){
-                                intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPowerEject);
+                                IntakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPowerEject);
                         }
 
         }
