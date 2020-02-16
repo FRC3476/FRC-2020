@@ -15,7 +15,7 @@ import frc.subsystem.Shooter.ShooterState;
 
 
 
-public class TrenchBlue implements Runnable {
+public class ShootOnly implements Runnable {
     Drive drive = Drive.getInstance();
     RobotTracker robotTracker = RobotTracker.getInstance();
     Intake intake = Intake.getInstance();
@@ -29,11 +29,11 @@ public class TrenchBlue implements Runnable {
 
 
 
-    public TrenchBlue(Translation2D start) {
+    public ShootOnly(Translation2D start) {
         RobotTracker.getInstance().setInitialTranslation(start);
     }
 
-    public TrenchBlue(Translation2D start, int side) {
+    public ShootOnly(Translation2D start, int side) {
         RobotTracker.getInstance().setInitialTranslation(start);
     }
 
@@ -57,39 +57,11 @@ public class TrenchBlue implements Runnable {
     public void run() {
 
         //Start 75 120
-        System.out.println("Trench Blue"); 
+        System.out.println("Only Shoot"); 
         
         vision.aim();
         while(!vision.isFinished()) if(isDead()) return;
         shooter.Shoot();
-
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
-
-        while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
-
-        shooter.StopShoot();
-
-        Path p1 = new Path(here());
-        p1.addPoint(new Translation2D(133, 208), 100);
-        p1.addPoint(new Translation2D(133,378), 100);
-        drive.setAutoPath(p1, false);
-
-        intake.setDeployState(DeployState.DEPLOY);
-        intake.setIntakeState(IntakeState.INTAKE);
-
-        while(!drive.isFinished()) if(isDead()) return;
-
-        intake.setDeployState(DeployState.UNDEPLOY);
-        Path p2 = new Path(here());
-        p2.addPoint(new Translation2D(133,378), 100);
-        
-        drive.setAutoPath(p1, false);
-        while(!drive.isFinished()) if(isDead()) return;
-
-        vision.aim();
-        while(!vision.isFinished()) if(isDead()) return;
-        shooter.Shoot();
-
 
         TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
 

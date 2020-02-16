@@ -42,7 +42,11 @@ public final class Constants {
 	public static final double kShooterI = 0.0;
 	public static final double kShooterD = 0.3;
 	public static final double ShooterGain = 1;
+	public static final int ShooterIntegralZone = 0;
+
 	public static final int ShooterMaxDeviation = 100;
+
+	public static final double TakeBackHalfGain = 2;
 
 	public static final int HoodMotorId = 4;
 	public static final double kHoodP = 0;
@@ -298,7 +302,7 @@ public final class Constants {
 
 	public static final int spinnerWheelReduction = 1/160;
 	public static final int spinnerSolenoidID = 34; 
-	public static final int ShooterIntegralZone = 0;
+	
 
 	public static final int LevelThreeColorOffset = 2;
 

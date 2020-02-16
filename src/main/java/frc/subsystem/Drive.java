@@ -4,6 +4,7 @@ package frc.subsystem;
 
 import frc.robot.Constants;
 import frc.utility.LazyTalonSRX;
+import frc.utility.NavXMPX_Gyro;
 import frc.utility.OrangeUtility;
 import frc.utility.Threaded;
 import frc.utility.control.RateLimiter;
@@ -20,7 +21,7 @@ import com.revrobotics.*;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -74,7 +75,7 @@ public class Drive extends Threaded {
 
 	private boolean drivePercentVbus;
 
-	private ADXRS450_Gyro gyroSensor;// = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+	private NavXMPX_Gyro gyroSensor;// = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
 	//private LazyTalonSRX leftTalon, rightTalon, leftSlaveTalon, leftSlave2Talon, rightSlaveTalon, rightSlave2Talon;
 	private PurePursuitController autonomousDriver;
 	private SynchronousPid turnPID;
@@ -97,7 +98,7 @@ public class Drive extends Threaded {
 
 	private Drive() {
 
-		gyroSensor = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+		gyroSensor = new NavXMPX_Gyro(SPI.Port.kOnboardCS0);
 
 		leftSpark = new LazyCANSparkMax(Constants.DriveLeftMasterId, MotorType.kBrushless);
 		leftSparkSlave = new LazyCANSparkMax(Constants.DriveLeftSlave1Id, MotorType.kBrushless);

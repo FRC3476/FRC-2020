@@ -23,6 +23,9 @@ public class Shooter {
     private static double prevError = 0; 
     private static int targetShooterSpeed;
     private static int targetHoodPosition;
+    private static double error = 0;
+    private static double prev_error = 0;
+    private static double shooterOutput = 0;
 
     public static ShooterState shooterState = ShooterState.OFF;
 
@@ -81,7 +84,17 @@ public class Shooter {
 
     public static void setSpeed(int speed) {
         targetShooterSpeed = speed;
-        shooterMaster.set(ControlMode.Velocity, speed);
+        prev_error = 
+        error = targetShooterSpeed - shooterMaster.getSelectedSensorVelocity(); // calculate the error;    
+        prev_error = error;           
+        shooterOutput += Constants.TakeBackHalfGain * error;                     // integrate the output;
+        if (error*prevError<0) { // if zero crossing,
+            shooterOutput = 0.5 * (shooterOutput + tbh);            // then Take Back Half
+            tbh = shooterOutput;                             // update Take Back Half variable
+            prev_error = error;                       // and save the previous error
+        }
+
+        shooterMaster.set(ControlMode.PercentOutput, shooterOutput);
     }
 
      public static void Shoot(){
@@ -95,8 +108,21 @@ public class Shooter {
 
 
     public void update(){
+
+        error = targetShooterSpeed - shooterMaster.getSelectedSensorVelocity();                // calculate the error;
+            shooterOutput += Constants.TakeBackHalfGain * error;                     // integrate the output;
+            if (error*prevError<0) { // if zero crossing,
+                shooterOutput = 0.5 * (shooterOutput + tbh);            // then Take Back Half
+                tbh = shooterOutput;                             // update Take Back Half variable
+                prev_error = error;                       // and save the previous error
+            }
+
+            shooterMaster.set(ControlMode.PercentOutput, shooterOutput);
+
+
         if (shooterState == ShooterState.SHOOTING) {
-            //TODO Take Back Half
+
+            
 
             hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
             
