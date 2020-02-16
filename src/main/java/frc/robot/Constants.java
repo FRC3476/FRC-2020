@@ -78,6 +78,10 @@ public final class Constants {
 	public static final double IntakeMotorPowerEject = -0.5;//Testing number
 	public static final double IntakeOpenTime = 0.5;
 	
+	//Hopper Constants
+	public static final int FrontHopperMotorId = 0; //random number
+	public static final int SnailMotorId = 0; //random number
+	
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;
 	public static final int BallIntakeSolenoidId = 7;
@@ -305,6 +309,7 @@ public final class Constants {
 	//Update Period Constants
 	public static final int intakePeriod = 50;
 	public static final int controlPanelPeriod = 50;
+	public static final int hopperPeriod = 50;
 
 	
 
