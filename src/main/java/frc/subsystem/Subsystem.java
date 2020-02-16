@@ -34,7 +34,7 @@ public abstract class Subsystem implements Runnable {
             logReader = new FileReader(fileName);
             
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 

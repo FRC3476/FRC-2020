@@ -115,7 +115,7 @@ public final class Constants {
 	public static final double TrackRadius = -12;
 	public static final double WheelDiameter = 6.0; //6.09; //expiermental
 	public static final double MinTurningRadius = 40;
-	public static final double MinPathSpeed = 20;
+	public static final double MinPathSpeed = 20; 
 	public static final double MaxPathSpeed = 120; //120
 	public static final double MinLookAheadDistance = 14;
 	public static final double MaxLookAheadDistance = 30;
@@ -124,8 +124,8 @@ public final class Constants {
 	public static final int TimeoutMs = 10;
 	
 	// Drive
-	public static final double kDriveInchesPerSecPerRPM = 2 * Math.PI/60d * Constants.WheelDiameter/2d
-	* 22d / 62d / 3d;
+	public static final double kDriveInchesPerSecPerRPM = Math.PI* Constants.WheelDiameter/60d/10d;
+	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
 	public static final double maxTurnError = 2;
 	public static final double maxPIDStopSpeed = 8;
 	public static final double DriveHighSpeed = 190;

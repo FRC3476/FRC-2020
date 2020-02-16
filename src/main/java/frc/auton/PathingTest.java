@@ -30,16 +30,32 @@ public class PathingTest extends TemplateAuto implements Runnable {
         
         
         Path p1 = new Path(here());
-        p1.addPoint(new Translation2D(24, 12), 10); 
-        p1.addPoint(new Translation2D(36,-12), 10);
-
+        p1.addPoint(new Translation2D(40,0), 20); 
+        //p1.addPoint(new Translation2D(36,0), 5);
 
         drive.setAutoPath(p1, false);
+        
 
         while(!drive.isFinished()){
-            System.out.println(drive.getGyroAngle());
+            System.out.println(drive.getSpeed());
             if(isDead()) return;
         } 
+
+        
+        Path p2 = new Path(here());
+        p2.addPoint(new Translation2D(0,0), 20);
+
+        drive.setAutoPath(p2, true);
+        
+
+        return;
+        // drive.setAutoPath(p2, true);
+
+        // while(!drive.isFinished()){
+        //     System.out.println(drive.getGyroAngle());
+        //     if(isDead()) return;
+        //}
+        
         
     }
 

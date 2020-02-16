@@ -53,8 +53,8 @@ public class PurePursuitController {
 			return new AutoDriveSignal(new DriveSignal(0, 0), true);
 		}
 		double robotSpeed = speedProfiler.update(data.maxSpeed, data.remainingDist);
-		if (robotSpeed < 20) {
-			robotSpeed = 20;
+		if (robotSpeed < Constants.MinPathSpeed) {
+			robotSpeed = Constants.MinPathSpeed;
 		}
 		Translation2D robotToLookAhead = getRobotToLookAheadPoint(robotPose, data.lookAheadPoint);
 		//System.out.println("desired point " + robotToLookAhead.getX() + ", " + robotToLookAhead.getY());
