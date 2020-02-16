@@ -98,7 +98,7 @@ public class Drive extends Threaded {
 
 	private Drive() {
 
-		gyroSensor = new NavXMPX_Gyro(SPI.Port.kOnboardCS0);
+		gyroSensor = new NavXMPX_Gyro(SPI.Port.kMXP);
 
 		leftSpark = new LazyCANSparkMax(Constants.DriveLeftMasterId, MotorType.kBrushless);
 		leftSparkSlave = new LazyCANSparkMax(Constants.DriveLeftSlave1Id, MotorType.kBrushless);
@@ -106,18 +106,16 @@ public class Drive extends Threaded {
 		rightSparkSlave = new LazyCANSparkMax(Constants.DriveRightSlave1Id, MotorType.kBrushless);
 		//rightSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
 		//leftSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
-		leftSpark.setInverted(false);
-		rightSpark.setInverted(true);
-		leftSparkSlave.setInverted(false);
-		rightSparkSlave.setInverted(true);
-
-
-		
+		leftSpark.setInverted(true);
+		rightSpark.setInverted(false);
+		leftSparkSlave.setInverted(true);
+		rightSparkSlave.setInverted(false);
 
 		leftSparkPID = leftSpark.getPIDController();
 		rightSparkPID = rightSpark.getPIDController();
 		leftSparkEncoder = leftSpark.getEncoder();
 		rightSparkEncoder = rightSpark.getEncoder();
+
 
 	
 		//leftSparkPID.
@@ -269,13 +267,15 @@ public class Drive extends Threaded {
 
 		//	System.out.println("left " + (leftMotorSpeed - getLeftSpeed() ));
 			//System.out.println("right " + (rightMotorSpeed - getRightSpeed() ));
-
+			System.out.println("left " + leftMotorSpeed + " right " + rightMotorSpeed);
 			setWheelVelocity(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		}
 		//System.out.println("left motor speed " + leftMotorSpeed + " right motor speed " + rightMotorSpeed);
 		//if(teleopstart) toPrint += (Timer.getFPGATimestamp() - time) + " 12\n";
 		//System.out.print(toPrint);
 		teleopstart = false;
+		//System.out.println("Left: " + moveValue + ", " + leftSparkEncoder.getVelocity());
+		//System.out.println("Right: " + moveValue + ", " + rightSparkEncoder.getVelocity());
 	}
 
 	public void calibrateGyro() {
@@ -455,12 +455,14 @@ public class Drive extends Threaded {
 		leftMotorSpeed = moveValue + rotateValue;
 		rightMotorSpeed = moveValue - rotateValue;
 		if (drivePercentVbus) {
+
 			setWheelPower(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		} else {
 			leftMotorSpeed = moveValue + rotateValue;
 			rightMotorSpeed = moveValue - rotateValue;
 			leftMotorSpeed *= Constants.DriveHighSpeed;
 			rightMotorSpeed *= Constants.DriveHighSpeed;
+			System.out.println(leftMotorSpeed +" , " + rightMotorSpeed);
 			setWheelVelocity(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		}
 	}
@@ -473,6 +475,9 @@ public class Drive extends Threaded {
 		rightSpark.setIdleMode(IdleMode.kCoast);
 		leftSparkSlave.setIdleMode(IdleMode.kCoast);
 		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+
+		// leftSparkEncoder.setInverted(true);
+		// rightSparkEncoder.setInverted(true);
 		/*
 		leftSlaveTalon.set(ControlMode.Follower, Constants.DriveLeftMasterId);
 		leftSlave2Talon.set(ControlMode.Follower, Constants.DriveLeftMasterId);
@@ -523,15 +528,13 @@ public class Drive extends Threaded {
 		return leftTalon.getSelectedSensorPosition(0) / Constants.EncoderTicksPerRotation * Constants.WheelDiameter
 				* Math.PI * 22d / 62d / 3d;
 		*/
-		return leftSparkEncoder.getPosition() * Constants.WheelDiameter
-		* Math.PI * 22d / 62d / 3d;
+		return leftSparkEncoder.getPosition() * Constants.kDriveInchesPerRevolution;
 	}
 
 	public double getRightDistance() {
 		//return rightTalon.getSelectedSensorPosition(0) / Constants.EncoderTicksPerRotation * Constants.WheelDiameter
 		//		* Math.PI * 22d / 62d / 3d;
-		return rightSparkEncoder.getPosition() * Constants.WheelDiameter
-		* Math.PI * 22d / 62d / 3d;
+		return rightSparkEncoder.getPosition() * Constants.kDriveInchesPerRevolution;
 	}
 
 	public double getSpeed() {
@@ -542,13 +545,11 @@ public class Drive extends Threaded {
 	}
 
 	public double getLeftSpeed() {
-		return leftSparkEncoder.getVelocity()  * 2 * Math.PI/60d * Constants.WheelDiameter/2d
-		* 22d / 62d / 3d;
+		return leftSparkEncoder.getVelocity()  * Constants.kDriveInchesPerSecPerRPM;
 	}
 
 	public double getRightSpeed() {
-		return rightSparkEncoder.getVelocity()  * 2 * Math.PI/60d * Constants.WheelDiameter/2d
-		* 22d / 62d / 3d;
+		return rightSparkEncoder.getVelocity()  * Constants.kDriveInchesPerSecPerRPM;
 	}
 
 	public double scaleJoystickValues(double rawValue, int profile) {
@@ -587,11 +588,13 @@ public class Drive extends Threaded {
 		//rightTalon.set(ControlMode.PercentOutput, setVelocity.leftVelocity);
 		//System.out.println(leftSpark.getLastError());
 		
-		leftSpark.set(setVelocity.leftVelocity);
-		leftSparkSlave.set(setVelocity.leftVelocity); //tmp
 
-		//leftSparkSlave.set(setVelocity.leftVelocity);
-		//rightSparkSlave.set(setVelocity.rightVelocity);
+		//System.out.println(setVelocity.leftVelocity + ", " + setVelocity.rightVelocity);
+
+		
+		leftSpark.set(setVelocity.leftVelocity);
+		leftSparkSlave.set(setVelocity.leftVelocity); //tmp //TODO 
+
 		rightSpark.set(setVelocity.rightVelocity);
 		rightSparkSlave.set(setVelocity.rightVelocity); //tmp
 
@@ -632,15 +635,20 @@ public class Drive extends Threaded {
 		 //System.out.println("Left: " + setVelocity.leftVelocity);
 		 //+ getLeftSpeed());
 		// inches per sec to rotations per min
-		double leftSetpoint = (setVelocity.leftVelocity)/(2 * Math.PI * Constants.WheelDiameter/2d) * 60d *
-				 (62d / 22d) * 3d;
-		double rightSetpoint = (setVelocity.rightVelocity)/(2 * Math.PI * Constants.WheelDiameter/2d) * 60d *
-		(62d / 22d) * 3d;
+		double leftSetpoint = (setVelocity.leftVelocity)/Constants.kDriveInchesPerSecPerRPM;
+		double rightSetpoint = (setVelocity.rightVelocity)/Constants.kDriveInchesPerSecPerRPM;
+
+
+
 		//leftTalon.set(ControlMode.Velocity, leftSetpoint);
 		//rightTalon.set(ControlMode.Velocity, rightSetpoint);
+
+
+		
 		leftSparkPID.setReference(leftSetpoint, ControlType.kVelocity);
 		rightSparkPID.setReference(rightSetpoint, ControlType.kVelocity);
-		//System.out.println("desired left rpm: " +setVelocity.leftVelocity + "desired right rpm: " + setVelocity.rightVelocity);
+
+		System.out.println("desired left rpm: " + rightSetpoint + " desired right rpm: " + leftSetpoint);
 		//System.out.println("actual left rpm: " + getLeftSpeed() + " actual right rpm: " + getRightSpeed());
 		//System.out.println((leftSpark.getStickyFaults() + " " + rightSpark.getStickyFaults()) );
 

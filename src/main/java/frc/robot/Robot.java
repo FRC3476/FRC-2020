@@ -25,6 +25,7 @@ import java.util.*;
 import frc.utility.ThreadScheduler;
 import frc.utility.Controller;
 import frc.utility.JetsonUDP;
+import frc.utility.NavXMPX_Gyro;
 import frc.utility.VisionTarget;
 
 
@@ -205,7 +206,6 @@ public class Robot extends TimedRobot {
   @Override 
   public void teleopInit() {
 
-    drive.setSimpleDrive(true);
   
 
     jetsonUDP.changeExp(true);
@@ -234,7 +234,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-      System.out.println(drive.getGyroAngle());
+      //System.out.println(drive.getGyroAngle());
 
       ArrayList<Double> times = new ArrayList<Double>();
       
@@ -246,7 +246,7 @@ public class Robot extends TimedRobot {
       stick.update();
       buttonPanel.update();
       wheel.update();
-      drive.arcadeDrive(xbox.getRawAxis(1), -xbox.getRawAxis(4));
+      drive.arcadeDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4));
       if (xbox.getRawButtonPressed(1)){
         Shooter.Shoot();
 

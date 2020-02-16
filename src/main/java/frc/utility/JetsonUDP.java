@@ -53,7 +53,7 @@ public class JetsonUDP extends Threaded {
                 Thread.sleep(1000);
               } catch(Exception e) {
 
-                System.out.println(e);
+                //System.out.println(e);
               };  
           }
         }
@@ -75,7 +75,7 @@ public class JetsonUDP extends Threaded {
      // System.out.println("sending stuff");
       socket.send(packet);
     } catch(Exception e) {
-      System.out.println(e);
+      //System.out.println(e);
     };  
   }
 
