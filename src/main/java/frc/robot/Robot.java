@@ -217,8 +217,8 @@ public class Robot extends TimedRobot {
 
   @Override 
   public void teleopInit() {
-
-  
+    shooter.start();
+    shooter.setSpeed(0);
 
     jetsonUDP.changeExp(true);
     
@@ -234,6 +234,7 @@ public class Robot extends TimedRobot {
     //manipulator.setManipulatorIntakeState(Manipulator.ManipulatorIntakeState.OFF);
     firstTeleopRun = true;
     //drive.setTeleop();
+    
     
     
   }
@@ -261,13 +262,13 @@ public class Robot extends TimedRobot {
       drive.arcadeDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4));
 
       if (xbox.getRisingEdge(2)){
-        //shooter.setSpeed(3000);
-        shooter.shooterMaster.set(ControlMode.PercentOutput, 0.05);
+        shooter.setSpeed(6000);
+        //shooter.shooterMaster.set(ControlMode.PercentOutput, 0.05);
 
       } 
       if (xbox.getRisingEdge(3)){
-        //shooter.setSpeed(0);
-        shooter.shooterMaster.set(ControlMode.PercentOutput, 0);
+        shooter.setSpeed(0);
+        //shooter.shooterMaster.set(ControlMode.PercentOutput, 0);
       }
 
       if (xbox.getRisingEdge(1)){
@@ -305,6 +306,7 @@ public class Robot extends TimedRobot {
 
     
     scheduler.pause();
+    shooter.pause();
   }
   
   @Override

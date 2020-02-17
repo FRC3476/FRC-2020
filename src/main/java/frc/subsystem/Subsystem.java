@@ -54,6 +54,10 @@ public abstract class Subsystem implements Runnable {
         signal = ThreadSignal.DEAD;
     }
 
+    public void start() {
+        signal = ThreadSignal.ALIVE;
+    }
+
     public abstract void update();
 
     

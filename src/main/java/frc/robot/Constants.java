@@ -25,13 +25,13 @@ public final class Constants {
 	//public static final int DriveRightSlave2Id = 13;//not currently used
 
 	//Shooter constants
-	public final static int ShooterMasterId = 20;
-	public final static int ShooterSlaveId1 = 21;
-	public final static int ShooterSlaveId2 = 22;
-	public final static int ShooterSlaveId3 = 23;
+	public final static int ShooterMasterId = 30;
+	public final static int ShooterSlaveId1 = 31;
+	public final static int ShooterSlaveId2 = 32;
+	public final static int ShooterSlaveId3 = 33;
 	
 
-	public static final int FeederMotorId = 15;
+	public static final int FeederMotorId = 34;
 	public static final double kFeederP = 0.40;
 	public static final double kFeederI = 0.0;
 	public static final double kFeederD = 0.3;
@@ -43,11 +43,12 @@ public final class Constants {
 	public static final double kShooterD = 0.3;
 	public static final double ShooterGain = 1;
 	public static final int ShooterIntegralZone = 0;
-	public static final int ShooterPeriod = -1;//10;
+	public static final int ShooterPeriod = 10;
+	public static final double ShooterRPMPerTicksPer100ms = 600d/2048d;
 
 	public static final int ShooterMaxDeviation = 100;
 
-	public static final double TakeBackHalfGain = 1.25e-4;
+	public static final double TakeBackHalfGain = 2.5e-5;
 
 	public static final int HoodMotorId = 4;
 	public static final double kHoodP = 0;
@@ -75,7 +76,7 @@ public final class Constants {
 
 	//Intake Constants
 	public static final int IntakeMasterId = 0;//Anthony number
-	public static final int IntakeSolenoidId = -1;//Crashing number
+	public static final int IntakeSolenoidId = 5;//Crashing number
 	public static final int IntakeMotorPowerIntake = 1; //Testing number
 	public static final double IntakeMotorPowerEject = -0.5;//Testing number
 	public static final double IntakeOpenTime = 0.5;
@@ -303,7 +304,7 @@ public final class Constants {
 	public static final double colorConfirmCycles = 20;
 
 	public static final int spinnerWheelReduction = 1/160;
-	public static final int spinnerSolenoidID = 34; 
+	public static final int spinnerSolenoidID = 7; 
 	
 
 	public static final int LevelThreeColorOffset = 2;
