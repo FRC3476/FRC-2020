@@ -5,7 +5,7 @@ import frc.utility.Threaded;
 import frc.utility.control.*;
 import frc.utility.math.*;
 
-
+@SuppressWarnings("unused")
 public class TemplateAuto implements Runnable { 
     Drive drive = Drive.getInstance();
     Elevator elevator = Elevator.getInstance();

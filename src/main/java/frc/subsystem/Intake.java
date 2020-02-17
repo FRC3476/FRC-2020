@@ -93,6 +93,11 @@ public void selfTest() {
 	
 }
 
+
+
+
+
+
 @Override
 public void logData() {
 	// TODO Auto-generated method stub

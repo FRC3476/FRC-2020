@@ -15,7 +15,7 @@ import frc.subsystem.Intake.DeployState;
 import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.Shooter.ShooterState;
 
-
+@SuppressWarnings("unused")
 public class MiddleScoring implements Runnable { 
     Drive drive = Drive.getInstance();
     Shooter shooter = Shooter.getInstance();
@@ -61,11 +61,11 @@ public class MiddleScoring implements Runnable {
 
         vision.aim();
         while(!vision.isFinished()) if(isDead()) return;
-        Shooter.Shoot();
+        //shooter.Shoot();
 
         TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
-        Shooter.StopShoot();
+        //shooter.StopShoot();
 
         Path p1 = new Path(here());
         p1.addPoint(new Translation2D(75, -194), 60); 
@@ -89,11 +89,11 @@ public class MiddleScoring implements Runnable {
         vision.aim();
 
         while(!vision.isFinished()) if(isDead()) return;
-        Shooter.Shoot();
+        //shooter.Shoot();
 
         TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
 
         while(Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
-        Shooter.StopShoot();
+        //shooter.StopShoot();
     }
 }

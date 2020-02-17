@@ -14,7 +14,7 @@ import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.Shooter.ShooterState;
 
 
-
+@SuppressWarnings("unused")
 public class ShootOnly implements Runnable {
     Drive drive = Drive.getInstance();
     RobotTracker robotTracker = RobotTracker.getInstance();
@@ -61,13 +61,13 @@ public class ShootOnly implements Runnable {
         
         vision.aim();
         while(!vision.isFinished()) if(isDead()) return;
-        shooter.Shoot();
+        //shooter.Shoot();
 
         TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
 
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 
-        shooter.StopShoot();
+        //shooter.StopShoot();
 
         
     }

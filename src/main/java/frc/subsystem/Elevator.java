@@ -14,7 +14,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.*;
-
+@SuppressWarnings("unused")
 public class Elevator extends Threaded {
 
 	public enum ElevatorHeight {

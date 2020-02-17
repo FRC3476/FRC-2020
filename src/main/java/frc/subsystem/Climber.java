@@ -15,8 +15,15 @@ public class Climber extends Subsystem{
     private RateLimiter limiter;
     private boolean hookingOn = false; 
 
-    Climber(int period) {
-        super(period);
+    private static final Climber instance = new Climber();
+	
+	public static Climber getInstance() {
+		return instance;
+	}
+
+
+    Climber() {
+        super(Constants.ClimberPeriod);
         ClimberMotor = new LazyTalonFX(Constants.ClimberMotorID);
         ClimberMotor.config_kP(0, Constants.kClimberP, Constants.TimeoutMs);
         ClimberMotor.config_kI(0, Constants.kClimberI, Constants.TimeoutMs);

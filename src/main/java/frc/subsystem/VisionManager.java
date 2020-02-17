@@ -7,7 +7,7 @@ import frc.robot.Constants;
 import frc.utility.Threaded;
 import frc.subsystem.*;
 
-
+@SuppressWarnings("unused")
 public class VisionManager extends Threaded { 
    
     Elevator elevator = Elevator.getInstance();

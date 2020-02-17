@@ -14,6 +14,7 @@ import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.Shooter.ShooterState;
 
 
+@SuppressWarnings("unused")
 
 public class TrenchBlue implements Runnable {
     Drive drive = Drive.getInstance();
@@ -61,13 +62,13 @@ public class TrenchBlue implements Runnable {
         
         vision.aim();
         while(!vision.isFinished()) if(isDead()) return;
-        shooter.Shoot();
+        //shooter.Shoot();
 
         TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
 
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 
-        shooter.StopShoot();
+        //shooter.StopShoot();
 
         Path p1 = new Path(here());
         p1.addPoint(new Translation2D(133, 208), 100);
@@ -88,14 +89,14 @@ public class TrenchBlue implements Runnable {
 
         vision.aim();
         while(!vision.isFinished()) if(isDead()) return;
-        shooter.Shoot();
+        //shooter.Shoot();
 
 
         TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
 
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 
-        shooter.StopShoot();
+        //shooter.StopShoot();
 
         
     }

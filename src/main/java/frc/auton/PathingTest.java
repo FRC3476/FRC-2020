@@ -14,6 +14,7 @@ import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.Shooter.ShooterState;
 
 
+@SuppressWarnings("unused")
 
 public class PathingTest extends TemplateAuto implements Runnable {
     public PathingTest(int side, double startX) { 

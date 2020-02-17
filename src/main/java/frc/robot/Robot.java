@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 import java.util.concurrent.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import java.util.*;
 
 import frc.utility.ThreadScheduler;
@@ -37,10 +39,12 @@ import frc.utility.VisionTarget;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
+@SuppressWarnings("unused")
+
 public class Robot extends TimedRobot {
   public static final boolean profileTeleop = true;
 
-  Drive drive = Drive.getInstance();
+  
   //CollisionManager collisionManager = CollisionManager.getInstance();
   public Controller xbox = new Controller(0);
   public Controller wheel = new Controller(3);
@@ -49,8 +53,15 @@ public class Robot extends TimedRobot {
   public Controller buttonPanel = new Controller(2);
  
   JetsonUDP jetsonUDP = JetsonUDP.getInstance();
-  
+  Drive drive = Drive.getInstance();
   RobotTracker robotTracker = RobotTracker.getInstance();
+  Shooter shooter = Shooter.getInstance();
+  Climber climber = Climber.getInstance();
+  Hopper hopper = Hopper.getInstance();
+  Intake intake = Intake.getInstance();
+  VisionManager visionManager = VisionManager.getInstance();
+  ControlPanel controlPanel = ControlPanel.getInstance();
+
 
   ExecutorService executor = Executors.newFixedThreadPool(4);
   ThreadScheduler scheduler = new ThreadScheduler();
@@ -72,6 +83,7 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
+  
   @Override
   public void robotInit() {
     Thread.currentThread().setPriority(5);
@@ -247,12 +259,24 @@ public class Robot extends TimedRobot {
       buttonPanel.update();
       wheel.update();
       drive.arcadeDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4));
-      if (xbox.getRawButtonPressed(1)){
-        Shooter.Shoot();
 
+      if (xbox.getRisingEdge(2)){
+        //shooter.setSpeed(3000);
+        shooter.shooterMaster.set(ControlMode.PercentOutput, 0.05);
 
-      } else {
-        Shooter.StopShoot();
+      } 
+      if (xbox.getRisingEdge(3)){
+        //shooter.setSpeed(0);
+        shooter.shooterMaster.set(ControlMode.PercentOutput, 0);
+      }
+
+      if (xbox.getRisingEdge(1)){
+        shooter.setFiring(true);
+
+      }
+
+      if (xbox.getFallingEdge(1)){
+        shooter.setFiring(false);
 
       }
       

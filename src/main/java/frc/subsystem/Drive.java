@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import frc.utility.LazyCANSparkMax;
 
+@SuppressWarnings("unused")
 public class Drive extends Threaded {
 
 	public enum DriveState {
