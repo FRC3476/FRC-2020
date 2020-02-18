@@ -60,10 +60,10 @@ public class Shooter extends Subsystem{
 
     public void configPID(){
         //Set forward directions
-        shooterMaster.setInverted(false);
-        shooterSlave1.setInverted(false);
-        shooterSlave2.setInverted(true);
-        shooterSlave3.setInverted(true);
+        shooterMaster.setInverted(true);
+        shooterSlave1.setInverted(true);
+        shooterSlave2.setInverted(false);
+        shooterSlave3.setInverted(false);
         
         //Make slave motors follow the master
         shooterSlave1.follow(shooterMaster);
@@ -105,7 +105,7 @@ public class Shooter extends Subsystem{
 
     public synchronized void update(){
 
-
+        System.out.println("out: " + shooterOutput);
 
         shooterMaster.set(ControlMode.PercentOutput, shooterOutput);
         
@@ -113,14 +113,15 @@ public class Shooter extends Subsystem{
         switch(shooterState){
             case SPINNING: 
 
-                //Take Back Half Controler
-                flywheelError = targetShooterSpeed - shooterMaster.getSelectedSensorVelocity();                // calculate the error;
+                flywheelError = targetShooterSpeed - getRPM();                // calculate the error;
                 shooterOutput += Constants.TakeBackHalfGain * flywheelError;                     // integrate the output;
                 if (flywheelError*prevError<0) { // if zero crossing,
                     shooterOutput = 0.5 * (shooterOutput + tbh);            // then Take Back Half
                     tbh = shooterOutput;                             // update Take Back Half variable
                     prev_error = flywheelError;                       // and save the previous error
                 }
+
+                System.out.println("error: " +  flywheelError);
                 
 
                 hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
@@ -203,6 +204,13 @@ public class Shooter extends Subsystem{
     @Override
     public void logData() {
         // TODO Auto-generated method stub
+
+    }
+
+
+    private double getRPM(){
+        return shooterMaster.getSelectedSensorVelocity() * Constants.ShooterRPMPerTicksPer100ms;
+
 
     }
 

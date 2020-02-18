@@ -463,7 +463,7 @@ public class Drive extends Threaded {
 			rightMotorSpeed = moveValue - rotateValue;
 			leftMotorSpeed *= Constants.DriveHighSpeed;
 			rightMotorSpeed *= Constants.DriveHighSpeed;
-			System.out.println(leftMotorSpeed +" , " + rightMotorSpeed);
+			//System.out.println(leftMotorSpeed +" , " + rightMotorSpeed);
 			setWheelVelocity(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		}
 	}
@@ -649,7 +649,7 @@ public class Drive extends Threaded {
 		leftSparkPID.setReference(leftSetpoint, ControlType.kVelocity);
 		rightSparkPID.setReference(rightSetpoint, ControlType.kVelocity);
 
-		System.out.println("desired left rpm: " + rightSetpoint + " desired right rpm: " + leftSetpoint);
+		//System.out.println("desired left rpm: " + rightSetpoint + " desired right rpm: " + leftSetpoint);
 		//System.out.println("actual left rpm: " + getLeftSpeed() + " actual right rpm: " + getRightSpeed());
 		//System.out.println((leftSpark.getStickyFaults() + " " + rightSpark.getStickyFaults()) );
 
@@ -745,13 +745,12 @@ public class Drive extends Threaded {
 		//System.out.println(RobotTracker.getInstance().getOdometry().rotationMat.getDegrees());
 		//System.out.println("error: " + error);
 		deltaSpeed = turnPID.update(error);
-		deltaSpeed = Math.copySign(
-				OrangeUtility.coercedNormalize(Math.abs(deltaSpeed), 0, 180, 0, Constants.DriveHighSpeed), deltaSpeed);
+		//deltaSpeed = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(deltaSpeed), 0, 180, 0, Constants.DriveHighSpeed), deltaSpeed);
 		if (Math.abs(error) < Constants.maxTurnError && deltaSpeed < Constants.maxPIDStopSpeed) {
 			setWheelVelocity(new DriveSignal(0, 0));
 			synchronized (this) {
 				driveState = DriveState.DONE;
-			} 
+			}
 		} else {
 			setWheelVelocity(new DriveSignal(-deltaSpeed, deltaSpeed));
 		}
