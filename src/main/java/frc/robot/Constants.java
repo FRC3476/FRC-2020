@@ -36,7 +36,7 @@ public final class Constants {
 	public static final double kFeederI = 0.0;
 	public static final double kFeederD = 0.3;
 	public static final int FeederIntegralZone = 1000;
-	public static final int FeederMotorSpeed = 1000;
+	public static final double FeederMotorSpeed = 1;
 
 	public static final double kShooterP = 0.40;
 	public static final double kShooterI = 0.0;
@@ -54,11 +54,15 @@ public final class Constants {
 	public static final double kHoodI = 0;
 	public static final double kHoodD = 0;
 	public static final double kHoodF = 0;
-	public static final int HoodRotationsConversion = (12/60)*(20/5760);//100;
+	public static final double HoodRotationsPerDegree = (12/60)*(20/5760);//100;
 	public static final int HoodMaxDeviation = 5;
-
+	public static final double HoodHomingSpeed = -0.05;
+	public static final double HoodPIDSpeedMax = 0.05;
+	public static final double hoodMotorStalledAmps = 5;
 	public final static double AutoShooterOnTime = 3;
-
+	public final static boolean HoodMotorDirection = false; //True is Inverted 
+	public final static double MaxHoodReleaseAngle = 0;
+	public final static double MinHoodReleaseAngle = 100;
 
 	public static final int HatchIntakeMotorId = 100;
 	public static final int HatchIntakeDeployMotorId = 101;

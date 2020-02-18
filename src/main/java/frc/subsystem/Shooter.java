@@ -10,7 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.utility.LazyCANSparkMax;
 import frc.utility.LazyTalonFX;
 import frc.utility.LazyTalonSRX;
-
+import frc.utility.control.SynchronousPid;
 import frc.robot.Constants;
 
 public class Shooter extends Subsystem{
@@ -22,14 +22,16 @@ public class Shooter extends Subsystem{
     private double tbh = 0;
     private double prevError = 0; 
     private int targetShooterSpeed;
-    private int targetHoodPosition;
+    private double targetHoodPosition;
     private double flywheelError = 0;
     private double prev_error = 0;
     private double shooterOutput = 0;
     private boolean firing = false;
-    @SuppressWarnings("unused")
     public static ShooterState shooterState = ShooterState.OFF;
+    //private SynchronousPid turnPID;
+    
 
+    @SuppressWarnings("unused")
     public Shooter(){
         super(Constants.ShooterPeriod);
         //Shooter Talon ports
@@ -40,7 +42,9 @@ public class Shooter extends Subsystem{
         feederMotor = new LazyTalonSRX(Constants.FeederMotorId);
         hoodMotor = new LazyCANSparkMax(Constants.HoodMotorId,MotorType.kBrushless);
         hoodEncoder = hoodMotor.getEncoder();
-
+        
+        
+        hoodMotor.setInverted(Constants.HoodMotorDirection);
         configPID();
     }
 
@@ -51,7 +55,7 @@ public class Shooter extends Subsystem{
 	}
 
     public enum ShooterState {
-        OFF, SPINNING
+        OFF, SPINNING, HOMING
     }
 
     public void configPID(){
@@ -66,11 +70,12 @@ public class Shooter extends Subsystem{
         shooterSlave2.follow(shooterMaster);
         shooterSlave2.follow(shooterMaster);
 
-        //Config PID constants
-        shooterMaster.config_kP(0, Constants.kShooterP, Constants.TimeoutMs);
-		shooterMaster.config_kI(0, Constants.kShooterI, Constants.TimeoutMs);
-        shooterMaster.config_kD(0, Constants.kShooterD, Constants.TimeoutMs);
-        shooterMaster.config_IntegralZone(0, Constants.ShooterIntegralZone, Constants.TimeoutMs);
+        //Config PID constansts
+        // unused
+        // shooterMaster.config_kP(0, Constants.kShooterP, Constants.TimeoutMs);
+		// shooterMaster.config_kI(0, Constants.kShooterI, Constants.TimeoutMs);
+        // shooterMaster.config_kD(0, Constants.kShooterD, Constants.TimeoutMs);
+        // shooterMaster.config_IntegralZone(0, Constants.ShooterIntegralZone, Constants.TimeoutMs);
 
         feederMotor.config_kP(0, Constants.kFeederP, Constants.TimeoutMs);
         feederMotor.config_kI(0, Constants.kFeederI, Constants.TimeoutMs);
@@ -81,7 +86,7 @@ public class Shooter extends Subsystem{
         hoodPID.setP(Constants.kHoodP, 0);
 		hoodPID.setD(Constants.kHoodD, 0);
 		hoodPID.setFF(Constants.kHoodF,0);
-		hoodPID.setOutputRange(-1, 1);
+		hoodPID.setOutputRange(-Constants.HoodPIDSpeedMax, Constants.HoodPIDSpeedMax);
     }
 
     public synchronized void setSpeed(int speed) {
@@ -107,6 +112,8 @@ public class Shooter extends Subsystem{
 
         switch(shooterState){
             case SPINNING: 
+
+                //Take Back Half Controler
                 flywheelError = targetShooterSpeed - shooterMaster.getSelectedSensorVelocity();                // calculate the error;
                 shooterOutput += Constants.TakeBackHalfGain * flywheelError;                     // integrate the output;
                 if (flywheelError*prevError<0) { // if zero crossing,
@@ -117,6 +124,8 @@ public class Shooter extends Subsystem{
                 
 
                 hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
+
+
                 boolean feederOn = false;
                 //check if motor has sped up
                 if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
@@ -134,27 +143,55 @@ public class Shooter extends Subsystem{
                 }
 
                 if (feederOn){
-                    feederMotor.set(ControlMode.Velocity, Constants.FeederMotorSpeed);
+                    feederMotor.set(ControlMode.PercentOutput, Constants.FeederMotorSpeed);
                 } else{
-                    feederMotor.set(ControlMode.Velocity, 0 );
+                    feederMotor.set(ControlMode.PercentOutput, 0 );
 
                 }
                 break;
 
             case OFF:
-                feederMotor.set(ControlMode.Velocity, 0);
+                feederMotor.set(ControlMode.PercentOutput, 0);
                 hoodPID.setReference(0, ControlType.kPosition);
 
                 shooterOutput = 0;
                 break;
+
+
+            case HOMING:
+                feederMotor.set(ControlMode.PercentOutput, 0);
+                shooterOutput = 0;
+
+                hoodMotor.set(Constants.HoodHomingSpeed);
+                if (hoodMotor.getOutputCurrent() > Constants.hoodMotorStalledAmps){
+                    hoodEncoder.setPosition(0);
+                    shooterState = ShooterState.OFF;
+                    hoodPID.setReference(0, ControlType.kPosition);
+                    targetHoodPosition = 0;
+                }
+                break;
+
+                
         }
 
 
      }
 
-    public synchronized void setEjectAngle(int angle) {
+    public synchronized void setHoodAngle(double angle) {
         //hoodMotor.setPosition();
-        targetHoodPosition = angle*Constants.HoodRotationsConversion;
+        if(angle < Constants.MinHoodReleaseAngle){
+            angle= Constants.MinHoodReleaseAngle;
+        }
+
+        if (angle > Constants.MaxHoodReleaseAngle){
+            angle = Constants.MaxHoodReleaseAngle;
+        }
+        targetHoodPosition = (Constants.MaxHoodReleaseAngle - angle) * Constants.HoodRotationsPerDegree;
+    }
+
+    public synchronized void homeHood(){
+        shooterState = ShooterState.HOMING;
+
     }
 
     @Override
