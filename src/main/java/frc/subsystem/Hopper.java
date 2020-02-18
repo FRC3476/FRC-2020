@@ -5,10 +5,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class Hopper extends Subsystem {
     public enum  FrontMotorState {
-        FRONTACTIVE, FRONTREVERSE, FRONTINACTIVE
+        ACTIVE, REVERSE, INACTIVE
     }
     public enum SnailMotorState {
-        SNAILACTIVE, SNAILREVERSE, SNAILINACTIVE 
+        SNAILACTIVE, REVERSE, INACTIVE 
     }
     
     public static final Hopper instance = new Hopper();
@@ -18,8 +18,8 @@ public class Hopper extends Subsystem {
 
 private final LazyTalonSRX FrontHopperMotor;
 private final LazyTalonSRX SnailMotor;
-private FrontMotorState frontMotorState = FrontMotorState.FRONTINACTIVE;
-private SnailMotorState snailMotorState = SnailMotorState.SNAILINACTIVE;
+private FrontMotorState frontMotorState = FrontMotorState.INACTIVE;
+private SnailMotorState snailMotorState = SnailMotorState.INACTIVE;
 
 public Hopper() {
     super(Constants.hopperPeriod);
@@ -62,10 +62,10 @@ public Hopper() {
                 case FRONTACTIVE:
                     setFrontSpeed(0.8);
                     break;
-                case FRONTINACTIVE:
+                case INACTIVE:
                     setFrontSpeed(0); //random numbers
                     break;
-                case FRONTREVERSE:
+                case REVERSE:
                     setFrontSpeed(-0.8);
                     break;
         }
@@ -80,14 +80,16 @@ public Hopper() {
                     case SNAILACTIVE:
                         setSnailSpeed(0.8);
                         break;
-                    case SNAILINACTIVE: //random numbers
+                    case INACTIVE: //random numbers
                         setSnailSpeed(0);
                         break;
-                    case SNAILREVERSE:
+                    case REVERSE:
                         setSnailSpeed(-0.8);
                         break;
             }
     }
+
+
 	@Override
 	public void selfTest() {
 		// TODO Auto-generated method stub

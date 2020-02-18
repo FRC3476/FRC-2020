@@ -9,7 +9,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.tables.ITable;
 import frc.auton.*;
 import frc.subsystem.*;
-
+import frc.subsystem.Hopper.FrontMotorState;
+import frc.subsystem.Hopper.SnailMotorState;
+import frc.subsystem.Intake.DeployState;
+import frc.subsystem.Intake.IntakeState;
 //import frc.robot.subsystem.Drive;
 import frc.utility.math.*;
 import frc.utility.control.motion.Path;
@@ -70,7 +73,12 @@ public class Robot extends TimedRobot {
 
   boolean firstTeleopRun = true;
 
-  
+  boolean shooterOn = false;
+  boolean intakeDeployed = false;
+
+  double hoodPosition = 90;
+  int shooterSpeed = 6000;
+  boolean eject;
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<String>();
@@ -154,8 +162,17 @@ public class Robot extends TimedRobot {
    */
   boolean autoDone;
 
+  
+
   @Override
   public void autonomousInit() {
+    shooter.start();
+    shooter.setSpeed(0);
+    climber.start();
+    controlPanel.start();
+    hopper.start();
+    intake.start();
+
     autoDone = false;
     scheduler.resume();
 
@@ -219,6 +236,11 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     shooter.start();
     shooter.setSpeed(0);
+    climber.start();
+    controlPanel.start();
+    hopper.start();
+    intake.start();
+
 
     jetsonUDP.changeExp(true);
     
@@ -260,26 +282,84 @@ public class Robot extends TimedRobot {
       buttonPanel.update();
       wheel.update();
       drive.arcadeDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4));
+      
+      if (buttonPanel.getRisingEdge(10)){
+        eject = true;
+        hopper.setFrontmotorState(FrontMotorState.REVERSE);
+        hopper.setSnailMotorState(SnailMotorState.REVERSE);
+        shooter.setEject(true);
 
-      if (xbox.getRisingEdge(2)){
-        shooter.setSpeed(6000);
-        //shooter.shooterMaster.set(ControlMode.PercentOutput, 0.05);
-
-      } 
-      if (xbox.getRisingEdge(3)){
-        shooter.setSpeed(0);
-        //shooter.shooterMaster.set(ControlMode.PercentOutput, 0);
       }
 
-      if (xbox.getRisingEdge(1)){
+      if (buttonPanel.getFallingEdge(10)){
+        eject = false;
+        hopper.setFrontmotorState(FrontMotorState.INACTIVE);
+        hopper.setSnailMotorState(SnailMotorState.INACTIVE);
+        shooter.setEject(false);
+        
+      }
+
+
+      if (xbox.getRisingEdge(3)){
+        shooterOn=!shooterOn;
+        
+        if(shooterOn){
+          shooter.setSpeed(shooterSpeed);
+        } else {
+          shooter.setSpeed(0);
+        }
+
+      } //2&3
+
+      if (xbox.getRisingEdge(3, 0.5)){
         shooter.setFiring(true);
 
-      }
-
-      if (xbox.getFallingEdge(1)){
+      } 
+      if(xbox.getFallingEdge(3, 0.5)) {
         shooter.setFiring(false);
 
       }
+
+      if (xbox.getRisingEdge(2)){
+        intakeDeployed = !intakeDeployed;
+
+        if(intakeDeployed){
+          intake.setDeployState(DeployState.DEPLOY);
+        } else{
+          intake.setDeployState(DeployState.UNDEPLOY);
+        }
+
+      }
+      if (intakeDeployed){
+        if (xbox.getRawAxis(2)>0.5 && !eject){
+          intake.setIntakeState(IntakeState.INTAKE);
+          hopper.setFrontmotorState(FrontMotorState.ACTIVE);
+        } else if (xbox.getFallingEdge(5)|| eject){
+          intake.setIntakeState(IntakeState.EJECT);
+        } else{
+          intake.setIntakeState(IntakeState.OFF);
+        }
+      } else{
+        intake.setIntakeState(IntakeState.OFF);
+      }
+
+
+
+      if (buttonPanel.getFallingEdge(1)){
+        hoodPosition = 0; //TODO: Adjust numbers
+        shooterSpeed = 2000;
+      } else if (buttonPanel.getFallingEdge(1)){
+        hoodPosition = 45; //TODO: Adjust numbers
+        shooterSpeed = 4000;
+      } else if (buttonPanel.getFallingEdge(2)){
+        hoodPosition = 90; //TODO: Adjust numbers
+        shooterSpeed = 6000;
+      }
+
+
+
+
+
       
 
   }
@@ -307,6 +387,10 @@ public class Robot extends TimedRobot {
     
     scheduler.pause();
     shooter.pause();
+    climber.pause();
+    controlPanel.pause();
+    hopper.pause();
+    intake.pause();
   }
   
   @Override

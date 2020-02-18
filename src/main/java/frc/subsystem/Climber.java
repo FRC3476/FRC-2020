@@ -30,6 +30,7 @@ public class Climber extends Subsystem{
         ClimberMotor.config_kD(0, Constants.kClimberD, Constants.TimeoutMs);
         ClimberMotor.config_IntegralZone(0, Constants.ClimberIntergralZone);
         limiter = new RateLimiter(Constants.ClimberHookingMaxVel, Constants.ClimberHookingMaxAcel);
+        ClimberSolenoid.set(false);
 
         ClimberSolenoid = new Solenoid(Constants.ClimberSolenoidID);
     }
@@ -49,7 +50,7 @@ public class Climber extends Subsystem{
         
     }
 
-    void rest() {
+    void reset() {
         ClimberSolenoid.set(false);
         ClimberMotor.set(ControlMode.Position, 0);
         

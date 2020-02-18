@@ -55,7 +55,7 @@ public class Shooter extends Subsystem{
 	}
 
     public enum ShooterState {
-        OFF, SPINNING, HOMING
+        OFF, SPINNING, HOMING, EJECT
     }
 
     public void configPID(){
@@ -171,6 +171,8 @@ public class Shooter extends Subsystem{
                     targetHoodPosition = 0;
                 }
                 break;
+            case EJECT:
+                feederMotor.set(ControlMode.PercentOutput, -Constants.FeederMotorSpeed);
 
                 
         }
@@ -193,6 +195,14 @@ public class Shooter extends Subsystem{
     public synchronized void homeHood(){
         shooterState = ShooterState.HOMING;
 
+    }
+
+    public synchronized void setEject(boolean eject){
+        if(eject){
+            shooterState=ShooterState.EJECT;
+        } else{
+            shooterState=ShooterState.OFF;
+        }
     }
 
     @Override

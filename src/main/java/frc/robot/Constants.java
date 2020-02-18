@@ -50,7 +50,7 @@ public final class Constants {
 
 	public static final double TakeBackHalfGain = 2.5e-5;
 
-	public static final int HoodMotorId = 4;
+	public static final int HoodMotorId = 35;
 	public static final double kHoodP = 0;
 	public static final double kHoodI = 0;
 	public static final double kHoodD = 0;
