@@ -138,7 +138,7 @@ public class Robot extends TimedRobot {
     
 
     //elevator.elevHome();
-    drive.setSimpleDrive(false);
+    drive.setSimpleDrive(true);
 
     Thread.currentThread().setPriority(7);
   }
@@ -355,8 +355,7 @@ public class Robot extends TimedRobot {
         intakeOn = true;
         hopperOn = true;
 
-      } else intakeOn = false; 
-
+      }
 
       if (xbox.getRawButton(5)){
         //intake out
@@ -427,7 +426,7 @@ public class Robot extends TimedRobot {
     
       shooter.setFiring(fireShooter);
       
-      System.out.println("hopper cur " + hopper.getCurrent());
+      System.out.println("velocity L: " + drive.getLeftSpeed() + " Velocity R: " + drive.getRightSpeed());
 
 
 

@@ -546,11 +546,11 @@ public class Drive extends Subsystem {
 	}
 
 	public double getLeftSpeed() {
-		return leftSparkEncoder.getVelocity()  * Constants.kDriveInchesPerSecPerRPM;
+		return leftSparkEncoder.getVelocity()  * 1; //TODO: Constants.kDriveInchesPerSecPerRPM;
 	}
 
 	public double getRightSpeed() {
-		return rightSparkEncoder.getVelocity()  * Constants.kDriveInchesPerSecPerRPM;
+		return rightSparkEncoder.getVelocity()  *1 ;//Constants.kDriveInchesPerSecPerRPM;
 	}
 
 	public double scaleJoystickValues(double rawValue, int profile) {
