@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
 
   boolean firstTeleopRun = true;
 
-  a
+ // a
 
   boolean shooterSetOn = false;
   boolean intakeSetDeployed = false;
@@ -146,7 +146,7 @@ public class Robot extends TimedRobot {
     scheduler.schedule(drive, executor);
 		//scheduler.schedule(elevator, executor);
     //scheduler.schedule(collisionManager, executor);
-    scheduler.schedule(jetsonUDP, executor);
+    //scheduler.schedule(jetsonUDP, executor);
     scheduler.schedule(robotTracker, executor);
     
 
@@ -191,6 +191,7 @@ public class Robot extends TimedRobot {
     controlPanel.start();
     hopper.start();
     intake.start();
+    
 
     autoDone = false;
     scheduler.resume();
@@ -259,6 +260,7 @@ public class Robot extends TimedRobot {
     controlPanel.start();
     hopper.start();
     intake.start();
+    jetsonUDP.start();
 
 
     jetsonUDP.changeExp(true);
@@ -441,7 +443,7 @@ public class Robot extends TimedRobot {
 
 
 
-      b
+      //b
 
       prevHopperEject = hopperEject;
       prevHopperOn = hopperOn;

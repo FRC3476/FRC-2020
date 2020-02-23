@@ -317,6 +317,8 @@ public final class Constants {
 	public static final int intakePeriod = 50;
 	public static final int controlPanelPeriod = 50;
 	public static final int hopperPeriod = 50;
+	public static final int JetsonUdpPeriod = 5;
+
 
 	
 
