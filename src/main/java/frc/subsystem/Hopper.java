@@ -59,7 +59,7 @@ public Hopper() {
         
 
         switch (frontMotorState) {
-                case FRONTACTIVE:
+                case ACTIVE:
                     setFrontSpeed(0.8);
                     break;
                 case INACTIVE:
