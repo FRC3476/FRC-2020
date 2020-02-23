@@ -27,11 +27,11 @@ public class Shooter extends Subsystem{
     private double prev_error = 0;
     private double shooterOutput = 0;
     private boolean firing = false;
-    public static ShooterState shooterState = ShooterState.OFF;
+    private  static ShooterState shooterState = ShooterState.OFF;
     //private SynchronousPid turnPID;
     
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings("used")
     public Shooter(){
         super(Constants.ShooterPeriod);
         //Shooter Talon ports

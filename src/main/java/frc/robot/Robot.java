@@ -73,12 +73,31 @@ public class Robot extends TimedRobot {
 
   boolean firstTeleopRun = true;
 
-  boolean shooterOn = false;
-  boolean intakeDeployed = false;
+  a
 
+  boolean shooterSetOn = false;
+  boolean intakeSetDeployed = false;
   double hoodPosition = 90;
   int shooterSpeed = 6000;
-  boolean eject;
+  boolean ejectAll = false;
+  boolean fireShooter = false;
+  boolean intakeOn = false;
+  boolean intakeEject = false;
+  boolean shooterOn = false;
+  boolean ejectShooter = false;
+  boolean hopperEject = false;
+  boolean hopperOn = false;
+
+  boolean prevHopperEject;
+  boolean prevHopperOn;
+  boolean prevShooterOn;
+  boolean prevIntakeDeployed;
+  int prevShooterSpeed;
+  boolean prevEjectAll;
+  boolean prevFireShooter;
+  boolean prevIntakeOn;
+  boolean prevIntakeEject;
+  DeployState prevIntakeDeployState;
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<String>();
@@ -282,18 +301,190 @@ public class Robot extends TimedRobot {
       buttonPanel.update();
       wheel.update();
       drive.arcadeDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4));
+
+
+      /* x:flywheel togle ✔
+      right trigger:shoot  ✔
+      button panle: 3 setpoint for shooter hood position + flywheel speed saved to var ✔
+      B:Intake in/out, toggle ✔
+      left Trigger: Intake stuff  ✔
+      left bumber: intake eject ✔
+      //Button box: Reverse everything (car wash + intake) ✔
+
+      */
+
+      if (xbox.getRisingEdge(2)){
+        intakeSetDeployed = !intakeSetDeployed;
+
+      }
+
+      if(xbox.getRisingEdge(3)){
+        shooterSetOn=!shooterSetOn;
+
+      }
+
+      if (buttonPanel.getRisingEdge(1)){
+        hoodPosition = 0; //TODO: Adjust numbers
+        shooterSpeed = 2000;
+      } else if (buttonPanel.getRisingEdge(1)){
+        hoodPosition = 45; //TODO: Adjust numbers
+        shooterSpeed = 4000;
+      } else if (buttonPanel.getRisingEdge(2)){
+        hoodPosition = 90; //TODO: Adjust numbers
+        shooterSpeed = 6000;
+      }
+
+      fireShooter = false;
+      ejectShooter = false;
+      intakeOn = false;
+      ejectAll = false;
+      intakeEject = false;
+      shooterOn = false;
+      hopperEject = false;
+      hopperOn = false;
+
+      if (shooterSetOn){
+        //Shoter button pushed
+        shooterOn = true;
+        
+      }
+
+      if (xbox.getRawAxis(3) > 0.5){ //3, 0.5
+        //fire shooter
+        fireShooter = true;
+        hopperOn = true;
+
+
+      }
+
+      if(xbox.getRawAxis(2)>0.5){
+        //intake in
+        intakeOn = true;
+        hopperOn = true;
+
+      }
+
+      if (xbox.getRawButton(5)){
+        //intake out
+        intakeEject = true;
+        hopperEject = true;
+
+        hopperOn = false;
+        intakeOn = false;
+
+      }
+
+      if (buttonPanel.getRawButton(10)){
+        //eject all
+        hopperOn = false;
+        intakeOn = false;
+        shooterOn = false;
+
+        intakeEject = true;
+        hopperEject = true;
+        ejectShooter = true;
+
+
+      }
+
+      DeployState intakeDeployState = intake.getDeployState();
+      if (DeployState.DEPLOY == intakeDeployState){
+        if (prevHopperOn != hopperOn|| prevHopperEject != hopperEject){
+          if(hopperOn){
+            hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+            hopper.setSnailMotorState(SnailMotorState.ACTIVE);
+    
+          } else if(hopperEject){
+            hopper.setFrontMotorState(FrontMotorState.REVERSE);
+            hopper.setSnailMotorState(SnailMotorState.REVERSE);
+    
+          } else {
+            hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+            hopper.setSnailMotorState(SnailMotorState.INACTIVE);
+    
+          }
+        }
+  
+        if(prevIntakeOn != intakeOn || prevIntakeEject != intakeEject ){
+          if (intakeOn){
+            intake.setIntakeState(IntakeState.INTAKE);
+
+          } else if(intakeEject){
+            intake.setIntakeState(IntakeState.EJECT);
+
+          } else{
+            intake.setIntakeState(IntakeState.OFF);
+
+          }
+  
+        }
+
+      } else if (prevIntakeDeployState != intakeDeployState){
+        intake.setIntakeState(IntakeState.OFF);
+        hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+        hopper.setSnailMotorState(SnailMotorState.INACTIVE);
+
+      }
+
+      if (shooterOn != prevShooterOn || prevFireShooter != fireShooter){
+        if (shooterOn){
+          shooter.setSpeed(shooterSpeed);
+        } else {
+          shooter.setSpeed(0);
+        }
+
+        if (fireShooter){
+          shooter.setFiring(true);
+        }
+
+      }
+
+
+
+      b
+
+      prevHopperEject = hopperEject;
+      prevHopperOn = hopperOn;
+      prevShooterOn = shooterOn;
+      prevIntakeDeployed = intakeSetDeployed;
+      prevFireShooter = fireShooter;
+      prevIntakeOn = intakeOn;
+      prevIntakeEject = intakeEject;
+      prevIntakeDeployState = intakeDeployState;
+
+
+      /*
+        boolean prevShooterOn;
+      boolean prevIntakeDeployed;
+      double prevHoodPosition;
+      int prevShooterSpeed;
+      boolean prevEjectAll;
+      boolean prevFireShooter;
+      boolean prevIntakeOn;
+      boolean prevIntakeEject;
+      */
+
+
+
+
+
+
+
+     
       
+
+//  ------------------------------------------------------------      
       if (buttonPanel.getRisingEdge(10)){
-        eject = true;
-        hopper.setFrontmotorState(FrontMotorState.REVERSE);
+        ejectAll = true;
+        hopper.setFrontMotorState(FrontMotorState.REVERSE);
         hopper.setSnailMotorState(SnailMotorState.REVERSE);
         shooter.setEject(true);
 
       }
 
       if (buttonPanel.getFallingEdge(10)){
-        eject = false;
-        hopper.setFrontmotorState(FrontMotorState.INACTIVE);
+        ejectAll = false;
+        hopper.setFrontMotorState(FrontMotorState.INACTIVE);
         hopper.setSnailMotorState(SnailMotorState.INACTIVE);
         shooter.setEject(false);
         
@@ -301,9 +492,9 @@ public class Robot extends TimedRobot {
 
 
       if (xbox.getRisingEdge(3)){
-        shooterOn=!shooterOn;
+        shooterSetOn=!shooterSetOn;
         
-        if(shooterOn){
+        if(shooterSetOn){
           shooter.setSpeed(shooterSpeed);
         } else {
           shooter.setSpeed(0);
@@ -321,37 +512,41 @@ public class Robot extends TimedRobot {
       }
 
       if (xbox.getRisingEdge(2)){
-        intakeDeployed = !intakeDeployed;
+        intakeSetDeployed = !intakeSetDeployed;
 
-        if(intakeDeployed){
+        if(intakeSetDeployed){
           intake.setDeployState(DeployState.DEPLOY);
         } else{
           intake.setDeployState(DeployState.UNDEPLOY);
         }
 
       }
-      if (intakeDeployed){
-        if (xbox.getRawAxis(2)>0.5 && !eject){
+      if (intakeSetDeployed){
+        if (xbox.getRawAxis(2)>0.5 && !ejectAll){
           intake.setIntakeState(IntakeState.INTAKE);
-          hopper.setFrontmotorState(FrontMotorState.ACTIVE);
-        } else if (xbox.getFallingEdge(5)|| eject){
+          hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+
+        } else if (xbox.getRisingEdge(5)|| ejectAll){
           intake.setIntakeState(IntakeState.EJECT);
+
         } else{
           intake.setIntakeState(IntakeState.OFF);
+
         }
       } else{
         intake.setIntakeState(IntakeState.OFF);
+
       }
 
 
 
-      if (buttonPanel.getFallingEdge(1)){
+      if (buttonPanel.getRisingEdge(1)){
         hoodPosition = 0; //TODO: Adjust numbers
         shooterSpeed = 2000;
-      } else if (buttonPanel.getFallingEdge(1)){
+      } else if (buttonPanel.getRisingEdge(1)){
         hoodPosition = 45; //TODO: Adjust numbers
         shooterSpeed = 4000;
-      } else if (buttonPanel.getFallingEdge(2)){
+      } else if (buttonPanel.getRisingEdge(2)){
         hoodPosition = 90; //TODO: Adjust numbers
         shooterSpeed = 6000;
       }
