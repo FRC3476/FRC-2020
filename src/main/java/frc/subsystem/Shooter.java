@@ -137,9 +137,9 @@ public class Shooter extends Subsystem{
                 }
 
                 if (feederOn){
-                    feederMotor.set(ControlMode.Velocity, Constants.FeederMotorSpeed);
+                    feederMotor.set(ControlMode.PercentOutput, Constants.FeederMotorSpeed);
                 } else{
-                    feederMotor.set(ControlMode.Velocity, 0 );
+                    feederMotor.set(ControlMode.PercentOutput, 0 );
 
                 }
                 break;

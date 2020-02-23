@@ -36,7 +36,7 @@ public final class Constants {
 	public static final double kFeederI = 0.0;
 	public static final double kFeederD = 0.3;
 	public static final int FeederIntegralZone = 1000;
-	public static final int FeederMotorSpeed = 1000;
+	public static final double FeederMotorSpeed = .8;
 
 	public static final double kShooterP = 0.40;
 	public static final double kShooterI = 0.0;
