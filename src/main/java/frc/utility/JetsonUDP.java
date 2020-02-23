@@ -2,20 +2,21 @@ package frc.utility;
 
 import com.github.cliftonlabs.json_simple.*;
 
-import java.io.IOException; 
-import java.net.DatagramPacket; 
-import java.net.DatagramSocket; 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Scanner;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
+import frc.subsystem.Subsystem;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.time.Duration;
 
-public class JetsonUDP extends Threaded {
+public class JetsonUDP extends Subsystem {
   private double prevUpdateTime = Timer.getFPGATimestamp();
 
 	private static final JetsonUDP instance = new JetsonUDP();
@@ -23,7 +24,7 @@ public class JetsonUDP extends Threaded {
   private DatagramSocket socket, socket2;
   private InetAddress address;
 
-  private final int packetSize = 16;
+  private final int packetSize = 8;
 
   private VisionTarget[] target = null;
 
@@ -32,6 +33,7 @@ public class JetsonUDP extends Threaded {
   }
 
   public JetsonUDP() {
+    super(Constants.JetsonUdpPeriod);
     //super("bleh");
     try {
       socket = new DatagramSocket(Constants.JetsonPort);
@@ -63,7 +65,6 @@ public class JetsonUDP extends Threaded {
       System.out.println("Failed to intialize UDP socket with Jetson");
     }
     //start();
-    setPeriod(Duration.ofMillis(10));
   }
 
   synchronized public void changeExp(boolean high) {
@@ -110,15 +111,15 @@ public class JetsonUDP extends Threaded {
     {
       byte[] to_be_parsed1 = Arrays.copyOfRange(packet.getData(), i, i+4);
       byte[] to_be_parsed2 = Arrays.copyOfRange(packet.getData(), i+4, i+8);
-      byte[] to_be_parsed3 = Arrays.copyOfRange(packet.getData(), i+8, i+12);
-      byte[] to_be_parsed4 = Arrays.copyOfRange(packet.getData(), i+12, i+16);
+      //byte[] to_be_parsed3 = Arrays.copyOfRange(packet.getData(), i+8, i+12);
+      //byte[] to_be_parsed4 = Arrays.copyOfRange(packet.getData(), i+12, i+16);
 
       float f1 = ByteBuffer.wrap(to_be_parsed1).order(ByteOrder.LITTLE_ENDIAN).getFloat();
       float f2 = ByteBuffer.wrap(to_be_parsed2).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-      float f3 = ByteBuffer.wrap(to_be_parsed3).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-      float f4 = ByteBuffer.wrap(to_be_parsed4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+     // float f3 = ByteBuffer.wrap(to_be_parsed3).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+      //float f4 = ByteBuffer.wrap(to_be_parsed4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 
-      target[(int)(i/packetSize)] = new VisionTarget(f1, f2, f3, f4);
+      target[(int)(i/packetSize)] = new VisionTarget(f1, f2);
      // System.out.println(f1);
     }
   }
@@ -130,6 +131,18 @@ public class JetsonUDP extends Threaded {
       recieve();  
 
       
+
+  }
+
+  @Override
+  public void selfTest() {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void logData() {
+    // TODO Auto-generated method stub
 
   }
 

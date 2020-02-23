@@ -10,11 +10,11 @@ public class VisionTarget {
     public double loc_x;
     public double loc_y;
 
-    public VisionTarget(float x, float y, float connectorMag, float distance) {
+    public VisionTarget(float x, float y) {
         this.x = x;
         this.y = y;
-        this.connectorMag = connectorMag;
-        this.distance = distance;
+      //  this.connectorMag = connectorMag;
+       // this.distance = distance;
         
     }
 
