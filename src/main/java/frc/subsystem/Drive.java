@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.utility.LazyCANSparkMax;
 
 @SuppressWarnings("unused")
-public class Drive extends Threaded {
+public class Drive extends Subsystem {
 
 	public enum DriveState {
 		TELEOP, PUREPURSUIT, TURN, HOLD, DONE
@@ -98,7 +98,7 @@ public class Drive extends Threaded {
 	  
 
 	private Drive() {
-
+		super(Constants.DrivePeriod);
 		gyroSensor = new NavXMPX_Gyro(SPI.Port.kMXP);
 
 		leftSpark = new LazyCANSparkMax(Constants.DriveLeftMasterId, MotorType.kBrushless);
@@ -823,5 +823,17 @@ public class Drive extends Threaded {
 		//rightTalon.clearStickyFaults(10);
 		//rightSlaveTalon.clearStickyFaults(10);
 		//rightSlave2Talon.clearStickyFaults(10);
+	}
+
+	@Override
+	public void selfTest() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void logData() {
+		// TODO Auto-generated method stub
+
 	}
 }

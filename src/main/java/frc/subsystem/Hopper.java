@@ -8,7 +8,7 @@ public class Hopper extends Subsystem {
         ACTIVE, REVERSE, INACTIVE
     }
     public enum SnailMotorState {
-        SNAILACTIVE, REVERSE, INACTIVE 
+        ACTIVE, REVERSE, INACTIVE 
     }
     
     public static final Hopper instance = new Hopper();
@@ -52,7 +52,7 @@ public Hopper() {
     public void setSnailSpeed(double Snailspeed) {
         SnailMotor.set(ControlMode.PercentOutput, Snailspeed);
     }
-    public void setFrontmotorState(final FrontMotorState frontMotorState) {
+    public void setFrontMotorState(final FrontMotorState frontMotorState) {
         synchronized (this) {
             this.frontMotorState = frontMotorState;
         }
@@ -61,12 +61,14 @@ public Hopper() {
         switch (frontMotorState) {
                 case ACTIVE:
                     setFrontSpeed(0.8);
+
+                    setFrontSpeed(Constants.HopperFrontMotorSpeed);
                     break;
                 case INACTIVE:
-                    setFrontSpeed(0); //random numbers
+                    setFrontSpeed(0);
                     break;
                 case REVERSE:
-                    setFrontSpeed(-0.8);
+                    setFrontSpeed(-Constants.HopperFrontMotorSpeed);
                     break;
         }
     }
@@ -77,14 +79,14 @@ public Hopper() {
             }
             
             switch(snailMotorState) {
-                    case SNAILACTIVE:
-                        setSnailSpeed(0.8);
+                    case ACTIVE:
+                        setSnailSpeed(Constants.HopperSnailSpeed);
                         break;
-                    case INACTIVE: //random numbers
+                    case INACTIVE: 
                         setSnailSpeed(0);
                         break;
                     case REVERSE:
-                        setSnailSpeed(-0.8);
+                        setSnailSpeed(-Constants.HopperSnailSpeed);
                         break;
             }
     }
