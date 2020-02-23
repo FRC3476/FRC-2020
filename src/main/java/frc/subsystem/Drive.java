@@ -268,7 +268,7 @@ public class Drive extends Subsystem {
 
 		//	System.out.println("left " + (leftMotorSpeed - getLeftSpeed() ));
 			//System.out.println("right " + (rightMotorSpeed - getRightSpeed() ));
-			System.out.println("left " + leftMotorSpeed + " right " + rightMotorSpeed);
+			//System.out.println("left " + leftMotorSpeed + " right " + rightMotorSpeed);
 			setWheelVelocity(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		}
 		//System.out.println("left motor speed " + leftMotorSpeed + " right motor speed " + rightMotorSpeed);

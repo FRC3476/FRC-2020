@@ -85,6 +85,7 @@ public class Shooter extends Subsystem{
         feederMotor.config_kI(0, Constants.kFeederI, Constants.TimeoutMs);
         feederMotor.config_kD(0, Constants.kFeederD, Constants.TimeoutMs);
         feederMotor.config_IntegralZone(0, Constants.FeederIntegralZone);
+        feederMotor.setInverted(true);
 
         hoodPID = hoodMotor.getPIDController();
         hoodPID.setP(Constants.kHoodP, 0);
@@ -136,7 +137,7 @@ public class Shooter extends Subsystem{
                 if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
                     double hoodError = targetHoodPosition - hoodEncoder.getPosition();
 
-                    if(Math.abs(hoodError) < Constants.HoodMaxDeviation || true){ // TODO: make hood do things
+                    if(true || Math.abs(hoodError) < Constants.HoodMaxDeviation){ // TODO: make hood do things
                         //Hood Ready
                         if(firing){
                             feederOn = true;

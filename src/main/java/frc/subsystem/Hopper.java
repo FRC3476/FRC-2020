@@ -30,10 +30,11 @@ public Hopper() {
     FrontHopperMotor.enableCurrentLimit(true);
     
     SnailMotor = new LazyTalonSRX(Constants.SnailMotorId);
-    SnailMotor.configContinuousCurrentLimit(20);
+    System.out.println("Current limit error " + SnailMotor.configContinuousCurrentLimit(25, 50));
     SnailMotor.configPeakCurrentLimit(0);
     SnailMotor.configPeakCurrentDuration(0);
     SnailMotor.enableCurrentLimit(true);
+    //SnailMotor.enableCurrentLimit()
     }    
 
     public FrontMotorState getFrontMotorState() {
@@ -44,6 +45,9 @@ public Hopper() {
         return snailMotorState;
     }
 
+    public double getCurrent() {
+        return SnailMotor.getOutputCurrent();
+    }
 
     public void setFrontSpeed(double Frontspeed) {
         FrontHopperMotor.set(ControlMode.PercentOutput, Frontspeed);
