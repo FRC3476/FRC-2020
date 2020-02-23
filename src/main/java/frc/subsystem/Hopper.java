@@ -5,10 +5,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class Hopper extends Subsystem {
     public enum  FrontMotorState {
-        FRONTACTIVE, FRONTREVERSE, FRONTINACTIVE
+        ACTIVE, REVERSE, INACTIVE
     }
     public enum SnailMotorState {
-        SNAILACTIVE, SNAILREVERSE, SNAILINACTIVE 
+        ACTIVE, REVERSE, INACTIVE 
     }
     
     public static final Hopper instance = new Hopper();
@@ -18,8 +18,8 @@ public class Hopper extends Subsystem {
 
 private final LazyTalonSRX FrontHopperMotor;
 private final LazyTalonSRX SnailMotor;
-private FrontMotorState frontMotorState = FrontMotorState.FRONTINACTIVE;
-private SnailMotorState snailMotorState = SnailMotorState.SNAILINACTIVE;
+private FrontMotorState frontMotorState = FrontMotorState.INACTIVE;
+private SnailMotorState snailMotorState = SnailMotorState.INACTIVE;
 
 public Hopper() {
     super(Constants.hopperPeriod);
@@ -52,21 +52,21 @@ public Hopper() {
     public void setSnailSpeed(double Snailspeed) {
         SnailMotor.set(ControlMode.PercentOutput, Snailspeed);
     }
-    public void setFrontmotorState(final FrontMotorState frontMotorState) {
+    public void setFrontMotorState(final FrontMotorState frontMotorState) {
         synchronized (this) {
             this.frontMotorState = frontMotorState;
         }
         
 
         switch (frontMotorState) {
-                case FRONTACTIVE:
-                    setFrontSpeed(0.8);
+                case ACTIVE:
+                    setFrontSpeed(Constants.HopperFrontMotorSpeed);
                     break;
-                case FRONTINACTIVE:
-                    setFrontSpeed(0); //random numbers
+                case INACTIVE:
+                    setFrontSpeed(0);
                     break;
-                case FRONTREVERSE:
-                    setFrontSpeed(-0.8);
+                case REVERSE:
+                    setFrontSpeed(-Constants.HopperFrontMotorSpeed);
                     break;
         }
     }
@@ -77,17 +77,19 @@ public Hopper() {
             }
             
             switch(snailMotorState) {
-                    case SNAILACTIVE:
-                        setSnailSpeed(0.8);
+                    case ACTIVE:
+                        setSnailSpeed(Constants.HopperSnailSpeed);
                         break;
-                    case SNAILINACTIVE: //random numbers
+                    case INACTIVE: 
                         setSnailSpeed(0);
                         break;
-                    case SNAILREVERSE:
-                        setSnailSpeed(-0.8);
+                    case REVERSE:
+                        setSnailSpeed(-Constants.HopperSnailSpeed);
                         break;
             }
     }
+
+
 	@Override
 	public void selfTest() {
 		// TODO Auto-generated method stub

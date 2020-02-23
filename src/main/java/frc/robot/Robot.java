@@ -9,7 +9,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.tables.ITable;
 import frc.auton.*;
 import frc.subsystem.*;
-
+import frc.subsystem.Hopper.FrontMotorState;
+import frc.subsystem.Hopper.SnailMotorState;
+import frc.subsystem.Intake.DeployState;
+import frc.subsystem.Intake.IntakeState;
 //import frc.robot.subsystem.Drive;
 import frc.utility.math.*;
 import frc.utility.control.motion.Path;
@@ -70,7 +73,29 @@ public class Robot extends TimedRobot {
 
   boolean firstTeleopRun = true;
 
-  
+  boolean shooterSetOn = false;
+  boolean intakeSetDeployed = false;
+  double hoodPosition = 90;
+  int shooterSpeed = 6000;
+  boolean ejectAll = false;
+  boolean fireShooter = false;
+  boolean intakeOn = false;
+  boolean intakeEject = false;
+  boolean shooterOn = false;
+  boolean ejectShooter = false;
+  boolean hopperEject = false;
+  boolean hopperOn = false;
+
+  boolean prevHopperEject;
+  boolean prevHopperOn;
+  boolean prevShooterOn;
+  boolean prevIntakeDeployed;
+  int prevShooterSpeed;
+  boolean prevEjectAll;
+  boolean prevFireShooter;
+  boolean prevIntakeOn;
+  boolean prevIntakeEject;
+  DeployState prevIntakeDeployState;
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<String>();
@@ -116,7 +141,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Good or Bad? To be or Not to Be?", goodbad);
 
 
-    scheduler.schedule(drive, executor);
+    //scheduler.schedule(drive, executor);
 		//scheduler.schedule(elevator, executor);
     //scheduler.schedule(collisionManager, executor);
     scheduler.schedule(jetsonUDP, executor);
@@ -154,8 +179,17 @@ public class Robot extends TimedRobot {
    */
   boolean autoDone;
 
+  
+
   @Override
   public void autonomousInit() {
+    shooter.start();
+    shooter.setSpeed(0);
+    climber.start();
+    controlPanel.start();
+    hopper.start();
+    intake.start();
+
     autoDone = false;
     scheduler.resume();
 
@@ -219,6 +253,11 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     shooter.start();
     shooter.setSpeed(0);
+    climber.start();
+    controlPanel.start();
+    hopper.start();
+    intake.start();
+
 
     jetsonUDP.changeExp(true);
     
@@ -261,25 +300,256 @@ public class Robot extends TimedRobot {
       wheel.update();
       drive.arcadeDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4));
 
+
+      /* x:flywheel togle ✔
+      right trigger:shoot  ✔
+      button panle: 3 setpoint for shooter hood position + flywheel speed saved to var ✔
+      B:Intake in/out, toggle ✔
+      left Trigger: Intake stuff  ✔
+      left bumber: intake eject ✔
+      //Button box: Reverse everything (car wash + intake) ✔
+
+      */
+
       if (xbox.getRisingEdge(2)){
-        shooter.setSpeed(6000);
-        //shooter.shooterMaster.set(ControlMode.PercentOutput, 0.05);
-
-      } 
-      if (xbox.getRisingEdge(3)){
-        shooter.setSpeed(0);
-        //shooter.shooterMaster.set(ControlMode.PercentOutput, 0);
-      }
-
-      if (xbox.getRisingEdge(1)){
-        shooter.setFiring(true);
+        intakeSetDeployed = !intakeSetDeployed;
 
       }
 
-      if (xbox.getFallingEdge(1)){
-        shooter.setFiring(false);
+      if(xbox.getRisingEdge(3)){
+        shooterSetOn=!shooterSetOn;
 
       }
+
+      if (buttonPanel.getRisingEdge(1)){
+        hoodPosition = Constants.MinHoodReleaseAngle +1; //TODO: Adjust numbers
+        shooterSpeed = 2000;
+      } else if (buttonPanel.getRisingEdge(2)){
+        hoodPosition = 45; //TODO: Adjust numbers
+        shooterSpeed = 4000;
+      } else if (buttonPanel.getRisingEdge(3)){
+        hoodPosition = Constants.MaxHoodReleaseAngle-1; //TODO: Adjust numbers
+        shooterSpeed = 6000;
+      }
+
+      fireShooter = false;
+      ejectShooter = false;
+      intakeOn = false;
+      ejectAll = false;
+      intakeEject = false;
+      shooterOn = false;
+      hopperEject = false;
+      hopperOn = false;
+
+      if (shooterSetOn){
+        //Shoter button pushed
+        shooterOn = true;
+        
+      }
+
+      if (xbox.getRawAxis(3) > 0.5){ //3, 0.5
+        //fire shooter
+        fireShooter = true;
+        hopperOn = true;
+
+
+      }
+
+      if(xbox.getRawAxis(2)>0.5){
+        //intake in
+        intakeOn = true;
+        hopperOn = true;
+
+      }
+
+      if (xbox.getRawButton(5)){
+        //intake out
+        intakeEject = true;
+        hopperEject = true;
+
+        hopperOn = false;
+        intakeOn = false;
+
+      }
+
+      if (buttonPanel.getRawButton(10)){
+        //eject all
+        hopperOn = false;
+        intakeOn = false;
+        shooterOn = false;
+
+        intakeEject = true;
+        hopperEject = true;
+        ejectShooter = true;
+
+
+      }
+
+      DeployState intakeDeployState = intake.getDeployState();
+      if (DeployState.DEPLOY == intakeDeployState){
+        if (prevHopperOn != hopperOn|| prevHopperEject != hopperEject){
+          if(hopperOn){
+            hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+            hopper.setSnailMotorState(SnailMotorState.ACTIVE);
+    
+          } else if(hopperEject){
+            hopper.setFrontMotorState(FrontMotorState.REVERSE);
+            hopper.setSnailMotorState(SnailMotorState.REVERSE);
+    
+          } else {
+            hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+            hopper.setSnailMotorState(SnailMotorState.INACTIVE);
+    
+          }
+        }
+  
+        if(prevIntakeOn != intakeOn || prevIntakeEject != intakeEject ){
+          if (intakeOn){
+            intake.setIntakeState(IntakeState.INTAKE);
+
+          } else if(intakeEject){
+            intake.setIntakeState(IntakeState.EJECT);
+
+          } else{
+            intake.setIntakeState(IntakeState.OFF);
+
+          }
+  
+        }
+
+      } else if (prevIntakeDeployState != intakeDeployState){
+        intake.setIntakeState(IntakeState.OFF);
+        hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+        hopper.setSnailMotorState(SnailMotorState.INACTIVE);
+
+      }
+
+      if (shooterOn != prevShooterOn || prevFireShooter != fireShooter){
+        if (shooterOn){
+          shooter.setSpeed(shooterSpeed);
+          shooter.setHoodAngle(hoodPosition);
+        } else {
+          shooter.setSpeed(0);
+        }
+
+        if (fireShooter){
+          shooter.setFiring(true);
+        }
+
+      }
+
+      prevHopperEject = hopperEject;
+      prevHopperOn = hopperOn;
+      prevShooterOn = shooterOn;
+      prevIntakeDeployed = intakeSetDeployed;
+      prevFireShooter = fireShooter;
+      prevIntakeOn = intakeOn;
+      prevIntakeEject = intakeEject;
+      prevIntakeDeployState = intakeDeployState;
+
+
+      /*
+      boolean prevShooterOn;
+      boolean prevIntakeDeployed;
+      double prevHoodPosition;
+      int prevShooterSpeed;
+      boolean prevEjectAll;
+      boolean prevFireShooter;
+      boolean prevIntakeOn;
+      boolean prevIntakeEject;
+      */
+
+
+
+
+
+
+
+     
+      
+
+//  ------------------------------------------------------------      
+      // if (buttonPanel.getRisingEdge(10)){
+      //   ejectAll = true;
+      //   hopper.setFrontMotorState(FrontMotorState.REVERSE);
+      //   hopper.setSnailMotorState(SnailMotorState.REVERSE);
+      //   shooter.setEject(true);
+
+      // }
+
+      // if (buttonPanel.getFallingEdge(10)){
+      //   ejectAll = false;
+      //   hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+      //   hopper.setSnailMotorState(SnailMotorState.INACTIVE);
+      //   shooter.setEject(false);
+        
+      // }
+
+
+      // if (xbox.getRisingEdge(3)){
+      //   shooterSetOn=!shooterSetOn;
+        
+      //   if(shooterSetOn){
+      //     shooter.setSpeed(shooterSpeed);
+      //   } else {
+      //     shooter.setSpeed(0);
+      //   }
+
+      // } //2&3
+
+      // if (xbox.getRisingEdge(3, 0.5)){
+      //   shooter.setFiring(true);
+
+      // } 
+      // if(xbox.getFallingEdge(3, 0.5)) {
+      //   shooter.setFiring(false);
+
+      // }
+
+      // if (xbox.getRisingEdge(2)){
+      //   intakeSetDeployed = !intakeSetDeployed;
+
+      //   if(intakeSetDeployed){
+      //     intake.setDeployState(DeployState.DEPLOY);
+      //   } else{
+      //     intake.setDeployState(DeployState.UNDEPLOY);
+      //   }
+
+      // }
+      // if (intakeSetDeployed){
+      //   if (xbox.getRawAxis(2)>0.5 && !ejectAll){
+      //     intake.setIntakeState(IntakeState.INTAKE);
+      //     hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+
+      //   } else if (xbox.getRisingEdge(5)|| ejectAll){
+      //     intake.setIntakeState(IntakeState.EJECT);
+
+      //   } else{
+      //     intake.setIntakeState(IntakeState.OFF);
+
+      //   }
+      // } else{
+      //   intake.setIntakeState(IntakeState.OFF);
+
+      // }
+
+
+
+      // if (buttonPanel.getRisingEdge(1)){
+      //   hoodPosition = 0; //TODO: Adjust numbers
+      //   shooterSpeed = 2000;
+      // } else if (buttonPanel.getRisingEdge(1)){
+      //   hoodPosition = 45; //TODO: Adjust numbers
+      //   shooterSpeed = 4000;
+      // } else if (buttonPanel.getRisingEdge(2)){
+      //   hoodPosition = 90; //TODO: Adjust numbers
+      //   shooterSpeed = 6000;
+      // }
+
+
+
+
+
       
 
   }
@@ -307,6 +577,10 @@ public class Robot extends TimedRobot {
     
     scheduler.pause();
     shooter.pause();
+    climber.pause();
+    controlPanel.pause();
+    hopper.pause();
+    intake.pause();
   }
   
   @Override

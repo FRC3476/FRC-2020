@@ -110,32 +110,33 @@ public class ControlPanel extends Subsystem {
         spinner.setIdleMode(IdleMode.kBrake);
 
         spinnerSolenoid = new Solenoid(Constants.spinnerSolenoidID);
+        spinnerSolenoid.set(false);
 
         spinnerState = SpinnerState.OFF;
 
     }
 
-    public SpinnerState getSpinnerState() {
+    public synchronized SpinnerState getSpinnerState() {
         return spinnerState;
     }
 
-    public void MoveDown() {
+    public synchronized void deploy() {
         spinnerSolenoid.set(false);
     }
 
-    public void MoveUp() {
+    public synchronized void unDeploy() {
         spinnerSolenoid.set(true);
 
     }
 
-    public void LevelTwoSpin() {
+    public synchronized void doLevelTwoSpin() {
         wheelPosition = 0;
         wheelRotation = 0;
         spinnerState = SpinnerState.SPINNING;
 
     }
 
-    public void LevelThreeSpin() {
+    public synchronized void doLevelThreeSpin() {
         feildColorData = getFeildColorData();
 
         if (feildColorData != 'E') {
@@ -162,14 +163,14 @@ public class ControlPanel extends Subsystem {
 
 
 
-    public void stopSpin() {
+    public synchronized void stopSpin() {
         spinnerState = SpinnerState.OFF;
         spinner.set(0);
     }
 
 // --------------------------------------------------------------
 
-    public void update() {
+    public synchronized void update() {
 
         switch (spinnerState) {
         // spin wheel 4 times

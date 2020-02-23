@@ -45,21 +45,26 @@ public final class Constants {
 	public static final int ShooterIntegralZone = 0;
 	public static final int ShooterPeriod = 10;
 	public static final double ShooterRPMPerTicksPer100ms = 600d/2048d;
+	public static final int HomeSwitchId = 0; //TODO
 
 	public static final int ShooterMaxDeviation = 100;
 
 	public static final double TakeBackHalfGain = 2.5e-5;
 
-	public static final int HoodMotorId = 4;
+	public static final int HoodMotorId = 35;
 	public static final double kHoodP = 0;
 	public static final double kHoodI = 0;
 	public static final double kHoodD = 0;
 	public static final double kHoodF = 0;
-	public static final int HoodRotationsConversion = (12/60)*(20/5760);//100;
+	public static final double HoodRotationsPerDegree = (60/12)*(576/20)*(1/360);//(12/60)*(20/576);//100;
 	public static final int HoodMaxDeviation = 5;
-
+	public static final double HoodHomingSpeed = -0.05;
+	public static final double HoodPIDSpeedMax = 0.05;
+	public static final double hoodMotorStalledAmps = 5;
 	public final static double AutoShooterOnTime = 3;
-
+	public final static boolean HoodMotorDirection = false; //True is Inverted 
+	public final static double MaxHoodReleaseAngle = 75;
+	public final static double MinHoodReleaseAngle = 12.32;
 
 	public static final int HatchIntakeMotorId = 100;
 	public static final int HatchIntakeDeployMotorId = 101;
@@ -84,6 +89,8 @@ public final class Constants {
 	//Hopper Constants
 	public static final int FrontHopperMotorId = 0; //random number
 	public static final int SnailMotorId = 0; //random number
+	public static final double HopperFrontMotorSpeed = 0.8;
+	public static final double HopperSnailSpeed = 0.8;
 	
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;
@@ -313,6 +320,7 @@ public final class Constants {
 	public static final int intakePeriod = 50;
 	public static final int controlPanelPeriod = 50;
 	public static final int hopperPeriod = 50;
+	public static final int DrivePeriod = 5;
 
 	
 
