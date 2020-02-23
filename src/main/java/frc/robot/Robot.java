@@ -73,8 +73,6 @@ public class Robot extends TimedRobot {
 
   boolean firstTeleopRun = true;
 
-  a
-
   boolean shooterSetOn = false;
   boolean intakeSetDeployed = false;
   double hoodPosition = 90;
@@ -143,7 +141,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Good or Bad? To be or Not to Be?", goodbad);
 
 
-    scheduler.schedule(drive, executor);
+    //scheduler.schedule(drive, executor);
 		//scheduler.schedule(elevator, executor);
     //scheduler.schedule(collisionManager, executor);
     scheduler.schedule(jetsonUDP, executor);
@@ -324,13 +322,13 @@ public class Robot extends TimedRobot {
       }
 
       if (buttonPanel.getRisingEdge(1)){
-        hoodPosition = 0; //TODO: Adjust numbers
+        hoodPosition = Constants.MinHoodReleaseAngle +1; //TODO: Adjust numbers
         shooterSpeed = 2000;
-      } else if (buttonPanel.getRisingEdge(1)){
+      } else if (buttonPanel.getRisingEdge(2)){
         hoodPosition = 45; //TODO: Adjust numbers
         shooterSpeed = 4000;
-      } else if (buttonPanel.getRisingEdge(2)){
-        hoodPosition = 90; //TODO: Adjust numbers
+      } else if (buttonPanel.getRisingEdge(3)){
+        hoodPosition = Constants.MaxHoodReleaseAngle-1; //TODO: Adjust numbers
         shooterSpeed = 6000;
       }
 
@@ -429,6 +427,7 @@ public class Robot extends TimedRobot {
       if (shooterOn != prevShooterOn || prevFireShooter != fireShooter){
         if (shooterOn){
           shooter.setSpeed(shooterSpeed);
+          shooter.setHoodAngle(hoodPosition);
         } else {
           shooter.setSpeed(0);
         }
@@ -438,10 +437,6 @@ public class Robot extends TimedRobot {
         }
 
       }
-
-
-
-      b
 
       prevHopperEject = hopperEject;
       prevHopperOn = hopperOn;
@@ -454,7 +449,7 @@ public class Robot extends TimedRobot {
 
 
       /*
-        boolean prevShooterOn;
+      boolean prevShooterOn;
       boolean prevIntakeDeployed;
       double prevHoodPosition;
       int prevShooterSpeed;
@@ -474,82 +469,82 @@ public class Robot extends TimedRobot {
       
 
 //  ------------------------------------------------------------      
-      if (buttonPanel.getRisingEdge(10)){
-        ejectAll = true;
-        hopper.setFrontMotorState(FrontMotorState.REVERSE);
-        hopper.setSnailMotorState(SnailMotorState.REVERSE);
-        shooter.setEject(true);
+      // if (buttonPanel.getRisingEdge(10)){
+      //   ejectAll = true;
+      //   hopper.setFrontMotorState(FrontMotorState.REVERSE);
+      //   hopper.setSnailMotorState(SnailMotorState.REVERSE);
+      //   shooter.setEject(true);
 
-      }
+      // }
 
-      if (buttonPanel.getFallingEdge(10)){
-        ejectAll = false;
-        hopper.setFrontMotorState(FrontMotorState.INACTIVE);
-        hopper.setSnailMotorState(SnailMotorState.INACTIVE);
-        shooter.setEject(false);
+      // if (buttonPanel.getFallingEdge(10)){
+      //   ejectAll = false;
+      //   hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+      //   hopper.setSnailMotorState(SnailMotorState.INACTIVE);
+      //   shooter.setEject(false);
         
-      }
+      // }
 
 
-      if (xbox.getRisingEdge(3)){
-        shooterSetOn=!shooterSetOn;
+      // if (xbox.getRisingEdge(3)){
+      //   shooterSetOn=!shooterSetOn;
         
-        if(shooterSetOn){
-          shooter.setSpeed(shooterSpeed);
-        } else {
-          shooter.setSpeed(0);
-        }
+      //   if(shooterSetOn){
+      //     shooter.setSpeed(shooterSpeed);
+      //   } else {
+      //     shooter.setSpeed(0);
+      //   }
 
-      } //2&3
+      // } //2&3
 
-      if (xbox.getRisingEdge(3, 0.5)){
-        shooter.setFiring(true);
+      // if (xbox.getRisingEdge(3, 0.5)){
+      //   shooter.setFiring(true);
 
-      } 
-      if(xbox.getFallingEdge(3, 0.5)) {
-        shooter.setFiring(false);
+      // } 
+      // if(xbox.getFallingEdge(3, 0.5)) {
+      //   shooter.setFiring(false);
 
-      }
+      // }
 
-      if (xbox.getRisingEdge(2)){
-        intakeSetDeployed = !intakeSetDeployed;
+      // if (xbox.getRisingEdge(2)){
+      //   intakeSetDeployed = !intakeSetDeployed;
 
-        if(intakeSetDeployed){
-          intake.setDeployState(DeployState.DEPLOY);
-        } else{
-          intake.setDeployState(DeployState.UNDEPLOY);
-        }
+      //   if(intakeSetDeployed){
+      //     intake.setDeployState(DeployState.DEPLOY);
+      //   } else{
+      //     intake.setDeployState(DeployState.UNDEPLOY);
+      //   }
 
-      }
-      if (intakeSetDeployed){
-        if (xbox.getRawAxis(2)>0.5 && !ejectAll){
-          intake.setIntakeState(IntakeState.INTAKE);
-          hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+      // }
+      // if (intakeSetDeployed){
+      //   if (xbox.getRawAxis(2)>0.5 && !ejectAll){
+      //     intake.setIntakeState(IntakeState.INTAKE);
+      //     hopper.setFrontMotorState(FrontMotorState.ACTIVE);
 
-        } else if (xbox.getRisingEdge(5)|| ejectAll){
-          intake.setIntakeState(IntakeState.EJECT);
+      //   } else if (xbox.getRisingEdge(5)|| ejectAll){
+      //     intake.setIntakeState(IntakeState.EJECT);
 
-        } else{
-          intake.setIntakeState(IntakeState.OFF);
+      //   } else{
+      //     intake.setIntakeState(IntakeState.OFF);
 
-        }
-      } else{
-        intake.setIntakeState(IntakeState.OFF);
+      //   }
+      // } else{
+      //   intake.setIntakeState(IntakeState.OFF);
 
-      }
+      // }
 
 
 
-      if (buttonPanel.getRisingEdge(1)){
-        hoodPosition = 0; //TODO: Adjust numbers
-        shooterSpeed = 2000;
-      } else if (buttonPanel.getRisingEdge(1)){
-        hoodPosition = 45; //TODO: Adjust numbers
-        shooterSpeed = 4000;
-      } else if (buttonPanel.getRisingEdge(2)){
-        hoodPosition = 90; //TODO: Adjust numbers
-        shooterSpeed = 6000;
-      }
+      // if (buttonPanel.getRisingEdge(1)){
+      //   hoodPosition = 0; //TODO: Adjust numbers
+      //   shooterSpeed = 2000;
+      // } else if (buttonPanel.getRisingEdge(1)){
+      //   hoodPosition = 45; //TODO: Adjust numbers
+      //   shooterSpeed = 4000;
+      // } else if (buttonPanel.getRisingEdge(2)){
+      //   hoodPosition = 90; //TODO: Adjust numbers
+      //   shooterSpeed = 6000;
+      // }
 
 
 

@@ -7,6 +7,7 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.utility.LazyCANSparkMax;
 import frc.utility.LazyTalonFX;
 import frc.utility.LazyTalonSRX;
@@ -19,6 +20,7 @@ public class Shooter extends Subsystem{
     private CANPIDController hoodPID;
     private CANEncoder hoodEncoder;
     private LazyCANSparkMax hoodMotor;
+    DigitalInput homeSwitch;
     private double tbh = 0;
     private double prevError = 0; 
     private int targetShooterSpeed;
@@ -42,6 +44,8 @@ public class Shooter extends Subsystem{
         feederMotor = new LazyTalonSRX(Constants.FeederMotorId);
         hoodMotor = new LazyCANSparkMax(Constants.HoodMotorId,MotorType.kBrushless);
         hoodEncoder = hoodMotor.getEncoder();
+        homeSwitch = new DigitalInput(Constants.HomeSwitchId);
+        
         
         
         hoodMotor.setInverted(Constants.HoodMotorDirection);
@@ -164,7 +168,7 @@ public class Shooter extends Subsystem{
                 shooterOutput = 0;
 
                 hoodMotor.set(Constants.HoodHomingSpeed);
-                if (hoodMotor.getOutputCurrent() > Constants.hoodMotorStalledAmps){
+                if (homeSwitch.get()){
                     hoodEncoder.setPosition(0);
                     shooterState = ShooterState.OFF;
                     hoodPID.setReference(0, ControlType.kPosition);

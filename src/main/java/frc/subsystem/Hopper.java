@@ -60,13 +60,13 @@ public Hopper() {
 
         switch (frontMotorState) {
                 case ACTIVE:
-                    setFrontSpeed(0.8);
+                    setFrontSpeed(Constants.HopperFrontMotorSpeed);
                     break;
                 case INACTIVE:
-                    setFrontSpeed(0); //random numbers
+                    setFrontSpeed(0);
                     break;
                 case REVERSE:
-                    setFrontSpeed(-0.8);
+                    setFrontSpeed(-Constants.HopperFrontMotorSpeed);
                     break;
         }
     }
@@ -78,13 +78,13 @@ public Hopper() {
             
             switch(snailMotorState) {
                     case ACTIVE:
-                        setSnailSpeed(0.8);
+                        setSnailSpeed(Constants.HopperSnailSpeed);
                         break;
-                    case INACTIVE: //random numbers
+                    case INACTIVE: 
                         setSnailSpeed(0);
                         break;
                     case REVERSE:
-                        setSnailSpeed(-0.8);
+                        setSnailSpeed(-Constants.HopperSnailSpeed);
                         break;
             }
     }
