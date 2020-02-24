@@ -15,7 +15,7 @@ public class Climber extends Subsystem{
     private RateLimiter limiter;
     private boolean hookingOn = false; 
 
-    private static final Climber instance = new Climber();
+    private static final Climber instance = null ;//new Climber();
 	
 	public static Climber getInstance() {
 		return instance;

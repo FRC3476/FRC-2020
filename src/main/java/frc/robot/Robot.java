@@ -73,6 +73,8 @@ public class Robot extends TimedRobot {
 
   boolean firstTeleopRun = true;
 
+ // a
+
   boolean shooterSetOn = false;
   boolean intakeSetDeployed = false;
   double hoodPosition = 90;
@@ -85,17 +87,6 @@ public class Robot extends TimedRobot {
   boolean ejectShooter = false;
   boolean hopperEject = false;
   boolean hopperOn = false;
-
-  boolean prevHopperEject;
-  boolean prevHopperOn;
-  boolean prevShooterOn;
-  boolean prevIntakeDeployed;
-  int prevShooterSpeed;
-  boolean prevEjectAll;
-  boolean prevFireShooter;
-  boolean prevIntakeOn;
-  boolean prevIntakeEject;
-  DeployState prevIntakeDeployState;
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<String>();
@@ -144,12 +135,12 @@ public class Robot extends TimedRobot {
     //scheduler.schedule(drive, executor);
 		//scheduler.schedule(elevator, executor);
     //scheduler.schedule(collisionManager, executor);
-    scheduler.schedule(jetsonUDP, executor);
+    //scheduler.schedule(jetsonUDP, executor);
     scheduler.schedule(robotTracker, executor);
     
 
     //elevator.elevHome();
-    drive.setSimpleDrive(false);
+    drive.setSimpleDrive(true);
 
     Thread.currentThread().setPriority(7);
   }
@@ -185,10 +176,11 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     shooter.start();
     shooter.setSpeed(0);
-    climber.start();
+    //climber.start();
     controlPanel.start();
     hopper.start();
     intake.start();
+    
 
     autoDone = false;
     scheduler.resume();
@@ -253,11 +245,14 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     shooter.start();
     shooter.setSpeed(0);
-    climber.start();
+    //climber.start();
     controlPanel.start();
     hopper.start();
     intake.start();
-    blinkinLED.start();
+  blinkinLED.start();
+//=======
+    jetsonUDP.start();
+//c349e488ce1535e2388178b24ceb2496f2a1bdd1
 
 
     jetsonUDP.changeExp(true);
@@ -315,6 +310,8 @@ public class Robot extends TimedRobot {
       if (xbox.getRisingEdge(2)){
         intakeSetDeployed = !intakeSetDeployed;
 
+        intake.setDeployState(intakeSetDeployed ? DeployState.DEPLOY:DeployState.UNDEPLOY);
+
       }
 
       if(xbox.getRisingEdge(3)){
@@ -335,7 +332,7 @@ public class Robot extends TimedRobot {
 
       fireShooter = false;
       ejectShooter = false;
-      intakeOn = false;
+     // intakeOn = false;
       ejectAll = false;
       intakeEject = false;
       shooterOn = false;
@@ -355,9 +352,13 @@ public class Robot extends TimedRobot {
 
 
       }
+      /*else {
+        fireShooter = false;
+        hopperOn = false;
+      }*/
 
       if(xbox.getRawAxis(2)>0.5){
-        //intake in
+        //intake on 
         intakeOn = true;
         hopperOn = true;
 
@@ -366,9 +367,9 @@ public class Robot extends TimedRobot {
       if (xbox.getRawButton(5)){
         //intake out
         intakeEject = true;
-        hopperEject = true;
+       // hopperEject = true;
 
-        hopperOn = false;
+        //hopperOn = false;
         intakeOn = false;
 
       }
@@ -387,66 +388,53 @@ public class Robot extends TimedRobot {
       }
 
       DeployState intakeDeployState = intake.getDeployState();
-      if (DeployState.DEPLOY == intakeDeployState){
-        if (prevHopperOn != hopperOn|| prevHopperEject != hopperEject){
-          if(hopperOn){
-            hopper.setFrontMotorState(FrontMotorState.ACTIVE);
-            hopper.setSnailMotorState(SnailMotorState.ACTIVE);
-    
-          } else if(hopperEject){
-            hopper.setFrontMotorState(FrontMotorState.REVERSE);
-            hopper.setSnailMotorState(SnailMotorState.REVERSE);
-    
-          } else {
-            hopper.setFrontMotorState(FrontMotorState.INACTIVE);
-            hopper.setSnailMotorState(SnailMotorState.INACTIVE);
-    
-          }
-        }
+      if (true || DeployState.DEPLOY == intakeDeployState){
+        if(hopperOn){
+          hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+          hopper.setSnailMotorState(SnailMotorState.ACTIVE);
   
-        if(prevIntakeOn != intakeOn || prevIntakeEject != intakeEject ){
-          if (intakeOn){
-            intake.setIntakeState(IntakeState.INTAKE);
-
-          } else if(intakeEject){
-            intake.setIntakeState(IntakeState.EJECT);
-
-          } else{
-            intake.setIntakeState(IntakeState.OFF);
-
-          }
+        } else if(hopperEject){
+          hopper.setFrontMotorState(FrontMotorState.REVERSE);
+          hopper.setSnailMotorState(SnailMotorState.REVERSE);
+  
+        } else {
+          hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+          hopper.setSnailMotorState(SnailMotorState.INACTIVE);
   
         }
+      
+        if (intakeOn){
+          intake.setIntakeState(IntakeState.INTAKE);
 
-      } else if (prevIntakeDeployState != intakeDeployState){
+        } else if(intakeEject){
+          intake.setIntakeState(IntakeState.EJECT);
+
+        } else{
+          intake.setIntakeState(IntakeState.OFF);
+
+        }
+  
+
+      } else {
         intake.setIntakeState(IntakeState.OFF);
         hopper.setFrontMotorState(FrontMotorState.INACTIVE);
         hopper.setSnailMotorState(SnailMotorState.INACTIVE);
 
       }
 
-      if (shooterOn != prevShooterOn || prevFireShooter != fireShooter){
-        if (shooterOn){
-          shooter.setSpeed(shooterSpeed);
-          shooter.setHoodAngle(hoodPosition);
-        } else {
-          shooter.setSpeed(0);
-        }
-
-        if (fireShooter){
-          shooter.setFiring(true);
-        }
-
+      if (shooterOn){
+        shooter.setSpeed(shooterSpeed);
+        shooter.setHoodAngle(hoodPosition);
+      } else {
+        shooter.setSpeed(0);
+        shooter.setFiring(false);
       }
 
-      prevHopperEject = hopperEject;
-      prevHopperOn = hopperOn;
-      prevShooterOn = shooterOn;
-      prevIntakeDeployed = intakeSetDeployed;
-      prevFireShooter = fireShooter;
-      prevIntakeOn = intakeOn;
-      prevIntakeEject = intakeEject;
-      prevIntakeDeployState = intakeDeployState;
+    
+      shooter.setFiring(fireShooter);
+      
+      System.out.println("velocity L: " + drive.getLeftSpeed() + " Velocity R: " + drive.getRightSpeed());
+
 
 
       /*
@@ -578,7 +566,7 @@ public class Robot extends TimedRobot {
     
     scheduler.pause();
     shooter.pause();
-    climber.pause();
+    //climber.pause();
     controlPanel.pause();
     hopper.pause();
     intake.pause();
