@@ -321,6 +321,7 @@ public final class Constants {
 	public static final int controlPanelPeriod = 50;
 	public static final int hopperPeriod = 50;
 	public static final int DrivePeriod = 5;
+	public static final int BlinkinLEDPeriod = 50;
 
 	
 

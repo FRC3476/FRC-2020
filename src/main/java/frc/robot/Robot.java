@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
   Intake intake = Intake.getInstance();
   VisionManager visionManager = VisionManager.getInstance();
   ControlPanel controlPanel = ControlPanel.getInstance();
-
+  BlinkinLED blinkinLED = BlinkinLED.getInstance();
 
   ExecutorService executor = Executors.newFixedThreadPool(4);
   ThreadScheduler scheduler = new ThreadScheduler();
@@ -257,6 +257,7 @@ public class Robot extends TimedRobot {
     controlPanel.start();
     hopper.start();
     intake.start();
+    blinkinLED.start();
 
 
     jetsonUDP.changeExp(true);

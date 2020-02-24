@@ -63,7 +63,7 @@ public class ControlPanel extends Subsystem {
 
     }
 
-    private char getColorSesorData() {
+    public char getColorSesorData() {
 
         Color detectedColor = colorSensor.getColor();
         char colorData;
