@@ -80,9 +80,9 @@ public final class Constants {
 	public static final int ClimberPeriod = -1; 
 
 	//Intake Constants
-	public static final int IntakeMasterId = 50;//Anthony number
-	public static final int IntakeSolenoidId = 5;//Crashing number
-	public static final double IntakeMotorPower = 0.6; //Testing number
+	public static final int IntakeMasterId = 50;
+	public static final int IntakeSolenoidId = 5;
+	public static final double IntakeMotorPower = 1.0;
 	public static final double IntakeOpenTime = 0.5;
 	
 	//Hopper Constants
