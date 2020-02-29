@@ -2,6 +2,7 @@
 
 package frc.subsystem;
 
+import frc.robot.Constants;
 import frc.utility.CircularQueue;
 import frc.utility.Threaded;
 import frc.utility.math.InterpolablePair;
@@ -9,7 +10,7 @@ import frc.utility.math.RigidTransform2D;
 import frc.utility.math.Rotation2D;
 import frc.utility.math.Translation2D;
 
-public class RobotTracker extends Threaded {
+public class RobotTracker extends Subsystem {
 
 	private static final RobotTracker trackingInstance = new RobotTracker();
 
@@ -27,6 +28,7 @@ public class RobotTracker extends Threaded {
 	private Translation2D translationOffset;
 
 	private RobotTracker() {
+		super(Constants.RobotTrackerPeriod);
 		vehicleHistory = new CircularQueue<>(100);
 		gyroHistory = new CircularQueue<>(200);
 		driveBase = Drive.getInstance();
@@ -101,5 +103,17 @@ public class RobotTracker extends Threaded {
 	synchronized public void setInitialTranslation(Translation2D offset) {
 		this.translationOffset = offset;
 		resetOdometry();
+	}
+
+	@Override
+	public void selfTest() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void logData() {
+		// TODO Auto-generated method stub
+
 	}
 }

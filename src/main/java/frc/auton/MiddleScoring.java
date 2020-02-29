@@ -59,7 +59,7 @@ public class MiddleScoring implements Runnable {
     @Override
     public void run() {
 
-        vision.aim();
+        //vision.setState();
         while(!vision.isFinished()) if(isDead()) return;
         //shooter.Shoot();
 
@@ -86,7 +86,7 @@ public class MiddleScoring implements Runnable {
         Path p2 = new Path(here());
         p2.addPoint(new Translation2D(20, -75), 60); // Random Speed
 
-        vision.aim();
+        //vision.setState();
 
         while(!vision.isFinished()) if(isDead()) return;
         //shooter.Shoot();

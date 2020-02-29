@@ -13,6 +13,7 @@ import frc.subsystem.Hopper.FrontMotorState;
 import frc.subsystem.Hopper.SnailMotorState;
 import frc.subsystem.Intake.DeployState;
 import frc.subsystem.Intake.IntakeState;
+import frc.subsystem.VisionManager.VisionStatus;
 //import frc.robot.subsystem.Drive;
 import frc.utility.math.*;
 import frc.utility.control.motion.Path;
@@ -73,11 +74,6 @@ public class Robot extends TimedRobot {
 
   boolean firstTeleopRun = true;
 
-<<<<<<< HEAD
-=======
- // a
-
->>>>>>> origin/dev1
   boolean shooterSetOn = false;
   boolean intakeSetDeployed = false;
   double hoodPosition = 90;
@@ -90,6 +86,8 @@ public class Robot extends TimedRobot {
   boolean ejectShooter = false;
   boolean hopperEject = false;
   boolean hopperOn = false;
+  double maxl; //TODO: remove
+  double maxr;
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<String>();
@@ -134,15 +132,16 @@ public class Robot extends TimedRobot {
     goodbad.addOption("mInDbUiSnEsS", "mInDbUiSnEsS");
     SmartDashboard.putData("Good or Bad? To be or Not to Be?", goodbad);
 
+    shooter.homeHood();
 
     //scheduler.schedule(drive, executor);
 		//scheduler.schedule(elevator, executor);
     //scheduler.schedule(collisionManager, executor);
     //scheduler.schedule(jetsonUDP, executor);
-    scheduler.schedule(robotTracker, executor);
+    //scheduler.schedule(robotTracker, executor);
     
 
-    //elevator.elevHome();
+    // elevator.elevHome();
     drive.setSimpleDrive(true);
 
     Thread.currentThread().setPriority(7);
@@ -282,19 +281,30 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+
+      System.out.println("intake current: " + intake.getCurrent());
       //System.out.println(drive.getGyroAngle());
 
       ArrayList<Double> times = new ArrayList<Double>();
       
       if(profileTeleop) times.add(Timer.getFPGATimestamp());
 
+     // System.out.println("get hood angle " + shooter.getHoodAngle());
+      // System.out.println(hopper.getCurrent());
       //System.out.println("turret " + turret.getAngle());
       //System.out.println(drive.getLeftSpeed() + " right: " + drive.getRightSpeed());
       xbox.update();
       stick.update();
       buttonPanel.update();
       wheel.update();
-      drive.arcadeDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4));
+
+      if(xbox.getRawButton(4)){
+        visionManager.setState(VisionStatus.AIMING);
+      } else{
+        visionManager.setState(VisionStatus.IDLE);
+        drive.arcadeDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4));
+      }
+      
 
 
       /* x:flywheel togle ✔
@@ -314,25 +324,29 @@ public class Robot extends TimedRobot {
 
       }
 
-      if(xbox.getRisingEdge(3)){
+     /* if(xbox.getRisingEdge(3) || buttonPanel.getRisingEdge(5)){
         shooterSetOn=!shooterSetOn;
 
-      }
+      }*/
 
+      if(buttonPanel.getRawButton(5)) shooterSetOn = true; 
+      else shooterSetOn = false; 
+
+      //shooter presets
       if (buttonPanel.getRisingEdge(1)){
-        hoodPosition = Constants.MinHoodReleaseAngle +1; //TODO: Adjust numbers
-        shooterSpeed = 2000;
+        hoodPosition = 25; //TODO: Adjust numbers
+        shooterSpeed = 5500;
       } else if (buttonPanel.getRisingEdge(2)){
-        hoodPosition = 45; //TODO: Adjust numbers
-        shooterSpeed = 4000;
+        hoodPosition = 33; //TODO: Adjust numbers
+        shooterSpeed = 5000;
       } else if (buttonPanel.getRisingEdge(3)){
-        hoodPosition = Constants.MaxHoodReleaseAngle-1; //TODO: Adjust numbers
-        shooterSpeed = 6000;
+        hoodPosition = 65; //TODO: Adjust numbers
+        shooterSpeed = 3250;
       }
 
       fireShooter = false;
       ejectShooter = false;
-     // intakeOn = false;
+      intakeOn = false;
       ejectAll = false;
       intakeEject = false;
       shooterOn = false;
@@ -345,7 +359,7 @@ public class Robot extends TimedRobot {
         
       }
 
-      if (xbox.getRawAxis(3) > 0.5){ //3, 0.5
+      if (xbox.getRawAxis(2) > 0.5){ //3, 0.5
         //fire shooter
         fireShooter = true;
         hopperOn = true;
@@ -357,16 +371,17 @@ public class Robot extends TimedRobot {
         hopperOn = false;
       }*/
 
-      if(xbox.getRawAxis(2)>0.5){
+      if(xbox.getRawAxis(3)>0.5){
         //intake on 
         intakeOn = true;
         hopperOn = true;
 
       }
 
-      if (xbox.getRawButton(5)){
+      if (xbox.getRawButton(6)){
         //intake out
         intakeEject = true;
+        hopperOn=true;
        // hopperEject = true;
 
         //hopperOn = false;
@@ -432,8 +447,9 @@ public class Robot extends TimedRobot {
 
     
       shooter.setFiring(fireShooter);
-      
-      System.out.println("velocity L: " + drive.getLeftSpeed() + " Velocity R: " + drive.getRightSpeed());
+      maxl = Math.max(Math.abs(drive.getLeftSpeed()), maxl);
+      maxr = Math.max(Math.abs(drive.getRightSpeed()), maxr);
+      //System.out.println("velocity L: " +  maxl + " Velocity R: " + maxr);
 
 
 
@@ -525,13 +541,13 @@ public class Robot extends TimedRobot {
 
 
       // if (buttonPanel.getRisingEdge(1)){
-      //   hoodPosition = 0; //TODO: Adjust numbers
+      //   hoodPosition = 0; 
       //   shooterSpeed = 2000;
       // } else if (buttonPanel.getRisingEdge(1)){
-      //   hoodPosition = 45; //TODO: Adjust numbers
+      //   hoodPosition = 45;
       //   shooterSpeed = 4000;
       // } else if (buttonPanel.getRisingEdge(2)){
-      //   hoodPosition = 90; //TODO: Adjust numbers
+      //   hoodPosition = 90;
       //   shooterSpeed = 6000;
       // }
 
@@ -575,6 +591,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     //System.out.println(turret.turretHallEffect.get());
+    //System.out.println(shooter.getHomeSwitch());
     try {
      // System.out.println(JetsonUDP.getInstance().getTargets()[0].x);
      // System.out.println(JetsonUDP.getInstance().getTargets()[0].distance);

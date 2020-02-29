@@ -2,12 +2,15 @@ package frc.subsystem;
 
 import com.ctre.phoenix.CANifier.PinValues;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import frc.utility.LazyCANSparkMax;
 import frc.utility.LazyTalonFX;
 import frc.utility.LazyTalonSRX;
@@ -29,6 +32,8 @@ public class Shooter extends Subsystem{
     private double prev_error = 0;
     private double shooterOutput = 0;
     private boolean firing = false;
+    private double hoodHomeStart;
+    private boolean timerStarted = false;
     private  static ShooterState shooterState = ShooterState.OFF;
     //private SynchronousPid turnPID;
     
@@ -72,7 +77,7 @@ public class Shooter extends Subsystem{
         //Make slave motors follow the master
         shooterSlave1.follow(shooterMaster);
         shooterSlave2.follow(shooterMaster);
-        shooterSlave2.follow(shooterMaster);
+        shooterSlave3.follow(shooterMaster);
 
         //Config PID constansts
         // unused
@@ -87,15 +92,30 @@ public class Shooter extends Subsystem{
         feederMotor.config_IntegralZone(0, Constants.FeederIntegralZone);
         feederMotor.setInverted(true);
 
+        hoodMotor.setSmartCurrentLimit(15);
+        shooterMaster.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 0, 0));
+        shooterSlave1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 0, 0));
+        shooterSlave2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 0, 0));
+        shooterSlave3.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 0, 0));
+
+        shooterMaster.setNeutralMode(NeutralMode.Coast);
+        shooterSlave1.setNeutralMode(NeutralMode.Coast);
+        shooterSlave2.setNeutralMode(NeutralMode.Coast);
+        shooterSlave3.setNeutralMode(NeutralMode.Coast);
+
+
         hoodPID = hoodMotor.getPIDController();
         hoodPID.setP(Constants.kHoodP, 0);
 		hoodPID.setD(Constants.kHoodD, 0);
 		hoodPID.setFF(Constants.kHoodF,0);
-		hoodPID.setOutputRange(-Constants.HoodPIDSpeedMax, Constants.HoodPIDSpeedMax);
+        hoodPID.setOutputRange(-Constants.HoodPIDSpeedMax, Constants.HoodPIDSpeedMax);
+        
     }
 
     public synchronized void setSpeed(int speed) {
         targetShooterSpeed = speed;
+        if (shooterState == ShooterState.HOMING) return;
+
         if (speed > 0){
             shooterState = ShooterState.SPINNING;
         } else {
@@ -110,23 +130,22 @@ public class Shooter extends Subsystem{
 
     public synchronized void update(){
 
-        System.out.println("out: " + shooterOutput);
+        // System.out.println("Speed: " + shooterOutput + " Error: " + flywheelError );
 
         shooterMaster.set(ControlMode.PercentOutput, shooterOutput);
         
-
         switch(shooterState){
             case SPINNING: 
 
                 flywheelError = targetShooterSpeed - getRPM();                // calculate the error;
-                shooterOutput += Constants.TakeBackHalfGain * flywheelError;                     // integrate the output;
+                shooterOutput += Constants.TakeBackHalfGain * flywheelError* Constants.ShooterPeriod;                     // integrate the output;
                 if (flywheelError*prevError<0) { // if zero crossing,
                     shooterOutput = 0.5 * (shooterOutput + tbh);            // then Take Back Half
                     tbh = shooterOutput;                             // update Take Back Half variable
                     prev_error = flywheelError;                       // and save the previous error
                 }
 
-                System.out.println("error: " +  flywheelError);
+                // System.out.println("error: " +  flywheelError);
                 
 
                 hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
@@ -158,23 +177,41 @@ public class Shooter extends Subsystem{
 
             case OFF:
                 feederMotor.set(ControlMode.PercentOutput, 0);
-                hoodPID.setReference(0, ControlType.kPosition);
+                hoodPID.setReference((1) * Constants.HoodRotationsPerDegree, ControlType.kPosition);
 
                 shooterOutput = 0;
                 break;
 
 
             case HOMING:
+                // System.out.println("trying to home");
+                if (timerStarted == false){
+                    timerStarted = true;
+                    hoodHomeStart = Timer.getFPGATimestamp();
+
+                }
                 feederMotor.set(ControlMode.PercentOutput, 0);
                 shooterOutput = 0;
 
                 hoodMotor.set(Constants.HoodHomingSpeed);
-                if (homeSwitch.get()){
+                if (getHomeSwitch()){
                     hoodEncoder.setPosition(0);
                     shooterState = ShooterState.OFF;
                     hoodPID.setReference(0, ControlType.kPosition);
                     targetHoodPosition = 0;
+                    System.out.println("Homing succeeded!");
+
+
+                }  else if (Timer.getFPGATimestamp()>hoodHomeStart +Constants.HoodHomeTimeout){
+                    hoodEncoder.setPosition(0);
+                    shooterState = ShooterState.OFF;
+                    hoodPID.setReference(0, ControlType.kPosition);
+                    targetHoodPosition = 0;
+                    System.out.println("Home Failed");
+
                 }
+
+                
                 break;
             case EJECT:
                 feederMotor.set(ControlMode.PercentOutput, -Constants.FeederMotorSpeed);
@@ -197,9 +234,14 @@ public class Shooter extends Subsystem{
         targetHoodPosition = (Constants.MaxHoodReleaseAngle - angle) * Constants.HoodRotationsPerDegree;
     }
 
-    public synchronized void homeHood(){
-        shooterState = ShooterState.HOMING;
+    public double getHoodAngle() {
+        return -(hoodEncoder.getPosition() / Constants.HoodRotationsPerDegree) + Constants.MaxHoodReleaseAngle;
+    }
 
+    public synchronized void homeHood(){
+        timerStarted = false;
+        shooterState = ShooterState.HOMING;
+        //hoodEncoder.setPosition(0);
     }
 
     public synchronized void setEject(boolean eject){
@@ -228,5 +270,10 @@ public class Shooter extends Subsystem{
 
 
     }
+
+    public boolean getHomeSwitch(){
+        return !homeSwitch.get();
+    }
+
 
 }

@@ -36,31 +36,31 @@ public final class Constants {
 	public static final double kFeederI = 0.0;
 	public static final double kFeederD = 0.3;
 	public static final int FeederIntegralZone = 1000;
-	public static final double FeederMotorSpeed = .8;
+	public static final double FeederMotorSpeed = .5;
 
 	public static final double kShooterP = 0.40;
 	public static final double kShooterI = 0.0;
 	public static final double kShooterD = 0.3;
 	public static final double ShooterGain = 1;
 	public static final int ShooterIntegralZone = 0;
-	public static final int ShooterPeriod = 10;
 	public static final double ShooterRPMPerTicksPer100ms = 600d/2048d;
-	public static final int HomeSwitchId = 0; //TODO
+	public static final int HomeSwitchId = 0; 
 
-	public static final int ShooterMaxDeviation = 100;
+	public static final double ShooterMaxDeviation = 10000;
 
-	public static final double TakeBackHalfGain = 2.5e-5;
+	public static final double TakeBackHalfGain = 2.0e-6;
 
 	public static final int HoodMotorId = 35;
-	public static final double kHoodP = 0;
+	public static final double kHoodP = 16.0e-1;
 	public static final double kHoodI = 0;
 	public static final double kHoodD = 0;
 	public static final double kHoodF = 0;
-	public static final double HoodRotationsPerDegree = (60/12)*(576/20)*(1/360);//(12/60)*(20/576);//100;
+	public static final double HoodRotationsPerDegree = (60d/12d)*(576d/20d)*(1d/360d);//(12/60)*(20/576);//100;
 	public static final int HoodMaxDeviation = 5;
-	public static final double HoodHomingSpeed = -0.05;
-	public static final double HoodPIDSpeedMax = 0.05;
-	public static final double hoodMotorStalledAmps = 5;
+	public static final double HoodHomingSpeed = -0.4;
+	public static final double HoodPIDSpeedMax = 0.8;
+	public static final double hoodMotorStalledAmps = 5; //not used
+	public static final double HoodHomeTimeout = 1.5;
 	public final static double AutoShooterOnTime = 3;
 	public final static boolean HoodMotorDirection = false; //True is Inverted 
 	public final static double MaxHoodReleaseAngle = 75;
@@ -82,15 +82,14 @@ public final class Constants {
 	//Intake Constants
 	public static final int IntakeMasterId = 50;//Anthony number
 	public static final int IntakeSolenoidId = 5;//Crashing number
-	public static final int IntakeMotorPowerIntake = 1; //Testing number
-	public static final double IntakeMotorPowerEject = -0.5;//Testing number
+	public static final double IntakeMotorPower = 0.6; //Testing number
 	public static final double IntakeOpenTime = 0.5;
 	
 	//Hopper Constants
 	public static final int FrontHopperMotorId = 40; //random number
 	public static final int SnailMotorId = 41; //random number
-	public static final double HopperFrontMotorSpeed = 0.8;
-	public static final double HopperSnailSpeed = 0.8;
+	public static final double HopperFrontMotorSpeed = 0.3;
+	public static final double HopperSnailSpeed = 1.0;
 	
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;
@@ -142,15 +141,15 @@ public final class Constants {
 	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
 	public static final double maxTurnError = 2;
 	public static final double maxPIDStopSpeed = 8;
-	public static final double DriveHighSpeed = 190;
+	public static final double DriveHighSpeed = 145;
 	public static final double DriveLowSpeed = 95;
 	
 	public static final double kDriveRightAutoP = 4*0.0005263 * kDriveInchesPerSecPerRPM; //0.00065
 	public static final double kDriveRightAutoD = 0.000; 
-	public static final double kDriveRightAutoF = 1/193.12283370478679  * kDriveInchesPerSecPerRPM; //0.055
+	public static final double kDriveRightAutoF = 1/149.89885385408667  * kDriveInchesPerSecPerRPM; //0.055
 	public static final double kDriveLeftAutoP = 4*0.0005263 * kDriveInchesPerSecPerRPM;
 	public static final double kDriveLeftAutoD = 0.000; //0.0001
-	public static final double kDriveLeftAutoF = 1/203.7763632654868 * kDriveInchesPerSecPerRPM ; //0.0005 too high
+	public static final double kDriveLeftAutoF = 1/148.46271036085238 * kDriveInchesPerSecPerRPM ; //0.0005 too high
 
 	public static final double kDriveRightHighP = kDriveRightAutoP;
 	public static final double kDriveRightHighD = kDriveRightAutoD;
@@ -285,6 +284,7 @@ public final class Constants {
 	
 	
 	// Camera
+	public static final double CameraXFOV = 29.61;
 	//PRAC
 	//public static final double cameraYOffset = 5.310 + 1.25;//5.310 + 1.25;
 	//public static final double cameraXOffset = -4.815 + 1.6 - 1.0 - 1; //-4.815 + 1.6 - 1.0
@@ -320,12 +320,12 @@ public final class Constants {
 	public static final int intakePeriod = 50;
 	public static final int controlPanelPeriod = 50;
 	public static final int hopperPeriod = 50;
-<<<<<<< HEAD
 	public static final int DrivePeriod = 5;
-=======
-	public static final int JetsonUdpPeriod = 5;
+	public static final int JetsonUdpPeriod = 12;
+	public static final int RobotTrackerPeriod = 5;
+	public static final int VisionManagerPeriod = 12;
+	public static final int ShooterPeriod = 10;
 
->>>>>>> origin/dev1
 
 	
 

@@ -60,7 +60,7 @@ public class TrenchBlue implements Runnable {
         //Start 75 120
         System.out.println("Trench Blue"); 
         
-        vision.aim();
+        //vision.setState();
         while(!vision.isFinished()) if(isDead()) return;
         //shooter.Shoot();
 
@@ -87,7 +87,7 @@ public class TrenchBlue implements Runnable {
         drive.setAutoPath(p1, false);
         while(!drive.isFinished()) if(isDead()) return;
 
-        vision.aim();
+        //vision.setState();
         while(!vision.isFinished()) if(isDead()) return;
         //shooter.Shoot();
 

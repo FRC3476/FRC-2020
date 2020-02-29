@@ -37,7 +37,7 @@ public Intake() {
         super(Constants.intakePeriod);
         deploySolenoid = new Solenoid(Constants.IntakeSolenoidId);
         intakeMotor = new LazyTalonSRX(Constants.IntakeMasterId);
-        intakeMotor.setInverted(false);
+        intakeMotor.setInverted(true);
         intakeMotor.configPeakCurrentLimit(0);
         intakeMotor.configPeakCurrentDuration(0);
         intakeMotor.configContinuousCurrentLimit(40);
@@ -75,13 +75,13 @@ public synchronized void setIntakeState(IntakeState intakeState) {
         this.intakeState = intakeState;
         switch(intakeState) {
                 case EJECT:
-                        intakeMotor.set(ControlMode.PercentOutput, -0.8);
+                        intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
                         break;
                 case OFF:
                         intakeMotor.set(ControlMode.PercentOutput, 0.0);
                         break;
                 case INTAKE:
-                        intakeMotor.set(ControlMode.PercentOutput, 0.8);  
+                        intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
                         break;
 
         }

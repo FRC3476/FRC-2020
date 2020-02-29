@@ -155,7 +155,7 @@ public class Drive extends Subsystem {
 		lastSticky = false;
 		lastFaultTime = Timer.getFPGATimestamp();
 
-		//configHigh();
+		configHigh();
 		configAuto();
 	}
 
@@ -472,10 +472,10 @@ public class Drive extends Subsystem {
 		leftSparkSlave.follow(leftSpark);
 		rightSparkSlave.follow(rightSpark);
 		
-		leftSpark.setIdleMode(IdleMode.kCoast);
-		rightSpark.setIdleMode(IdleMode.kCoast);
-		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+		leftSpark.setIdleMode(IdleMode.kBrake);
+		rightSpark.setIdleMode(IdleMode.kBrake);
+		leftSparkSlave.setIdleMode(IdleMode.kBrake);
+		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
 
 		// leftSparkEncoder.setInverted(true);
 		// rightSparkEncoder.setInverted(true);

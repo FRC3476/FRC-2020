@@ -59,7 +59,7 @@ public class ShootOnly implements Runnable {
         //Start 75 120
         System.out.println("Only Shoot"); 
         
-        vision.aim();
+        //vision.setState();
         while(!vision.isFinished()) if(isDead()) return;
         //shooter.Shoot();
 

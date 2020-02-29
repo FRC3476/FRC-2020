@@ -46,7 +46,7 @@ public Hopper() {
     }
 
     public double getCurrent() {
-        return SnailMotor.getOutputCurrent();
+        return SnailMotor.getSupplyCurrent();
     }
 
     public void setFrontSpeed(double Frontspeed) {
