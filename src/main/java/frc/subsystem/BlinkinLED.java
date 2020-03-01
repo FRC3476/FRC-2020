@@ -11,21 +11,21 @@ public class BlinkinLED extends Subsystem{
 
     private ActivityCheck activityCheck = ActivityCheck.Idle;
 
-    private static final BlinkinLED instance = new BlinkinLED(); 
+    private static final BlinkinLED instance = null;//new BlinkinLED(); 
     public static BlinkinLED getInstance() {
         return instance;
     }
-    ControlPanel controlPanel = new ControlPanel();
+    ControlPanel controlPanel = ControlPanel.getInstance();
     Spark spark = new Spark(0);
 
-        public BlinkinLED() {
+    public BlinkinLED() {
         super(Constants.BlinkinLEDPeriod);
-        controlPanel.getColorSesorData();
+        controlPanel.getColorSensorData();
     //Saikran said to create instances up here, to create Control Panel Locally(since its final), and to call it.    
     }
 
     public void ControlPanelCheck(){
-        char color = controlPanel.getColorSesorData();
+        char color = controlPanel.getColorSensorData();
 
         switch(color){
             case 'B':

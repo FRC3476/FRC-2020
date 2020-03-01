@@ -80,11 +80,12 @@ public class Drive extends Subsystem {
 	//private LazyTalonSRX leftTalon, rightTalon, leftSlaveTalon, leftSlave2Talon, rightSlaveTalon, rightSlave2Talon;
 	private PurePursuitController autonomousDriver;
 	private SynchronousPid turnPID;
-	private DriveState driveState;
+	public DriveState driveState;
 	private RateLimiter moveProfiler, turnProfiler;
 	private Solenoid shifter;
 	private Rotation2D wantedHeading;
 	private volatile double driveMultiplier;
+	boolean rotateAuto = false; 
 
 	private boolean lastSticky, clearSticky;
 	private double lastFaultTime;
@@ -145,7 +146,7 @@ public class Drive extends Subsystem {
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(1.0, 0, 1.2, 0); //P=1.0 OR 0.8
+		turnPID = new SynchronousPid(1.8/2.0, 0, 0, 0); //P=1.0 OR 0.8
 		turnPID.setOutputRange(Constants.DriveHighSpeed, -Constants.DriveHighSpeed);
 		turnPID.setSetpoint(0);
 
@@ -258,7 +259,7 @@ public class Drive extends Subsystem {
 		if (drivePercentVbus) {
 			//System.out.println("left " + getLeftSpeed() + " power: " + leftMotorSpeed);
 			//System.out.println("right " + getRightSpeed() + " power: " + rightMotorSpeed);
-
+			
 			setWheelPower(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		} else {
 			leftMotorSpeed = moveValue + rotateValue*0.5;
@@ -269,6 +270,8 @@ public class Drive extends Subsystem {
 		//	System.out.println("left " + (leftMotorSpeed - getLeftSpeed() ));
 			//System.out.println("right " + (rightMotorSpeed - getRightSpeed() ));
 			//System.out.println("left " + leftMotorSpeed + " right " + rightMotorSpeed);
+			//System.out.println("REQUESTED WHELEVE VROLOCITY: " + leftMotorSpeed + ", " + rightMotorSpeed);
+
 			setWheelVelocity(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		}
 		//System.out.println("left motor speed " + leftMotorSpeed + " right motor speed " + rightMotorSpeed);
@@ -735,23 +738,39 @@ public class Drive extends Subsystem {
 		synchronized (this) {
 			wantedHeading = angle;
 			driveState = DriveState.TURN;
+			rotateAuto = true;
+		}
+		configHigh();
+	}
+
+	public void setRotationTeleop(Rotation2D angle) {
+		synchronized (this) {
+			wantedHeading = angle;
+			driveState = DriveState.TURN;
+			rotateAuto = false;
 		}
 		configHigh();
 	}
 
 	private void updateTurn() {
-		double error = wantedHeading.rotateBy(RobotTracker.getInstance().getOdometry().rotationMat.inverse()).getDegrees();
+		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
 		double deltaSpeed;
 		//System.out.println(RobotTracker.getInstance().getOdometry().rotationMat.getDegrees());
 		//System.out.println("error: " + error);
 		deltaSpeed = turnPID.update(error);
+		deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 2.7), deltaSpeed);
 		//deltaSpeed = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(deltaSpeed), 0, 180, 0, Constants.DriveHighSpeed), deltaSpeed);
-		if (Math.abs(error) < Constants.maxTurnError && deltaSpeed < Constants.maxPIDStopSpeed) {
+		
+		if ( rotateAuto && Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
 			setWheelVelocity(new DriveSignal(0, 0));
 			synchronized (this) {
 				driveState = DriveState.DONE;
 			}
-		} else {
+		} else if(!rotateAuto) {
+
+		}
+		
+		else {
 			setWheelVelocity(new DriveSignal(-deltaSpeed, deltaSpeed));
 		}
 	}

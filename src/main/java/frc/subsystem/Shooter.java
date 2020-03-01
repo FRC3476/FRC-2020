@@ -26,11 +26,10 @@ public class Shooter extends Subsystem{
     DigitalInput homeSwitch;
     private double tbh = 0;
     private double prevError = 0; 
-    private int targetShooterSpeed;
+    private double targetShooterSpeed;
     private double targetHoodPosition;
     private double flywheelError = 0;
     private double prev_error = 0;
-    private double shooterOutput = 0;
     private boolean firing = false;
     private double hoodHomeStart;
     private boolean timerStarted = false;
@@ -81,10 +80,11 @@ public class Shooter extends Subsystem{
 
         //Config PID constansts
         // unused
-        // shooterMaster.config_kP(0, Constants.kShooterP, Constants.TimeoutMs);
-		// shooterMaster.config_kI(0, Constants.kShooterI, Constants.TimeoutMs);
-        // shooterMaster.config_kD(0, Constants.kShooterD, Constants.TimeoutMs);
-        // shooterMaster.config_IntegralZone(0, Constants.ShooterIntegralZone, Constants.TimeoutMs);
+        shooterMaster.config_kP(0, Constants.kShooterP, Constants.TimeoutMs);
+		shooterMaster.config_kI(0, Constants.kShooterI, Constants.TimeoutMs);
+        shooterMaster.config_kD(0, Constants.kShooterD, Constants.TimeoutMs);
+        shooterMaster.config_kF(0, Constants.kShooterF, Constants.TimeoutMs);
+        shooterMaster.config_IntegralZone(0, Constants.ShooterIntegralZone, Constants.TimeoutMs);
 
         feederMotor.config_kP(0, Constants.kFeederP, Constants.TimeoutMs);
         feederMotor.config_kI(0, Constants.kFeederI, Constants.TimeoutMs);
@@ -132,21 +132,22 @@ public class Shooter extends Subsystem{
 
         // System.out.println("Speed: " + shooterOutput + " Error: " + flywheelError );
 
-        shooterMaster.set(ControlMode.PercentOutput, shooterOutput);
         
         switch(shooterState){
             case SPINNING: 
 
-                flywheelError = targetShooterSpeed - getRPM();                // calculate the error;
-                shooterOutput += Constants.TakeBackHalfGain * flywheelError* Constants.ShooterPeriod;                     // integrate the output;
-                if (flywheelError*prevError<0) { // if zero crossing,
-                    shooterOutput = 0.5 * (shooterOutput + tbh);            // then Take Back Half
-                    tbh = shooterOutput;                             // update Take Back Half variable
-                    prev_error = flywheelError;                       // and save the previous error
-                }
+                // flywheelError = targetShooterSpeed - getRPM();                // calculate the error;
+                // shooterOutput += Constants.TakeBackHalfGain * flywheelError* Constants.ShooterPeriod;                     // integrate the output;
+                // if (flywheelError*prevError<0) { // if zero crossing,
+                //     shooterOutput = 0.5 * (shooterOutput + tbh);            // then Take Back Half
+                //     tbh = shooterOutput;                             // update Take Back Half variable
+                //     prev_error = flywheelError;                       // and save the previous error
+                // }
 
-                // System.out.println("error: " +  flywheelError);
-                
+                shooterMaster.set(ControlMode.Velocity, targetShooterSpeed/Constants.ShooterRPMPerTicksPer100ms);
+                System.out.println("error: " +  shooterMaster.getClosedLoopError()*Constants.ShooterRPMPerTicksPer100ms + 
+                " setpoint: " + shooterMaster.getClosedLoopTarget());
+                System.out.println("Shooter RPM: " + getRPM() + " target: " + targetShooterSpeed);
 
                 hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 
@@ -176,10 +177,9 @@ public class Shooter extends Subsystem{
                 break;
 
             case OFF:
+                shooterMaster.set(ControlMode.PercentOutput, 0);
                 feederMotor.set(ControlMode.PercentOutput, 0);
                 hoodPID.setReference((1) * Constants.HoodRotationsPerDegree, ControlType.kPosition);
-
-                shooterOutput = 0;
                 break;
 
 
@@ -191,7 +191,7 @@ public class Shooter extends Subsystem{
 
                 }
                 feederMotor.set(ControlMode.PercentOutput, 0);
-                shooterOutput = 0;
+                shooterMaster.set(ControlMode.PercentOutput, 0);
 
                 hoodMotor.set(Constants.HoodHomingSpeed);
                 if (getHomeSwitch()){
@@ -215,7 +215,7 @@ public class Shooter extends Subsystem{
                 break;
             case EJECT:
                 feederMotor.set(ControlMode.PercentOutput, -Constants.FeederMotorSpeed);
-
+                shooterMaster.set(ControlMode.PercentOutput, 0);
                 
         }
 

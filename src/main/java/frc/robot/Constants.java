@@ -38,12 +38,13 @@ public final class Constants {
 	public static final int FeederIntegralZone = 1000;
 	public static final double FeederMotorSpeed = .5;
 
-	public static final double kShooterP = 0.40;
-	public static final double kShooterI = 0.0;
-	public static final double kShooterD = 0.3;
-	public static final double ShooterGain = 1;
-	public static final int ShooterIntegralZone = 0;
 	public static final double ShooterRPMPerTicksPer100ms = 600d/2048d;
+	public static final double kShooterP = 1.0e-5;
+	public static final double kShooterI = 0;//5.0e-5;
+	public static final double kShooterD = 1.0e-3;
+	public static final double kShooterF = (0.5*1023) * ShooterRPMPerTicksPer100ms / 3238d;
+	public static final double ShooterGain = 1;
+	public static final int ShooterIntegralZone = (int)(200.0 / ShooterRPMPerTicksPer100ms);
 	public static final int HomeSwitchId = 0; 
 
 	public static final double ShooterMaxDeviation = 10000;
@@ -139,8 +140,8 @@ public final class Constants {
 	// Drive
 	public static final double kDriveInchesPerSecPerRPM = Math.PI* Constants.WheelDiameter/60d/10d;
 	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
-	public static final double maxTurnError = 2;
-	public static final double maxPIDStopSpeed = 8;
+	public static final double maxTurnError = 0.5;
+	public static final double maxPIDStopSpeed = 1.0;
 	public static final double DriveHighSpeed = 145;
 	public static final double DriveLowSpeed = 95;
 	
@@ -321,7 +322,7 @@ public final class Constants {
 	public static final int controlPanelPeriod = 50;
 	public static final int hopperPeriod = 50;
 	public static final int DrivePeriod = 5;
-	public static final int JetsonUdpPeriod = 12;
+	public static final int JetsonUdpPeriod = 5;
 	public static final int RobotTrackerPeriod = 5;
 	public static final int VisionManagerPeriod = 12;
 	public static final int ShooterPeriod = 10;

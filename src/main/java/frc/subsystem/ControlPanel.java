@@ -63,7 +63,7 @@ public class ControlPanel extends Subsystem {
 
     }
 
-    public char getColorSesorData() {
+    public char getColorSensorData() {
 
         Color detectedColor = colorSensor.getColor();
         char colorData;
@@ -89,7 +89,7 @@ public class ControlPanel extends Subsystem {
 //-------------------------------------------------------------
 
 
-    private static final ControlPanel instance = new ControlPanel(); 
+    private static final ControlPanel instance = null;//new ControlPanel(); 
     public static ControlPanel getInstance() {
         return instance;
     }
@@ -177,7 +177,7 @@ public class ControlPanel extends Subsystem {
         case SPINNING:
             spinner.set(Constants.wheelSpinnerLevelTwoSpeed);
 
-            colorString = getColorSesorData();
+            colorString = getColorSensorData();
 
             // check that color is not unknown
             if (colorString != 'U') {
@@ -205,7 +205,7 @@ public class ControlPanel extends Subsystem {
             break;
 
         case FINDINGCOLOR:
-            colorString = getColorSesorData();
+            colorString = getColorSensorData();
 
             if (colorString != usablefeildColorData) {
                 spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
@@ -223,7 +223,7 @@ public class ControlPanel extends Subsystem {
             spinner.set(0.0);
             colorConfirmCycle++;
 
-            colorString = getColorSesorData();
+            colorString = getColorSensorData();
             if (colorString != usablefeildColorData) {
                 spinnerState = SpinnerState.FINDINGCOLOR;
 

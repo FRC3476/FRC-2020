@@ -142,7 +142,7 @@ public class Robot extends TimedRobot {
     
 
     // elevator.elevHome();
-    drive.setSimpleDrive(true);
+    drive.setSimpleDrive(false);
 
     Thread.currentThread().setPriority(7);
   }
@@ -176,10 +176,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    /*
     shooter.start();
     shooter.setSpeed(0);
     //climber.start();
-    controlPanel.start();
+    // controlPanel.start();
     hopper.start();
     intake.start();
     
@@ -201,6 +202,12 @@ public class Robot extends TimedRobot {
     
     auto = new Thread(option);
     auto.start();
+    */
+    robotTracker.start();
+    drive.start();
+    robotTracker.resetOdometry();
+    drive.setRotation(Rotation2D.fromDegrees(30));
+
     
   }
 
@@ -209,6 +216,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    System.out.println("robot angle: " + robotTracker.getOdometry().rotationMat.getDegrees() + " drive state " + drive.driveState);
+    /*
     buttonPanel.update();
     if(!autoDone) {
     //for(int i = 1; i < 8; i++) {
@@ -222,7 +231,8 @@ public class Robot extends TimedRobot {
       teleopPeriodic();
     }
     
-  
+  */
+    //System.out.println(drive.get)
   } 
 
   public synchronized void killAuto() {
@@ -248,10 +258,10 @@ public class Robot extends TimedRobot {
     shooter.start();
     shooter.setSpeed(0);
     //climber.start();
-    controlPanel.start();
+    // controlPanel.start();
     hopper.start();
     intake.start();
-  blinkinLED.start();
+    // blinkinLED.start();
 //=======
     jetsonUDP.start();
 //c349e488ce1535e2388178b24ceb2496f2a1bdd1
@@ -277,7 +287,7 @@ public class Robot extends TimedRobot {
   }
   
 
-
+  int c = 0;
   /**
    * This function is called periodically during operator control.
    */
@@ -285,12 +295,14 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
 
-      System.out.println("intake current: " + intake.getCurrent());
+      // System.out.println("intake current: " + intake.getCurrent());
       //System.out.println(drive.getGyroAngle());
-
+      //VisionTarget[] t = jetsonUDP.getTargets();
+      //if(t != null && c++ % 10 == 0) System.out.println("Recieving: " + t[0].x + "," + t[0].y);
       ArrayList<Double> times = new ArrayList<Double>();
       
       if(profileTeleop) times.add(Timer.getFPGATimestamp());
+
 
      // System.out.println("get hood angle " + shooter.getHoodAngle());
       // System.out.println(hopper.getCurrent());
@@ -341,7 +353,8 @@ public class Robot extends TimedRobot {
         shooterSpeed = 5500;
       } else if (buttonPanel.getRisingEdge(2)){
         hoodPosition = 33; //TODO: Adjust numbers
-        shooterSpeed = 5000;
+        //shooterSpeed = 5000;
+        shooterSpeed = 4000;
       } else if (buttonPanel.getRisingEdge(3)){
         hoodPosition = 65; //TODO: Adjust numbers
         shooterSpeed = 3250;
@@ -382,6 +395,11 @@ public class Robot extends TimedRobot {
       }
 
       if (xbox.getRawButton(6)){
+        intakeEject = true;
+        hopperOn = false;
+      }
+
+      if (buttonPanel.getRawButton(8)){
         //intake out
         intakeEject = true;
         hopperOn=true;
@@ -586,7 +604,7 @@ public class Robot extends TimedRobot {
     scheduler.pause();
     shooter.pause();
     //climber.pause();
-    controlPanel.pause();
+    // controlPanel.pause();
     hopper.pause();
     intake.pause();
   }
