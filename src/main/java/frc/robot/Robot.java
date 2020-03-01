@@ -297,8 +297,8 @@ public class Robot extends TimedRobot {
 
       // System.out.println("intake current: " + intake.getCurrent());
       //System.out.println(drive.getGyroAngle());
-      //VisionTarget[] t = jetsonUDP.getTargets();
-      //if(t != null && c++ % 10 == 0) System.out.println("Recieving: " + t[0].x + "," + t[0].y);
+      VisionTarget[] t = jetsonUDP.getTargets();
+      if(t != null && c++ % 10 == 0) System.out.println("Recieving: " + t[0].x + "," + t[0].y);
       ArrayList<Double> times = new ArrayList<Double>();
       
       if(profileTeleop) times.add(Timer.getFPGATimestamp());
