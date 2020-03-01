@@ -3,6 +3,7 @@ package frc.subsystem;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.Spark;
 
+
 //for colors Vision failure:
 public class BlinkinLED extends Subsystem{
     public enum ActivityCheck{
@@ -23,7 +24,7 @@ public class BlinkinLED extends Subsystem{
         controlPanel.getColorSesorData();
     //Saikran said to create instances up here, to create Control Panel Locally(since its final), and to call it.    
     }
-
+    
     public void ControlPanelCheck(){
         char color = controlPanel.getColorSesorData();
 
