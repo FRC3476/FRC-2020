@@ -25,6 +25,7 @@ public class JetsonUDP extends Subsystem {
   private InetAddress address;
 
   private final int packetSize = 8;
+  int c = 0;
 
   private VisionTarget[] target = null;
 
@@ -34,9 +35,12 @@ public class JetsonUDP extends Subsystem {
 
   public JetsonUDP() {
     super(Constants.JetsonUdpPeriod);
+    
     //super("bleh");
     try {
       socket = new DatagramSocket(Constants.JetsonPort);
+      socket.setReceiveBufferSize(1);
+
       //socket2 = new DatagramSocket(Constants.JetsonPort);
       address = InetAddress.getByName(Constants.JetsonIPv4);
       
@@ -127,9 +131,16 @@ public class JetsonUDP extends Subsystem {
 
   @Override
 	public void update() {
+      c++;
+      if(c%100 == 0) {
+      double time = Timer.getFPGATimestamp();
+      System.out.println("update dt " + (time -prevUpdateTime)/100.0);
 
+      prevUpdateTime = time;
+      }
       recieve();  
 
+    
       
 
   }

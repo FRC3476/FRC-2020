@@ -14,6 +14,7 @@ public final class Constants {
 	public static final String DriverStationIPv4 = "10.34.76.5"; // Temporary
 	public static final int JetsonPort = 5805;
 	public static final String JetsonIPv4 = "10.34.76.8";
+	public static final double VisionXOffset = 1.5;
 
 
 	// CAN IDs
@@ -39,10 +40,10 @@ public final class Constants {
 	public static final double FeederMotorSpeed = .5;
 
 	public static final double ShooterRPMPerTicksPer100ms = 600d/2048d;
-	public static final double kShooterP = 1.0e-5;
-	public static final double kShooterI = 0;//5.0e-5;
-	public static final double kShooterD = 1.0e-3;
-	public static final double kShooterF = (0.5*1023) * ShooterRPMPerTicksPer100ms / 3238d;
+	public static final double kShooterP = 2.0e-3;//1.0e-6;//1.0e-6; //1.5 e-4 //2.0e-3
+	public static final double kShooterI = 8.0e-5;//5.0e-6;//5.0e-5;//5.0e-5;
+	public static final double kShooterD = 2.0e-1;//10.5;//2.5e-5; 2.0e-1
+	public static final double kShooterF = (0.5*1023.0) * ShooterRPMPerTicksPer100ms / 3270d;
 	public static final double ShooterGain = 1;
 	public static final int ShooterIntegralZone = (int)(200.0 / ShooterRPMPerTicksPer100ms);
 	public static final int HomeSwitchId = 0; 
@@ -140,7 +141,7 @@ public final class Constants {
 	// Drive
 	public static final double kDriveInchesPerSecPerRPM = Math.PI* Constants.WheelDiameter/60d/10d;
 	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
-	public static final double maxTurnError = 0.5;
+	public static final double maxTurnError = 0.85;
 	public static final double maxPIDStopSpeed = 1.0;
 	public static final double DriveHighSpeed = 145;
 	public static final double DriveLowSpeed = 95;
@@ -321,7 +322,7 @@ public final class Constants {
 	public static final int intakePeriod = 50;
 	public static final int controlPanelPeriod = 50;
 	public static final int hopperPeriod = 50;
-	public static final int DrivePeriod = 5;
+	public static final int DrivePeriod = 2;
 	public static final int JetsonUdpPeriod = 5;
 	public static final int RobotTrackerPeriod = 5;
 	public static final int VisionManagerPeriod = 12;

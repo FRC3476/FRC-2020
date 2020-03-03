@@ -93,6 +93,8 @@ public class Drive extends Subsystem {
 	double prevPositionL = 0;
 	double prevPositionR = 0;
 
+	public boolean isAiming = false; 
+
 	public LazyCANSparkMax leftSpark, rightSpark, leftSparkSlave, rightSparkSlave, leftSparkSlave2, rightSparkSlave2;
   	private CANPIDController leftSparkPID, rightSparkPID;
 	  private CANEncoder leftSparkEncoder, rightSparkEncoder;
@@ -146,8 +148,8 @@ public class Drive extends Subsystem {
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(1.8/2.0, 0, 0, 0); //P=1.0 OR 0.8
-		turnPID.setOutputRange(Constants.DriveHighSpeed, -Constants.DriveHighSpeed);
+		turnPID = new SynchronousPid(4.0, 0, 0.8, 0); //P=1.0 OR 0.8
+		turnPID.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
 		turnPID.setSetpoint(0);
 
 		moveProfiler = new RateLimiter(Constants.DriveTeleopAccLimit);
@@ -733,12 +735,16 @@ public class Drive extends Subsystem {
 		}
 		
 	}
+	synchronized public boolean isAiming() {
+		return isAiming; 
+	}
 
 	public void setRotation(Rotation2D angle) {
 		synchronized (this) {
 			wantedHeading = angle;
 			driveState = DriveState.TURN;
 			rotateAuto = true;
+			isAiming = !getTurningDone();
 		}
 		configHigh();
 	}
@@ -748,8 +754,15 @@ public class Drive extends Subsystem {
 			wantedHeading = angle;
 			driveState = DriveState.TURN;
 			rotateAuto = false;
+			isAiming = !getTurningDone(); 
 		}
 		configHigh();
+	}
+
+	public synchronized boolean getTurningDone(){
+		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
+		return (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed);
+
 	}
 
 	private void updateTurn() {
@@ -758,19 +771,26 @@ public class Drive extends Subsystem {
 		//System.out.println(RobotTracker.getInstance().getOdometry().rotationMat.getDegrees());
 		//System.out.println("error: " + error);
 		deltaSpeed = turnPID.update(error);
-		deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 2.7), deltaSpeed);
+		deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3.0), deltaSpeed);
 		//deltaSpeed = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(deltaSpeed), 0, 180, 0, Constants.DriveHighSpeed), deltaSpeed);
-		
-		if ( rotateAuto && Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
-			setWheelVelocity(new DriveSignal(0, 0));
-			synchronized (this) {
-				driveState = DriveState.DONE;
-			}
-		} else if(!rotateAuto) {
+		System.out.println("error " + error + " speed " + (getLeftSpeed()-getRightSpeed()));
 
-		}
+		if (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
+			setWheelVelocity(new DriveSignal(0, 0));
+			
+			isAiming = false;
+			if( rotateAuto )
+			{
+				synchronized (this) {
+					driveState = DriveState.DONE;
+				}
+			}
+			
+		} 
 		
 		else {
+			//System.out.println(" i am here " + deltaSpeed);
+			isAiming = true;
 			setWheelVelocity(new DriveSignal(-deltaSpeed, deltaSpeed));
 		}
 	}

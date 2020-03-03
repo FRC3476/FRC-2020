@@ -8,6 +8,12 @@ import frc.utility.*;
 public class VisionLookUpTable{
     ArrayList<ShooterPreset> lookUpTable = new ArrayList<ShooterPreset>();
 
+    static VisionLookUpTable vt = new VisionLookUpTable();
+
+    public static VisionLookUpTable getInstance(){
+        return vt;
+    }
+
     VisionLookUpTable(){
         lookUpTable.add(new ShooterPreset(10, 2000, 10));
         lookUpTable.add(new ShooterPreset(20, 3000, 20));
@@ -19,7 +25,7 @@ public class VisionLookUpTable{
 
     }
 
-    ShooterPreset getShooterPreset(double DistanceFromTarget){
+    public ShooterPreset getShooterPreset(double DistanceFromTarget){
 
         if(lookUpTable.get(0).getDistance() > DistanceFromTarget){
             return lookUpTable.get(0);
