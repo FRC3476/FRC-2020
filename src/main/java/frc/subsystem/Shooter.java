@@ -157,7 +157,7 @@ public class Shooter extends Subsystem{
                 if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
                     double hoodError = targetHoodPosition - hoodEncoder.getPosition();
 
-                    if(true || Math.abs(hoodError) < Constants.HoodMaxDeviation){ // TODO: make hood do things
+                    if(Math.abs(hoodError) < Constants.HoodMaxDeviation){ // TODO: make hood do things
                         //Hood Ready
                         if(firing){
                             feederOn = true;
@@ -254,7 +254,7 @@ public class Shooter extends Subsystem{
 
     @Override
     public void selfTest() {
-        // TODO Auto-generated method stub
+        
 
     }
 

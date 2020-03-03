@@ -10,6 +10,7 @@ import frc.utility.Threaded;
 import frc.utility.VisionTarget;
 import frc.utility.math.Rotation2D;
 import frc.subsystem.*;
+import frc.subsystem.Drive.DriveState;
 
 @SuppressWarnings("unused")
 public class VisionManager extends Subsystem { 
@@ -67,8 +68,7 @@ public class VisionManager extends Subsystem {
     }
 
     public boolean isFinished(){
-
-        return true;
+        return (Drive.getInstance().driveState == DriveState.DONE);
     }
 
     @Override
