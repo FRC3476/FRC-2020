@@ -55,14 +55,12 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
         //Start 75 120
         System.out.println("Only Shoot");
         double turnAngle = 0;
-        try{
-            if (here().getX() != 48){
-                turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
-            }
-            
-        } catch(Exception exception){
-            exception.printStackTrace();
-        }
+        
+        //turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
+        Translation2D target = new Translation2D(75, 48);
+        Translation2D robot = here();
+
+        Rotation2D pointAtTarget = robot.getAngle(target);
         
         drive.setRotation(Rotation2D.fromDegrees(turnAngle));
         vision.setState(VisionStatus.AIMING);

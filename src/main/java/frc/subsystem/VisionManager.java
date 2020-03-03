@@ -67,8 +67,8 @@ public class VisionManager extends Subsystem {
 
     }
 
-    public boolean isFinished(){
-        return (Drive.getInstance().driveState == DriveState.DONE);
+    public synchronized boolean isFinished(){
+        return drive.isAiming(); //(Drive.getInstance().driveState == DriveState.DONE);
     }
 
     @Override
