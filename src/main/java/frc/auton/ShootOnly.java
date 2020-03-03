@@ -28,25 +28,10 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
     boolean killSwitch = false;
 
 
-    public ShootOnly(int startX) {
+    public ShootOnly(double startY) {
         //RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
-        super(new Translation2D(startX, 75));
-    }
-
-    public Translation2D here() {
-        return RobotTracker.getInstance().getOdometry().translationMat;
-    }
-    
-    public Rotation2D dir() {
-        return RobotTracker.getInstance().getOdometry().rotationMat;
-    }
-
-    synchronized public void killSwitch() {
-        killSwitch = true;
-    }
-
-    synchronized public boolean isDead() {
-        return killSwitch;
+        super(new Translation2D(120.5, startY));
+        robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
     }
 
     @Override
@@ -57,19 +42,30 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
         double turnAngle = 0;
         
         //turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
-        Translation2D target = new Translation2D(75, 48);
+        Translation2D target = new Translation2D(0, 94.6);
         Translation2D robot = here();
 
         Rotation2D pointAtTarget = robot.getAngle(target);
-        shooter.setHoodAngle(36);
+        System.out.println(target);
+
+
+
+        drive.setRotation(pointAtTarget);
+        
+        while (!shooter.isHomed()) if(isDead()) return;
+        shooter.setHoodAngle(33);
         shooter.setSpeed(5300);
+        //while(!drive.isFinished()) if(isDead()) return;
+        //System.out.println("finsihed drive");
 
-
-        drive.setRotation(Rotation2D.fromDegrees(turnAngle));
         vision.setState(VisionStatus.AIMING);
         while (!shooter.isShooterSpeedOKAuto()) if(isDead()) return;
+        System.out.println("shooter speed ok");
+        vision.setState(VisionStatus.IDLE);
+
         vision.setState(VisionStatus.WIN);
         while(!vision.isFinished()) if(isDead()) return;
+        System.out.println("vision finished");
         //shooter.setFiring(true);
 
         TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*3;
@@ -80,6 +76,10 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
 
         //shooter.setFiring(false);
         vision.setState(VisionStatus.IDLE);
+        synchronized (this) {
+            done = true; 
+        }
+        
     }
 
 }

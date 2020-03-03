@@ -22,34 +22,19 @@ public class ShootAndMove extends TemplateAuto implements Runnable  {
     Intake intake = Intake.getInstance();
     VisionManager vision = VisionManager.getInstance();
     Shooter shooter = Shooter.getInstance();
-    int startX;
+    double startY;
 
     private double TargetTime;
     
     boolean killSwitch = false;
 
 
-    public ShootAndMove(int startX) {
+    public ShootAndMove(double d) {
         //RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
-        super(new Translation2D(startX, 75));
-        this.startX = startX;
+        super(new Translation2D(120.5, d));
+        robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
+        this.startY = d;
 
-    }
-
-    public Translation2D here() {
-        return RobotTracker.getInstance().getOdometry().translationMat;
-    }
-    
-    public Rotation2D dir() {
-        return RobotTracker.getInstance().getOdometry().rotationMat;
-    }
-
-    synchronized public void killSwitch() {
-        killSwitch = true;
-    }
-
-    synchronized public boolean isDead() {
-        return killSwitch;
     }
 
     @Override
@@ -58,31 +43,53 @@ public class ShootAndMove extends TemplateAuto implements Runnable  {
         //Start 75 120
         System.out.println("ShootAndMove");
         double turnAngle = 0;
-        try{
-            if (here().getX() != 48){
-                turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
-            }
-            
-        } catch(Exception exception){
-            exception.printStackTrace();
-        }
         
-        drive.setRotation(Rotation2D.fromDegrees(turnAngle));
+        //turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
+        Translation2D target = new Translation2D(0, 94.6);
+        Translation2D robot = here();
+
+        Rotation2D pointAtTarget = robot.getAngle(target);
+        System.out.println(target);
+
+
+
+        drive.setRotation(pointAtTarget);
+        
+        while (!shooter.isHomed()) if(isDead()) return;
+        shooter.setHoodAngle(33);
+        shooter.setSpeed(5300);
+        //while(!drive.isFinished()) if(isDead()) return;
+        //System.out.println("finsihed drive");
+
         vision.setState(VisionStatus.AIMING);
-        while(!vision.isFinished()) if(isDead()) return;
-
-        shooter.setFiring(true);
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
-        while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
-
-        shooter.setFiring(false);
+        while (!shooter.isShooterSpeedOKAuto()) if(isDead()) return;
+        System.out.println("shooter speed ok");
         vision.setState(VisionStatus.IDLE);
 
-        Path p1 = new Path(here());
-        p1.addPoint(new Translation2D(75, startX), 20);
+        vision.setState(VisionStatus.WIN);
+        while(!vision.isFinished()) if(isDead()) return;
+        System.out.println("vision finished");
+        //shooter.setFiring(true);
 
-        drive.setAutoPath(p1, false);
+        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*3;
+
+        while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
+
+        shooter.setSpeed(0);
+
+        //shooter.setFiring(false);
+        vision.setState(VisionStatus.IDLE);
+
+
+        Path p1 = new Path(here());
+        p1.addPoint(new Translation2D(120.5+45, startY), 40);
+
+        drive.setAutoPath(p1, true);
         while(!drive.isFinished()) if(isDead()) return;
+
+        synchronized (this) {
+            done = true; 
+        }
 
 
         

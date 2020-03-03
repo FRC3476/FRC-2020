@@ -247,6 +247,10 @@ public class Shooter extends Subsystem{
         //hoodEncoder.setPosition(0);
     }
 
+    public synchronized boolean isHomed(){
+        return (shooterState != ShooterState.HOMING);
+    }
+
     public synchronized void setEject(boolean eject){
         if(eject){
             shooterState=ShooterState.EJECT;

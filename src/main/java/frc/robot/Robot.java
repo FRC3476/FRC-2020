@@ -75,6 +75,7 @@ public class Robot extends TimedRobot {
   ThreadScheduler scheduler = new ThreadScheduler();
   Thread auto;
   TemplateAuto option;
+  AutoPosition autoPosition = AutoPosition.MIDDLE;
 
   boolean firstTeleopRun = true;
 
@@ -90,8 +91,6 @@ public class Robot extends TimedRobot {
   boolean ejectShooter = false;
   boolean hopperEject = false;
   boolean hopperOn = false;
-  double maxl; //TODO: remove
-  double maxr;
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<String>();
@@ -104,6 +103,10 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
+
+  enum AutoPosition {
+    MIDDLE, LEFT, RIGHT
+  }
   
   @Override
   public void robotInit() {
@@ -179,41 +182,67 @@ public class Robot extends TimedRobot {
    */
   boolean autoDone;
 
-  
-
-  @Override
-  public void autonomousInit() {
-    
+  public void startAll()
+  {
     shooter.start();
     shooter.setSpeed(0);
     //climber.start();
     // controlPanel.start();
     hopper.start();
     intake.start();
+    // blinkinLED.start()
+    visionManager.start();
+    jetsonUDP.start();
+    robotTracker.start();
+    drive.start();
+//c349e488ce1535e2388178b24ceb2496f2a1bdd1
+
+
+    jetsonUDP.changeExp(true);
+  }
+
+  
+
+  @Override
+  public void autonomousInit() {
     
+    startAll();
+    shooter.setSpeed(0);
+
+    robotTracker.resetOdometry();
 
     autoDone = false;
-    scheduler.resume();
 
     int autoDir = 1;
-    double startPos = 48+18;
+    double startX = 94.6;
+
+
 
     if(dir_chooser.getSelected().equals("Right")) autoDir = -1;
     else autoDir = 1;
 
-    if(start_chooser.getSelected().equals("Lvl2")) startPos = 18+19-3;//-8;
-    else startPos = 48+18;
+    //if(start_chooser.getSelected().equals("Lvl2")) startPos = 18+19-3;//-8;
 
    // if(m_chooser.getSelected().equals("Cargo 1_2")&& red_blue.getSelected().equals("Red")) option = new Ship1_2Red(autoDir, startPos);
-    option = new ShootOnly(35);
+    switch(autoPosition){
+      case MIDDLE:
+        startX = 94.6;
+        break;
+      case LEFT:
+        startX = 94.6-48;
+        break;
+      case RIGHT:
+        startX = 94.6+48;
+        break;
+        
+    }
+
+    option = new ShootAndMove(startX);
     
     auto = new Thread(option);
     auto.start();
     
-    robotTracker.start();
-    drive.start();
-    robotTracker.resetOdometry();
-    drive.setRotation(Rotation2D.fromDegrees(90));
+  
 
     
   }
@@ -223,7 +252,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    System.out.println("robot angle: " + robotTracker.getOdometry().rotationMat.getDegrees() + " drive state " + drive.driveState);
+    //System.out.println("robot angle: " + robotTracker.getOdometry().rotationMat.getDegrees() + " drive state " + drive.driveState);
     /*
     buttonPanel.update();
     if(!autoDone) {
@@ -233,12 +262,12 @@ public class Robot extends TimedRobot {
         teleopInit();
       }
     //}
-    }
-    if(autoDone) {
+    }*/
+    if(option.isFinished()) {
       teleopPeriodic();
     }
     
-  */
+  
     //System.out.println(drive.get)
   } 
 
@@ -262,28 +291,13 @@ public class Robot extends TimedRobot {
 
   @Override 
   public void teleopInit() {
-    shooter.start();
-    shooter.setSpeed(0);
-    //climber.start();
-    // controlPanel.start();
-    hopper.start();
-    intake.start();
-    // blinkinLED.start()
-    visionManager.start();
-    jetsonUDP.start();
-    robotTracker.start();
-    drive.start();
-//c349e488ce1535e2388178b24ceb2496f2a1bdd1
-
-
-    jetsonUDP.changeExp(true);
+    startAll();
     
     killAuto();
     System.out.println("teleop init!");
     //drive.stopMovement();
 
     //elevator.resetDT();
-    scheduler.resume();
     //elevator.setHeight(Constants.HatchElevLow);
    // turret.homeTurret();
     //elevator.elevHome();
