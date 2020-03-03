@@ -183,7 +183,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    /*
+    
     shooter.start();
     shooter.setSpeed(0);
     //climber.start();
@@ -205,11 +205,12 @@ public class Robot extends TimedRobot {
     else startPos = 48+18;
 
    // if(m_chooser.getSelected().equals("Cargo 1_2")&& red_blue.getSelected().equals("Red")) option = new Ship1_2Red(autoDir, startPos);
-    option = new PathingTest(1, 0);
+    option = new ShootOnly(35);
     
     auto = new Thread(option);
     auto.start();
-    */
+    
+    robotTracker.start();
     drive.start();
     robotTracker.resetOdometry();
     drive.setRotation(Rotation2D.fromDegrees(90));

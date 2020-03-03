@@ -134,7 +134,7 @@ public class JetsonUDP extends Subsystem {
       c++;
       if(c%100 == 0) {
       double time = Timer.getFPGATimestamp();
-      System.out.println("update dt " + (time -prevUpdateTime)/100.0);
+      //System.out.println("update dt " + (time -prevUpdateTime)/100.0);
 
       prevUpdateTime = time;
       }

@@ -58,7 +58,7 @@ public final class Constants {
 	public static final double kHoodD = 0;
 	public static final double kHoodF = 0;
 	public static final double HoodRotationsPerDegree = (60d/12d)*(576d/20d)*(1d/360d);//(12/60)*(20/576);//100;
-	public static final int HoodMaxDeviation = 5;
+	public static final double HoodMaxDeviation = .2;
 	public static final double HoodHomingSpeed = -0.4;
 	public static final double HoodPIDSpeedMax = 0.8;
 	public static final double hoodMotorStalledAmps = 5; //not used

@@ -16,21 +16,24 @@ import frc.subsystem.VisionManager.VisionStatus;
 
 
 @SuppressWarnings("unused")
-public class ShootOnly extends TemplateAuto implements Runnable  {
+public class ShootAndMove extends TemplateAuto implements Runnable  {
     Drive drive = Drive.getInstance();
     RobotTracker robotTracker = RobotTracker.getInstance();
     Intake intake = Intake.getInstance();
     VisionManager vision = VisionManager.getInstance();
     Shooter shooter = Shooter.getInstance();
+    int startX;
 
     private double TargetTime;
     
     boolean killSwitch = false;
 
 
-    public ShootOnly(int startX) {
+    public ShootAndMove(int startX) {
         //RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
         super(new Translation2D(startX, 75));
+        this.startX = startX;
+
     }
 
     public Translation2D here() {
@@ -53,7 +56,7 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
     public void run() {
 
         //Start 75 120
-        System.out.println("Only Shoot");
+        System.out.println("ShootAndMove");
         double turnAngle = 0;
         try{
             if (here().getX() != 48){
@@ -67,14 +70,22 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
         drive.setRotation(Rotation2D.fromDegrees(turnAngle));
         vision.setState(VisionStatus.AIMING);
         while(!vision.isFinished()) if(isDead()) return;
+
         shooter.setFiring(true);
-
         TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
-
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 
         shooter.setFiring(false);
         vision.setState(VisionStatus.IDLE);
+
+        Path p1 = new Path(here());
+        p1.addPoint(new Translation2D(75, startX), 20);
+
+        drive.setAutoPath(p1, false);
+        while(!drive.isFinished()) if(isDead()) return;
+
+
+        
     }
 
 }
