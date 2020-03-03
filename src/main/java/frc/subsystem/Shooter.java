@@ -112,11 +112,11 @@ public class Shooter extends Subsystem{
         
     }
 
-    public synchronized void setSpeed(int speed) {
-        targetShooterSpeed = speed;
+    public synchronized void setSpeed(double d) {
+        targetShooterSpeed = d;
         if (shooterState == ShooterState.HOMING) return;
 
-        if (speed > 0){
+        if (d > 0){
             shooterState = ShooterState.SPINNING;
         } else {
             shooterState = ShooterState.OFF;
@@ -124,6 +124,7 @@ public class Shooter extends Subsystem{
     }
 
     public synchronized void setFiring(boolean fire){
+        
         firing = fire;
 
     }
@@ -145,9 +146,11 @@ public class Shooter extends Subsystem{
                 // }
 
                 shooterMaster.set(ControlMode.Velocity, targetShooterSpeed/Constants.ShooterRPMPerTicksPer100ms);
-                System.out.println("error: " +  shooterMaster.getClosedLoopError()*Constants.ShooterRPMPerTicksPer100ms + 
-                " setpoint: " + shooterMaster.getClosedLoopTarget());
-                System.out.println("Shooter RPM: " + getRPM() + " target: " + targetShooterSpeed);
+                //shooterMaster.set(ControlMode.PercentOutput, .5);
+   //             System.out.println("error: " +  shooterMaster.getClosedLoopError()*Constants.ShooterRPMPerTicksPer100ms + 
+    //            " setpoint: " + shooterMaster.getClosedLoopTarget());
+
+ //               System.out.println("Shooter RPM: " + getRPM() + " target: " + targetShooterSpeed);
 
                 hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 

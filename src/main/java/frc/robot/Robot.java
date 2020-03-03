@@ -149,6 +149,7 @@ public class Robot extends TimedRobot {
     drive.setSimpleDrive(false);
 
     Thread.currentThread().setPriority(7);
+    jetsonUDP.start();
   }
 
   /**
@@ -161,6 +162,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+  //  VisionTarget[] t = jetsonUDP.getTargets();
+   // if(t != null) System.out.println("Recieving: " + t[0].x + "," + t[0].y);
   }
 
   /**
@@ -210,7 +213,7 @@ public class Robot extends TimedRobot {
     robotTracker.start();
     drive.start();
     robotTracker.resetOdometry();
-    drive.setRotation(Rotation2D.fromDegrees(30));
+    drive.setRotation(Rotation2D.fromDegrees(90));
 
     
   }
@@ -265,9 +268,11 @@ public class Robot extends TimedRobot {
     // controlPanel.start();
     hopper.start();
     intake.start();
-    // blinkinLED.start();
-//=======
+    // blinkinLED.start()
+    visionManager.start();
     jetsonUDP.start();
+    robotTracker.start();
+    drive.start();
 //c349e488ce1535e2388178b24ceb2496f2a1bdd1
 
 
@@ -301,8 +306,7 @@ public class Robot extends TimedRobot {
 
       // System.out.println("intake current: " + intake.getCurrent());
       //System.out.println(drive.getGyroAngle());
-      VisionTarget[] t = jetsonUDP.getTargets();
-      if(t != null && c++ % 10 == 0) System.out.println("Recieving: " + t[0].x + "," + t[0].y);
+     
       ArrayList<Double> times = new ArrayList<Double>();
       
       if(profileTeleop) times.add(Timer.getFPGATimestamp());
@@ -317,11 +321,22 @@ public class Robot extends TimedRobot {
       buttonPanel.update();
       wheel.update();
 
-      if(xbox.getRawButton(4)){
-        visionManager.setState(VisionStatus.AIMING);
-      } else{
+      if(xbox.getRawAxis(2) > 0.5){
+        visionManager.setState(VisionStatus.WIN);
+      }
+      
+      else{
         visionManager.setState(VisionStatus.IDLE);
-        drive.arcadeDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4));
+        drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
+        if (stick.getRawButton(1)){ //3, 0.5
+          //fire shooter
+          shooter.setFiring(true);
+          hopperOn = true;
+  
+   
+        } else{
+          shooter.setFiring(false);
+        }
       }
       
 
@@ -358,7 +373,7 @@ public class Robot extends TimedRobot {
       } else if (buttonPanel.getRisingEdge(2)){
         hoodPosition = 33; //TODO: Adjust numbers
         //shooterSpeed = 5000;
-        shooterSpeed = 4000;
+        shooterSpeed = 5700;
       } else if (buttonPanel.getRisingEdge(3)){
         hoodPosition = 65; //TODO: Adjust numbers
         shooterSpeed = 3250;
@@ -379,13 +394,7 @@ public class Robot extends TimedRobot {
         
       }
 
-      if (xbox.getRawAxis(2) > 0.5){ //3, 0.5
-        //fire shooter
-        fireShooter = true;
-        hopperOn = true;
-
-
-      }
+      
       /*else {
         fireShooter = false;
         hopperOn = false;
@@ -427,6 +436,7 @@ public class Robot extends TimedRobot {
 
       }
 
+      if(visionManager.getState() == VisionManager.VisionStatus.IDLE) {
       DeployState intakeDeployState = intake.getDeployState();
       if (true || DeployState.DEPLOY == intakeDeployState){
         if(hopperOn){
@@ -465,15 +475,17 @@ public class Robot extends TimedRobot {
       if (shooterOn){
         shooter.setSpeed(shooterSpeed);
         shooter.setHoodAngle(hoodPosition);
-      } else {
+      } else if (!xbox.getRawButton(4)){
         shooter.setSpeed(0);
-        shooter.setFiring(false);
+        //shooter.setFiring(false);
       }
+    }
 
     
-      shooter.setFiring(fireShooter);
-      maxl = Math.max(Math.abs(drive.getLeftSpeed()), maxl);
-      maxr = Math.max(Math.abs(drive.getRightSpeed()), maxr);
+    //  shooter.setFiring(fireShooter);
+      //maxl = Math.max(Math.abs(drive.getLeftSpeed()), maxl);
+      //maxr = Math.max(Math.abs(drive.getRightSpeed()), maxr);
+
       //System.out.println("velocity L: " +  maxl + " Velocity R: " + maxr);
 
 
