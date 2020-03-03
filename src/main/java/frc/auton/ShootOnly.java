@@ -61,17 +61,24 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
         Translation2D robot = here();
 
         Rotation2D pointAtTarget = robot.getAngle(target);
-        
+        shooter.setHoodAngle(36);
+        shooter.setSpeed(5300);
+
+
         drive.setRotation(Rotation2D.fromDegrees(turnAngle));
         vision.setState(VisionStatus.AIMING);
+        while (!shooter.isShooterSpeedOKAuto()) if(isDead()) return;
+        vision.setState(VisionStatus.WIN);
         while(!vision.isFinished()) if(isDead()) return;
-        shooter.setFiring(true);
+        //shooter.setFiring(true);
 
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
+        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*3;
 
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 
-        shooter.setFiring(false);
+        shooter.setSpeed(0);
+
+        //shooter.setFiring(false);
         vision.setState(VisionStatus.IDLE);
     }
 

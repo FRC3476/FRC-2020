@@ -64,7 +64,7 @@ public class TrenchBlue implements Runnable {
         while(!vision.isFinished()) if(isDead()) return;
         //shooter.Shoot();
 
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
+        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
 
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 
@@ -92,7 +92,7 @@ public class TrenchBlue implements Runnable {
         //shooter.Shoot();
 
 
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
+        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
 
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 

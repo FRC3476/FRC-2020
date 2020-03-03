@@ -69,7 +69,7 @@ public class VisionManager extends Subsystem {
                     // Shooter.getInstance().setSpeed(d.getFlyWheelSpeed());
 
                 } //else System.out.println("recieved null paquet");
-                
+                go = go || !drive.isAiming();
                 
                 break;
 
@@ -117,6 +117,10 @@ public class VisionManager extends Subsystem {
         {
             drive.driveState = Drive.DriveState.DONE;
             go = false;
+            shooter.setFiring(false);
+            hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE);
+            hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
+
         }
 
 
@@ -124,7 +128,7 @@ public class VisionManager extends Subsystem {
     }
 
     public synchronized boolean isFinished(){
-        return drive.isAiming(); //(Drive.getInstance().driveState == DriveState.DONE);
+        return go; //(Drive.getInstance().driveState == DriveState.DONE);
     }
 
     @Override

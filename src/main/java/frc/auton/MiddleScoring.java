@@ -63,7 +63,7 @@ public class MiddleScoring implements Runnable {
         while(!vision.isFinished()) if(isDead()) return;
         //shooter.Shoot();
 
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
+        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
         //shooter.StopShoot();
 
@@ -91,7 +91,7 @@ public class MiddleScoring implements Runnable {
         while(!vision.isFinished()) if(isDead()) return;
         //shooter.Shoot();
 
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
+        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
 
         while(Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
         //shooter.StopShoot();

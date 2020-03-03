@@ -255,6 +255,10 @@ public class Shooter extends Subsystem{
         }
     }
 
+    public synchronized boolean isShooterSpeedOKAuto(){
+        return Math.abs(getRPM()-targetShooterSpeed) < Constants.AutoShooterAccptableRange;
+    }
+
     @Override
     public void selfTest() {
         
@@ -266,6 +270,7 @@ public class Shooter extends Subsystem{
         // TODO Auto-generated method stub
 
     }
+    
 
 
     private double getRPM(){

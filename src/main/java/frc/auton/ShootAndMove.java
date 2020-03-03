@@ -72,7 +72,7 @@ public class ShootAndMove extends TemplateAuto implements Runnable  {
         while(!vision.isFinished()) if(isDead()) return;
 
         shooter.setFiring(true);
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTime;
+        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 
         shooter.setFiring(false);
