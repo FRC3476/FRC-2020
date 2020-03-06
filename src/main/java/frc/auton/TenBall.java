@@ -49,14 +49,14 @@ public class TenBall extends TemplateAuto implements Runnable  {
         intake.setDeployState(Intake.DeployState.DEPLOY);
         intake.setSpeed(Constants.IntakeMotorPower);
         hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-        hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE);
+        hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
 
         drive.setAutoPath(p1, true);
         while(!drive.isFinished()) if(isDead()) return;
 
         intake.setSpeed(0);
         hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
-        hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE);
+        hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
 
         shooter.setHoodAngle(33);
         shooter.setSpeed(5300);
@@ -75,7 +75,7 @@ public class TenBall extends TemplateAuto implements Runnable  {
         intake.setDeployState(Intake.DeployState.DEPLOY);
         intake.setSpeed(Constants.IntakeMotorPower);
         hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-        hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE);
+        hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
         Path p3 = new Path(here());
         p3.addPoint(new Translation2D(180, 25), 50);
         p3.addPoint(new Translation2D(302, 25), 50);
@@ -84,7 +84,7 @@ public class TenBall extends TemplateAuto implements Runnable  {
 
         intake.setSpeed(0);
         hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
-        hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE);
+        hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
 
         Path p4 = new Path(here());
 
@@ -98,7 +98,7 @@ public class TenBall extends TemplateAuto implements Runnable  {
         intake.setDeployState(Intake.DeployState.DEPLOY);
         intake.setSpeed(Constants.IntakeMotorPower);
         hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-        hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE);
+        hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE , false);
         Path p5 = new Path(here());
         p5.addPoint(new Translation2D(239, 100), 50);
         drive.setAutoPath(p5, true);

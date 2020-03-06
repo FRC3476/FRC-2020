@@ -93,6 +93,7 @@ public final class Constants {
 	public static final int SnailMotorId = 41; //random number
 	public static final double HopperFrontMotorSpeed = 0.3;
 	public static final double HopperSnailSpeed = 1.0;
+	public static final double SlowHopperSnailSpeed = .5;
 	
 	// PCM IDs
 	public static final int DriveShifterSolenoidId = 4;

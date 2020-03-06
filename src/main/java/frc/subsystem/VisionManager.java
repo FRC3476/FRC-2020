@@ -93,12 +93,12 @@ public class VisionManager extends Subsystem {
                 if(go) {
 
                     shooter.setFiring(true);
-                    hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE);
+                    hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
                     hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 
                 } else {
                     shooter.setFiring(false);
-                    hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE);
+                    hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
                     hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 
                 } 
@@ -118,7 +118,7 @@ public class VisionManager extends Subsystem {
             drive.driveState = Drive.DriveState.DONE;
             go = false;
             shooter.setFiring(false);
-            hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE);
+            hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
             hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 
         }

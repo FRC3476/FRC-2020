@@ -77,12 +77,24 @@ public Hopper() {
         }
     }
 
-    public void setSnailMotorState(SnailMotorState snailMotorState) {
+    public void setSnailMotorState(SnailMotorState snailMotorState, boolean slow) {
             synchronized (this) {
                     this.snailMotorState = snailMotorState;
             }
-            
-            switch(snailMotorState) {
+            if(slow){
+                switch(snailMotorState) {
+                    case ACTIVE:
+                        setSnailSpeed(Constants.SlowHopperSnailSpeed);
+                        break;
+                    case INACTIVE: 
+                        setSnailSpeed(0);
+                        break;
+                    case REVERSE:
+                        setSnailSpeed(-Constants.SlowHopperSnailSpeed);
+                        break;
+            }
+            } else {
+                switch(snailMotorState) {
                     case ACTIVE:
                         setSnailSpeed(Constants.HopperSnailSpeed);
                         break;
@@ -93,6 +105,10 @@ public Hopper() {
                         setSnailSpeed(-Constants.HopperSnailSpeed);
                         break;
             }
+            
+
+            
+        }
     }
 
 

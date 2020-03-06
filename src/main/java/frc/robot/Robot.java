@@ -441,7 +441,6 @@ public class Robot extends TimedRobot {
         //eject all
         hopperOn = false;
         intakeOn = false;
-        shooterOn = false;
 
         intakeEject = true;
         hopperEject = true;
@@ -454,16 +453,22 @@ public class Robot extends TimedRobot {
       DeployState intakeDeployState = intake.getDeployState();
       if (true || DeployState.DEPLOY == intakeDeployState){
         if(hopperOn){
-          hopper.setFrontMotorState(FrontMotorState.ACTIVE);
-          hopper.setSnailMotorState(SnailMotorState.ACTIVE);
+          if(intakeOn){
+            hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+            hopper.setSnailMotorState(SnailMotorState.ACTIVE , true);
+          } else {
+            hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+            hopper.setSnailMotorState(SnailMotorState.ACTIVE , false);
+          }
+
   
         } else if(hopperEject){
           hopper.setFrontMotorState(FrontMotorState.REVERSE);
-          hopper.setSnailMotorState(SnailMotorState.REVERSE);
+          hopper.setSnailMotorState(SnailMotorState.REVERSE , false);
   
         } else {
           hopper.setFrontMotorState(FrontMotorState.INACTIVE);
-          hopper.setSnailMotorState(SnailMotorState.INACTIVE);
+          hopper.setSnailMotorState(SnailMotorState.INACTIVE, false);
   
         }
       
@@ -482,7 +487,7 @@ public class Robot extends TimedRobot {
       } else {
         intake.setIntakeState(IntakeState.OFF);
         hopper.setFrontMotorState(FrontMotorState.INACTIVE);
-        hopper.setSnailMotorState(SnailMotorState.INACTIVE);
+        hopper.setSnailMotorState(SnailMotorState.INACTIVE, false);
 
       }
 
