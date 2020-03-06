@@ -68,15 +68,6 @@ public final class Constants {
 	public final static boolean HoodMotorDirection = false; //True is Inverted 
 	public final static double MaxHoodReleaseAngle = 75;
 	public final static double MinHoodReleaseAngle = 12.32;
-
-	public static final int HatchIntakeMotorId = 100;
-	public static final int HatchIntakeDeployMotorId = 101;
-
-	public static final int ElevatorMasterId = 200;
-	public static final int ElevatorSlaveId = 201;
-
-	public static final int ManipulatorMotor1Id = 210;
-	public static final int ManipulatorMotor2Id = 211;
 	
 	public static final int ClimberMasterId = 220;
 	public static final int ClimberSlaveId = 221;
@@ -95,14 +86,6 @@ public final class Constants {
 	public static final double HopperSnailSpeed = 1.0;
 	public static final double SlowHopperSnailSpeed = .5;
 	
-	// PCM IDs
-	public static final int DriveShifterSolenoidId = 4;
-	public static final int BallIntakeSolenoidId = 7;
-	public static final int ArmSolenoidId = 5;
-	public static final int ManipulatorSolenoidId = 6;
-
-	// IO IDs
-	public static final int TurretLimitId = 0;
 	
 	// Controller
 
@@ -120,13 +103,6 @@ public final class Constants {
 	public static final double ExpectedCurrentTolerance = 0;
 	public static final double ExpectedRPMTolerance = 0;
 	public static final double ExpectedPositionTolerance = 0;
-
-	// Game
-	public static final double RocketBaseHeight = 27.5;
-	public static final double RocketMiddleHeight = 55.5;
-	public static final double RocketTopHeight = 83.5;
-
-	public static final double HatchPanelHeight = 2 + (1 / 6); // The height of each hatch panel
 	
 	// Autonomous Driving
 	public static final double TrackRadius = -12;
@@ -146,7 +122,6 @@ public final class Constants {
 	public static final double maxTurnError = 0.85;
 	public static final double maxPIDStopSpeed = 1.0;
 	public static final double DriveHighSpeed = 145;
-	public static final double DriveLowSpeed = 95;
 	
 	public static final double kDriveRightAutoP = 4*0.0005263 * kDriveInchesPerSecPerRPM; //0.00065
 	public static final double kDriveRightAutoD = 0.000; 
@@ -160,27 +135,14 @@ public final class Constants {
 	public static final double kDriveRightHighF = kDriveRightAutoF;
 	public static final double kDriveRightHighFIntercept = 0;
 	public static final double kDriveRightHighA = 0;
-	public static final double kDriveRightLowP = 0;
-	public static final double kDriveRightLowD = 0;
-	public static final double kDriveRightLowF = 0;
-	public static final double kDriveRightLowFIntercept = 0;
-	public static final double kDriveRightLowA = 0;
 	
 	public static final double kDriveLeftHighP = kDriveLeftAutoP;
 	public static final double kDriveLeftHighD = kDriveLeftAutoD;
 	public static final double kDriveLeftHighF = kDriveLeftAutoF;
 	public static final double kDriveLeftHighFIntercept = 0;
 	public static final double kDriveLeftHighA = 0;
-	public static final double kDriveLeftLowP = 0;
-	public static final double kDriveLeftLowD = 0;
-	public static final double kDriveLeftLowF = 0;
-	public static final double kDriveLeftLowFIntercept = 0;
-	public static final double kDriveLeftLowA = 0;
 	public static final double kHoldP = 4;
 
-	
-	
-	
 
 	public static final double DriveTeleopAccLimit = 120;
 	public static final double DriveTeleopJerkLimit = 2000;
@@ -190,88 +152,6 @@ public final class Constants {
 
 
 	// Superstructure
-
-	// Ground Ball Intake	
-	public static final double IntakeMediumRPM = 700; // Random number for now
-	public static final double IntakeFastRPM = 700; // Random number for now
-	public static final long IntakeDeployTime = 0;
-	//public static final int RollerMotorId = 25;
-	public static final int BallIntakeMasterId = 25;
-	public static final double BallIntakeDeployTime = 0.4;
-
-	// Hatch Intake
-	public static final double HatchIntakeMotorPower = 1.0;//Just a random percent for now
-	public static final double HatchHandoffAngle = 48;
-	public static final double HatchStowAngle = 0;
-	public static final double HatchIntakeAngle = 178;
-	public static final double HatchTargetError = 10;
-
-	public static final double kHatchP = 0.8;
-	public static final double kHatchI = 0.00;
-	public static final double kHatchD = 0.0;
-
-	// Elevator
-	public static final double ElevatorHomeSpeed = -0.1;
-	public static final double ElevatorInchesPerMotorRotation = 8;
-	//public static final double ElevatorTicksPerInch = 4096.0/(1.5*3.141592);//orange string, no screw
-	//public static final double ElevatorTicksPerInch = 52481/(64.25-4.375);//black string, screw spool
-	public static final double ElevatorTicksPerInch = (51056-1105)/(67.125-5.5);//2.3mm string, screw spool
-	//public static final double ElevatorTicksPerInch = 57378/(64.25-4.375); //practice bot
-	public static final int ElevatorSensorPidIdx = 0;
-	public static final double ElevatorTargetError = 2;
-	
-	public static final double ElevatorLowAmps = 0;
-	public static final double ElevatorHighAmps = 25;
-	public static final double ElevatorStallAmps = 0.25;
-	
-	public static final int ELevatorIntegralZone = 1000;
-	public static final double kElevatorP = 0.40;
-	public static final double kElevatorI = 0.0;
-	public static final double kElevatorD = 0.3;
-	
-	public static final double ElevatorIntakeSafe = 10.5;
-	public static final double ElevatorDeployingSafe = 0;
-	public static final double ElevatorSafetyError = 0;
-	public static final double ElevatorPositionDefault = 1 + (7 / 12);
-	public static final double ElevatorPositionMiddle = ElevatorPositionDefault + HatchPanelHeight;
-	public static final double ElevatorPositionHigh = ElevatorPositionDefault + (2 * HatchPanelHeight);
-	public static final double ElevatorPositionLow = 0;
-	
-	public static final double ElevatorMaxHeight = 70;//in number for now
-	public static final double ElevatorIntakeHeight = 10;//For now
-
-	public static final double kElevatorManual = 1;
-
-
-	//setpoints comp
-	
-	public static final double BallElevHigh = 60.8-1.0; //60.8
-	public static final double BallElevMid = 33.6-0.5;
-	public static final double BallElevLow = 5.8-0.5;
-	public static final double BallElevCargo = 27;
-	public static final double BallElevCargoGroundIntake = 0;
-	public static final double BallHP = 20.85;
-
-	/*
-	public static final double BallElevHigh = 62.13; //60.8
-	public static final double BallElevMid = 36.1;
-	public static final double BallElevLow = 5.8-0.5;
-	public static final double BallElevCargo = 27;
-	public static final double BallElevCargoGroundIntake = 0;	
-	public static final double BallHP = 20.85;
-	*/
-	public static final double HatchElevHigh = 56.8; //56.8
-	public static final double HatchElevMid = 29.7;
-	public static final double HatchElevLow = 1.5;//2.2;
-	public static final double HatchHP = 1.2;
-
-	public static final double ElevClearance = 7;
-	
-
-	// Manipulator
-	public static final double ManipulatorNormalPower = 0.40;
-	public static final double ManipulatorLowPower = 0.50;
-	public static final double HandoffHoldTime = 0;
 	
 	// Climber
 	public static final int ClimberSolenoidID = 3;

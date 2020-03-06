@@ -2,11 +2,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.tables.ITable;
 import frc.auton.*;
 import frc.subsystem.*;
 import frc.subsystem.Hopper.FrontMotorState;
@@ -28,7 +26,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import java.util.*;
 
-import frc.utility.ThreadScheduler;
 import frc.utility.Controller;
 import frc.utility.JetsonUDP;
 import frc.utility.NavXMPX_Gyro;
@@ -72,7 +69,6 @@ public class Robot extends TimedRobot {
   BlinkinLED blinkinLED = BlinkinLED.getInstance();
 
   ExecutorService executor = Executors.newFixedThreadPool(4);
-  ThreadScheduler scheduler = new ThreadScheduler();
   Thread auto;
   TemplateAuto option;
   AutoPosition autoPosition = AutoPosition.MIDDLE;
@@ -195,7 +191,6 @@ public class Robot extends TimedRobot {
     jetsonUDP.start();
     robotTracker.start();
     drive.start();
-//c349e488ce1535e2388178b24ceb2496f2a1bdd1
 
 
     jetsonUDP.changeExp(true);
@@ -636,7 +631,6 @@ public class Robot extends TimedRobot {
 
 
     
-    scheduler.pause();
     shooter.pause();
     //climber.pause();
     // controlPanel.pause();

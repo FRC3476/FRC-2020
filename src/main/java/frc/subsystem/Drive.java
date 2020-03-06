@@ -129,10 +129,6 @@ public class Drive extends Subsystem {
 		//leftSparkSlave2.follow(leftSpark);
 		//rightSparkSlave2.follow(rightSpark);
 
-
-
-
-		shifter = new Solenoid(Constants.DriveShifterSolenoidId);
 		//leftTalon = new LazyTalonSRX(Constants.DriveLeftMasterId);
 		//rightTalon = new LazyTalonSRX(Constants.DriveRightMasterId);
 
@@ -219,13 +215,7 @@ public class Drive extends Subsystem {
 		driveMultiplier = Constants.DriveHighSpeed;
 	}
 
-	private void configLow() {
-		//rightTalon.config_kP(0, Constants.kDriveRightLowP, 10);
-		//rightTalon.config_kF(0, Constants.kDriveRightLowF, 10);
-		//leftTalon.config_kP(0, Constants.kDriveLeftLowP, 10);
-		//leftTalon.config_kF(0, Constants.kDriveLeftLowF, 10);
-		driveMultiplier = Constants.DriveLowSpeed;
-	}
+
 	boolean teleopstart =true;
 
 	synchronized public void setTeleop() {
@@ -296,7 +286,7 @@ public class Drive extends Subsystem {
 		prevPositionL = getLeftDistance();
 		prevPositionR = getRightDistance();
 		driveState = DriveState.HOLD;
-		setShiftState(true);
+		configHigh();
 	}
 
 	public void endHold() {
@@ -795,14 +785,6 @@ public class Drive extends Subsystem {
 		}
 	}
 
-	public void setShiftState(boolean state) {
-		shifter.set(state);
-		if (state) {
-			configLow();
-		} else {
-			configHigh();
-		}
-	}
 
 	private void updatePurePursuit() {
 	//	System.out.println("updating pure presuit");
