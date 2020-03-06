@@ -1,6 +1,9 @@
 package frc.auton;
 
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
 import frc.subsystem.*;
+import frc.subsystem.VisionManager.VisionStatus;
 import frc.utility.Threaded;
 import frc.utility.control.*;
 import frc.utility.math.*;
@@ -48,6 +51,42 @@ public class TemplateAuto implements Runnable {
 
     @Override
     public void run() {
+
+    }
+
+    synchronized public void shootBalls (int amountOfBalls){
+        Shooter shooter = Shooter.getInstance();
+        VisionManager vision = VisionManager.getInstance();
+
+
+        Translation2D target = new Translation2D(0, 94.6);
+        Translation2D robot = here();
+
+        Rotation2D pointAtTarget = robot.getAngle(target);
+        System.out.println(target);
+        drive.setRotation(pointAtTarget);
+  
+        //while(!drive.isFinished()) if(isDead()) return;
+        //System.out.println("finsihed drive");
+
+        vision.setState(VisionStatus.AIMING);
+        while (!shooter.isShooterSpeedOKAuto()) if(isDead()) return;
+        //System.out.println("shooter speed ok");
+        vision.setState(VisionStatus.IDLE);
+
+        vision.setState(VisionStatus.WIN);
+        while(!vision.isFinished()) if(isDead()) return;
+        //System.out.println("vision finished");
+        //shooter.setFiring(true);
+
+        double TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*3;
+
+        while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
+
+        shooter.setSpeed(0);
+
+        //shooter.setFiring(false);
+        vision.setState(VisionStatus.IDLE);
 
     }
 
