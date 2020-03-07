@@ -105,7 +105,7 @@ public final class Constants {
 	public static final double ExpectedPositionTolerance = 0;
 	
 	// Autonomous Driving
-	public static final double TrackRadius = -12;
+	public static final double TrackRadius = -9;
 	public static final double WheelDiameter = 6.0; //6.09; //expiermental
 	public static final double MinTurningRadius = 40;
 	public static final double MinPathSpeed = 20; 
@@ -120,7 +120,7 @@ public final class Constants {
 	public static final double kDriveInchesPerSecPerRPM = Math.PI* Constants.WheelDiameter/60d/10d;
 	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
 	public static final double maxTurnError = 0.85;
-	public static final double maxPIDStopSpeed = 1.0;
+	public static final double maxPIDStopSpeed = 2.0;
 	public static final double DriveHighSpeed = 145;
 	
 	public static final double kDriveRightAutoP = 4*0.0005263 * kDriveInchesPerSecPerRPM; //0.00065
@@ -204,11 +204,11 @@ public final class Constants {
 	public static final int intakePeriod = 50;
 	public static final int controlPanelPeriod = 50;
 	public static final int hopperPeriod = 50;
-	public static final int DrivePeriod = 2;
+	public static final int DrivePeriod = 5;
 	public static final int JetsonUdpPeriod = 5;
-	public static final int RobotTrackerPeriod = 5;
+	public static final int RobotTrackerPeriod = 2;
 	public static final int VisionManagerPeriod = 12;
-	public static final int ShooterPeriod = 10;
+	public static final int ShooterPeriod = 50;
 
 
 	public static final int BlinkinLEDPeriod = 50;

@@ -80,6 +80,7 @@ public class Drive extends Subsystem {
 	//private LazyTalonSRX leftTalon, rightTalon, leftSlaveTalon, leftSlave2Talon, rightSlaveTalon, rightSlave2Talon;
 	private PurePursuitController autonomousDriver;
 	private SynchronousPid turnPID;
+	private SynchronousPid turnPIDAuto;
 	public DriveState driveState;
 	private RateLimiter moveProfiler, turnProfiler;
 	private Solenoid shifter;
@@ -94,6 +95,8 @@ public class Drive extends Subsystem {
 	double prevPositionR = 0;
 
 	public boolean isAiming = false; 
+
+	double prevTime;
 
 	public LazyCANSparkMax leftSpark, rightSpark, leftSparkSlave, rightSparkSlave, leftSparkSlave2, rightSparkSlave2;
   	private CANPIDController leftSparkPID, rightSparkPID;
@@ -144,9 +147,13 @@ public class Drive extends Subsystem {
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(4.0, 0, 0.8, 0); //P=1.0 OR 0.8
+		turnPID = new SynchronousPid(3.0, 0, 0.0, 0); //P=1.0 OR 0.8
 		turnPID.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
 		turnPID.setSetpoint(0);
+		turnPIDAuto = new SynchronousPid(1, 0, 0, 0); //P=1.0 OR 0.8
+		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
+		turnPIDAuto.setSetpoint(0);
+		
 
 		moveProfiler = new RateLimiter(Constants.DriveTeleopAccLimit);
 		turnProfiler = new RateLimiter(100);
@@ -172,6 +179,21 @@ public class Drive extends Subsystem {
 
 	public void setRight() {
 		setWheelVelocity(new DriveSignal(40, 0));
+	}
+
+
+	private void configBrake() {
+		leftSpark.setIdleMode(IdleMode.kBrake);
+		rightSpark.setIdleMode(IdleMode.kBrake);
+		leftSparkSlave.setIdleMode(IdleMode.kBrake);
+		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
+	}
+
+	private void configCoast() {
+		leftSpark.setIdleMode(IdleMode.kCoast);
+		rightSpark.setIdleMode(IdleMode.kCoast);
+		leftSparkSlave.setIdleMode(IdleMode.kCoast);
+		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
 	}
 
 	private void configAuto() {
@@ -735,6 +757,8 @@ public class Drive extends Subsystem {
 			driveState = DriveState.TURN;
 			rotateAuto = true;
 			isAiming = !getTurningDone();
+		//	configBrake();
+			
 		}
 		configHigh();
 	}
@@ -744,7 +768,8 @@ public class Drive extends Subsystem {
 			wantedHeading = angle;
 			driveState = DriveState.TURN;
 			rotateAuto = false;
-			isAiming = !getTurningDone(); 
+			isAiming = !getTurningDone();
+			
 		}
 		configHigh();
 	}
@@ -758,12 +783,28 @@ public class Drive extends Subsystem {
 	private void updateTurn() {
 		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
 		double deltaSpeed;
+
+		
+
+		// System.out.println(Timer.getFPGATimestamp() - prevTime);
+		// prevTime =  Timer.getFPGATimestamp(); 
+
+		
 		//System.out.println(RobotTracker.getInstance().getOdometry().rotationMat.getDegrees());
 		//System.out.println("error: " + error);
-		deltaSpeed = turnPID.update(error);
-		deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3.0), deltaSpeed);
+		if (rotateAuto){
+			deltaSpeed = turnPIDAuto.update(error);
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
+		} else {
+			deltaSpeed = turnPID.update(error);
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3.5), deltaSpeed); //2.6
+		}
+		System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
+		
+		
+		//System.out.println(deltaSpeed);
 		//deltaSpeed = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(deltaSpeed), 0, 180, 0, Constants.DriveHighSpeed), deltaSpeed);
-		System.out.println("error " + error + " speed " + (getLeftSpeed()-getRightSpeed()));
+		//System.out.println("error " + error + " speed " + (getLeftSpeed()-getRightSpeed()));
 
 		if (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
 			setWheelVelocity(new DriveSignal(0, 0));
@@ -773,6 +814,7 @@ public class Drive extends Subsystem {
 			{
 				synchronized (this) {
 					driveState = DriveState.DONE;
+					//configCoast();
 				}
 			}
 			

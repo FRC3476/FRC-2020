@@ -42,7 +42,7 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
         double turnAngle = 0;
         
         //turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
-        Translation2D target = new Translation2D(0, 94.6);
+        Translation2D target = new Translation2D(0, 67);
         Translation2D robot = here();
 
         Rotation2D pointAtTarget = robot.getAngle(target);

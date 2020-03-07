@@ -217,23 +217,25 @@ public class Robot extends TimedRobot {
     else autoDir = 1;
 
     //if(start_chooser.getSelected().equals("Lvl2")) startPos = 18+19-3;//-8;
-
+    autoPosition = AutoPosition.MIDDLE;
    // if(m_chooser.getSelected().equals("Cargo 1_2")&& red_blue.getSelected().equals("Red")) option = new Ship1_2Red(autoDir, startPos);
     switch(autoPosition){
       case MIDDLE:
-        startX = 94.6;
+        startX = 67;
         break;
       case LEFT:
-        startX = 94.6-48;
+        startX = 67-48;
         break;
       case RIGHT:
-        startX = 94.6+48;
+        startX = 67+48;
         break;
         
     }
 
-    option = new ShootAndMove(startX);
+    //option = new ShootAndMove(startX);
+    option = new TenBall(275);
     
+
     auto = new Thread(option);
     auto.start();
     
