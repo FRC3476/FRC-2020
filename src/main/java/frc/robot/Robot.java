@@ -210,7 +210,7 @@ public class Robot extends TimedRobot {
     shooter.setSpeed(0);
 
     robotTracker.resetOdometry();
-
+/*
     autoDone = false;
 
     int autoDir = 1;
@@ -241,8 +241,8 @@ public class Robot extends TimedRobot {
     
     auto = new Thread(option);
     auto.start();
-    
-  
+    */
+    drive.setRotationHysteresis(Rotation2D.fromDegrees(30));
 
     
   }
@@ -262,7 +262,7 @@ public class Robot extends TimedRobot {
         teleopInit();
       }
     //}
-    }*/
+    }*//*
     if(option.isFinished()) {
       teleopPeriodic();
     }
@@ -286,14 +286,14 @@ public class Robot extends TimedRobot {
       drive.stopMovement();
       drive.setTeleop();
     }
-    
+    */
   }
 
   @Override 
   public void teleopInit() {
     startAll();
     
-    killAuto();
+    //killAuto();
     System.out.println("teleop init!");
     //drive.stopMovement();
 
@@ -626,8 +626,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    killAuto();
-    
+    //killAuto();
+   // drive.pause();
 
 
     

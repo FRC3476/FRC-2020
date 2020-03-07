@@ -32,7 +32,7 @@ import frc.utility.LazyCANSparkMax;
 public class Drive extends Subsystem {
 
 	public enum DriveState {
-		TELEOP, PUREPURSUIT, TURN, HOLD, DONE
+		TELEOP, PUREPURSUIT, TURN, HOLD, DONE, TURN2, TURN3
 	}
 
 	public static class DriveSignal {
@@ -473,6 +473,20 @@ public class Drive extends Subsystem {
 		}
 	}
 	
+	private void configBrake() {
+		leftSpark.setIdleMode(IdleMode.kBrake);
+		rightSpark.setIdleMode(IdleMode.kBrake);
+		leftSparkSlave.setIdleMode(IdleMode.kBrake);
+		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
+	}
+
+	private void configCoast() {
+		leftSpark.setIdleMode(IdleMode.kCoast);
+		rightSpark.setIdleMode(IdleMode.kCoast);
+		leftSparkSlave.setIdleMode(IdleMode.kCoast);
+		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+	}
+
 	private void configMotors() {
 		leftSparkSlave.follow(leftSpark);
 		rightSparkSlave.follow(rightSpark);
@@ -711,7 +725,7 @@ public class Drive extends Subsystem {
 	public void update() {
 	//	System.out.println("L speed " + getLeftSpeed() + " position x " + RobotTracker.getInstance().getOdometry().translationMat.getX());
 	//	System.out.println("R speed " + getRightSpeed() + " position y " + RobotTracker.getInstance().getOdometry().translationMat.getY());
-	//System.out.println(driveState);	
+	System.out.println(driveState);	
 	DriveState snapDriveState;
 		synchronized (this) {
 			snapDriveState = driveState;
@@ -732,7 +746,16 @@ public class Drive extends Subsystem {
 			case HOLD:
 				hold();
 				break;
+			case TURN2: 
+				updateTurnAndBrake();
+				break; 
+			case TURN3:
+				updateHysteresisTurn();
+				break;
+
 		}
+		printError();
+
 		
 	}
 	synchronized public boolean isAiming() {
@@ -749,6 +772,29 @@ public class Drive extends Subsystem {
 		configHigh();
 	}
 
+	public void setRotationTurnBrake(Rotation2D angle) {
+		synchronized (this) {
+			wantedHeading = angle;
+			driveState = DriveState.TURN2;
+			rotateAuto = true;
+			isAiming = !getTurningDone();
+		}
+		configHigh();
+	}
+
+	public void setRotationHysteresis(Rotation2D angle) {
+		synchronized (this) {
+			wantedHeading = angle;
+			driveState = DriveState.TURN3;
+			rotateAuto = false;
+			isAiming = !getTurningDone();
+		}
+		System.out.println("SET ROTATION HYSTERESIS ");
+		configHigh();
+		configBrake();
+	}
+
+
 	public void setRotationTeleop(Rotation2D angle) {
 		synchronized (this) {
 			wantedHeading = angle;
@@ -763,6 +809,77 @@ public class Drive extends Subsystem {
 		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
 		return (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed);
 
+	}
+
+	double brakeTime = 0;
+	boolean brakeFlag = false;
+
+	private void printError() {
+		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
+		System.out.println("error " + error);
+	}
+
+	boolean enableBrake = false; 
+	public void updateHysteresisTurn() {
+		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
+		System.out.println("error " + error);
+
+		if(Math.abs(error) <= 1.0) {
+			System.out.println("IS DONE " + error);
+			setWheelVelocity(new DriveSignal(0,0));
+			synchronized(this) {
+				driveState = DriveState.DONE;
+				isAiming = false; 
+				
+			}
+			enableBrake = false;
+			configCoast();
+		}
+		else if(Math.abs(error) <= 4.0 ) {
+			if(enableBrake == false) {
+				enableBrake = true;
+				configBrake();
+			}
+			double errorSign =  (error/Math.abs(error));
+			setWheelVelocity(new DriveSignal(errorSign * 3 , errorSign * 3 * -1));
+			
+			System.out.println("TRYING TO HYSTERESIS " + error);
+ 
+		
+		}
+		
+		else {
+			double errorSign =  (error/Math.abs(error));
+			setWheelVelocity(new DriveSignal( errorSign * 20, -1 * errorSign * 20));
+		}
+	}
+
+	private void updateTurnAndBrake() {
+		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
+		System.out.println("error " + error);
+
+		if(Math.abs(error) <= 7.0 && brakeFlag == false) {
+			double errorSign =  (error/Math.abs(error));
+			setWheelVelocity(new DriveSignal(errorSign * 20 * -1, errorSign * 20));
+			brakeFlag = true; 
+			brakeTime = Timer.getFPGATimestamp();
+			System.out.println("TRYING TO BREAK " + error);
+ 
+		
+		} else if(brakeFlag == true && Timer.getFPGATimestamp()-brakeTime > 0.1) {
+			System.out.println("IS DONE " + error);
+			setWheelVelocity(new DriveSignal(0,0));
+			synchronized(this) {
+				driveState = DriveState.DONE;
+				isAiming = false; 
+				
+			}
+			brakeFlag = false;
+		}
+		else {
+			double errorSign =  (error/Math.abs(error));
+			setWheelVelocity(new DriveSignal( errorSign * 20, -1 * errorSign * 20));
+		}
 	}
 
 	private void updateTurn() {
