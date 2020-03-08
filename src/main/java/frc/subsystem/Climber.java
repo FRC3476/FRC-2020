@@ -10,51 +10,66 @@ import frc.utility.control.RateLimiter;
 
 public class Climber extends Subsystem{
 
-    private LazyTalonFX ClimberMotor;
+    private LazyTalonFX climberMotor;
     private Solenoid ClimberSolenoid;
-    private RateLimiter limiter;
+    
     private boolean hookingOn = false; 
 
-    private static final Climber instance = null ;//new Climber();
+    private static final Climber instance = new Climber();
 	
 	public static Climber getInstance() {
 		return instance;
 	}
 
 
-    Climber() {
+    public Climber() {
         super(Constants.ClimberPeriod);
-        ClimberMotor = new LazyTalonFX(Constants.ClimberMotorID);
-        ClimberMotor.config_kP(0, Constants.kClimberP, Constants.TimeoutMs);
-        ClimberMotor.config_kI(0, Constants.kClimberI, Constants.TimeoutMs);
-        ClimberMotor.config_kD(0, Constants.kClimberD, Constants.TimeoutMs);
-        ClimberMotor.config_IntegralZone(0, Constants.ClimberIntergralZone);
-        limiter = new RateLimiter(Constants.ClimberHookingMaxVel, Constants.ClimberHookingMaxAcel);
-        ClimberSolenoid.set(false);
-
-        ClimberSolenoid = new Solenoid(Constants.ClimberSolenoidID);
+        climberMotor = new LazyTalonFX(Constants.ClimberMotorID);
+        climberMotor.config_kP(0, Constants.kClimberP, Constants.TimeoutMs);
+        climberMotor.config_kI(0, Constants.kClimberI, Constants.TimeoutMs);
+        climberMotor.config_kD(0, Constants.kClimberD, Constants.TimeoutMs);
+        climberMotor.config_IntegralZone(0, Constants.ClimberIntergralZone);
+        climberMotor.setSelectedSensorPosition(0);
     }
 
 
 
-    void armUp() {
-        ClimberSolenoid.set(false);
-        ClimberMotor.set(ControlMode.Position, Constants.ClimberClimbedHeight);
+    public void up() {
+        //climberMotor.set(ControlMode.Position, Constants.ClimberClimbedHeight);
+        if(Math.abs(climberMotor.getSelectedSensorPosition())<Math.abs(Constants.ClimberMaxTarget)){
+            climberMotor.set(ControlMode.PercentOutput, -.8);
+        } else{
+            climberMotor.set(ControlMode.PercentOutput, 0);
+        }
+        
+
+        
+
+        
+    }
+
+    public void down(){
+        if(Math.abs(climberMotor.getSelectedSensorPosition())<Math.abs(Constants.ClimberClimbedHeight))
+        climberMotor.set(ControlMode.PercentOutput, -.8);
+    }
+
+    public void stop() {
+        climberMotor.set(ControlMode.PercentOutput, 0);
         
     }
 
     void hookOn() {
-        ClimberSolenoid.set(true);
         hookingOn = true;
 
         
     }
 
-    void reset() {
-        ClimberSolenoid.set(false);
-        ClimberMotor.set(ControlMode.Position, 0);
+    public void reset() {
+        climberMotor.set(ControlMode.PercentOutput, .2);
         
     }
+
+
 
     @Override
     public void selfTest() {
@@ -75,11 +90,7 @@ public class Climber extends Subsystem{
 
     @Override
     public void update() {
-        if (hookingOn){
-            ClimberMotor.set(ControlMode.Velocity, limiter.update(Constants.ClimberClimbedHeight));
-
-        }
-
+        System.out.println(climberMotor.getSelectedSensorPosition());
     }
     
 }
