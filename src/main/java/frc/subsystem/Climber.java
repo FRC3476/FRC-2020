@@ -91,7 +91,7 @@ public class Climber extends Subsystem{
 
     @Override
     public void update() {
-        System.out.println(climberMotor.getSelectedSensorPosition());
+      //  System.out.println(climberMotor.getSelectedSensorPosition());
     }
     
 }

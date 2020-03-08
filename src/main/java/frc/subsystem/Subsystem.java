@@ -24,6 +24,7 @@ public abstract class Subsystem implements Runnable {
     protected static Subsystem instance;
 
     public Subsystem(int period) {
+        this.period = period;
         if (period != -1)
             new Thread(this).start();
         try {
