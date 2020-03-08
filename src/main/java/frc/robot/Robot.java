@@ -182,7 +182,7 @@ public class Robot extends TimedRobot {
   {
     shooter.start();
     shooter.setSpeed(0);
-    //climber.start();
+    climber.start();
     // controlPanel.start();
     hopper.start();
     intake.start();
@@ -446,6 +446,14 @@ public class Robot extends TimedRobot {
 
       }
 
+      if (stick.getRawButton(9) && stick.getRawButton(10)){
+        climber.up();
+      } else if (stick.getRawButton(12)) {
+        climber.down();
+      } else {
+        climber.stop();
+      }
+
       if(visionManager.getState() == VisionManager.VisionStatus.IDLE) {
       DeployState intakeDeployState = intake.getDeployState();
       if (true || DeployState.DEPLOY == intakeDeployState){
@@ -616,6 +624,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
    // drive.stopMovement();
    // scheduler.resume();
+   startAll();
   }
 
   /**
@@ -623,7 +632,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-  
+    stick.update();
+    xbox.update();
+    buttonPanel.update(); 
+    if(stick.getRawButton(11)){
+      climber.reset();
+    } else {
+      climber.stop();
+    }
   }
 
   @Override
@@ -634,8 +650,8 @@ public class Robot extends TimedRobot {
 
     
     shooter.pause();
-    //climber.pause();
-    // controlPanel.pause();
+    climber.pause();
+    //controlPanel.pause();
     hopper.pause();
     intake.pause();
   }

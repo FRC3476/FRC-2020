@@ -68,10 +68,6 @@ public final class Constants {
 	public final static boolean HoodMotorDirection = false; //True is Inverted 
 	public final static double MaxHoodReleaseAngle = 75;
 	public final static double MinHoodReleaseAngle = 12.32;
-	
-	public static final int ClimberMasterId = 220;
-	public static final int ClimberSlaveId = 221;
-	public static final int ClimberPeriod = -1; 
 
 	//Intake Constants
 	public static final int IntakeMasterId = 50;
@@ -153,18 +149,15 @@ public final class Constants {
 
 	// Superstructure
 	
-	// Climber
-	public static final int ClimberSolenoidID = 3;
-	public static final int ClimberMotorID = 3;
+	public static final int ClimberMotorID = 60;
 	public static final double kClimberP = .10;
 	public static final double kClimberI = .10;
 	public static final double kClimberD = .10;
 	public static final int ClimberIntergralZone = 10;
 
-	public static final int ClimberMaxTarget = 10000;
-	public static final int ClimberClimbedHeight = 5000;
-	public static final int ClimberHookingMaxVel = 100;
-	public static final int ClimberHookingMaxAcel = 100;
+	//public static final double ClimberBottomHeight = 0;
+	public static final double ClimberMaxTarget = -339032.0*0.9;
+	public static final double ClimberClimbedHeight = ClimberMaxTarget*2;
 	
 	
 	// Camera
@@ -209,6 +202,7 @@ public final class Constants {
 	public static final int RobotTrackerPeriod = 2;
 	public static final int VisionManagerPeriod = 12;
 	public static final int ShooterPeriod = 50;
+	public static final int ClimberPeriod = 50; 
 
 
 	public static final int BlinkinLEDPeriod = 50;
