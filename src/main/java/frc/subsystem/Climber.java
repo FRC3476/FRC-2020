@@ -50,8 +50,12 @@ public class Climber extends Subsystem{
 
     public void down(){
         if(Math.abs(climberMotor.getSelectedSensorPosition())<Math.abs(Constants.ClimberClimbedHeight) &&
-            Math.abs(climberMotor.getSelectedSensorPosition()) > Math.abs(Constants.ClimberMaxTarget)*0.8 )
-            climberMotor.set(ControlMode.PercentOutput, -.8);
+            Math.abs(climberMotor.getSelectedSensorPosition()) > Math.abs(Constants.ClimberMaxTarget)*0.8 ){
+                climberMotor.set(ControlMode.PercentOutput, -.8);
+            } else {
+                stop();
+            }
+            
     }
 
     public void stop() {

@@ -64,7 +64,7 @@ public final class Constants {
 	public static final double HoodPIDSpeedMax = 0.8;
 	public static final double hoodMotorStalledAmps = 5; //not used
 	public static final double HoodHomeTimeout = 1.5;
-	public final static double AutoShooterOnTimePerBall = .5;
+	public final static double AutoShooterOnTimePerBall = .4; //0.5
 	public final static boolean HoodMotorDirection = false; //True is Inverted 
 	public final static double MaxHoodReleaseAngle = 75;
 	public final static double MinHoodReleaseAngle = 12.32;

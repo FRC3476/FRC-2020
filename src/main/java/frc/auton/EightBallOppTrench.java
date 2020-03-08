@@ -44,6 +44,8 @@ public class EightBallOppTrench extends TemplateAuto implements Runnable  {
         //Start 120 275
         System.out.println("ShootAndMove");
 
+
+        
         //Get oponent trench balls
         Path p1 = new Path(here());
         p1.addPoint(new Translation2D(243 - 35.0/2+6, -131), 130);
@@ -71,7 +73,7 @@ public class EightBallOppTrench extends TemplateAuto implements Runnable  {
         //Grab first balls from switch bump
         //94+1205, 12
         Path p3 = new Path(here());
-        p3.addPoint(new Translation2D( /*216*/ 214.5, /*-15*/ -12).translateBy(frontBumpDirRight.scale(/*-28.0*/ 0)).translateBy(frontBumpDirLeft.scale(/*-20.0*/ -50.0)), 40);
+        p3.addPoint(new Translation2D( /*216*/ 214.5, /*-15*/ -12).translateBy(frontBumpDirRight.scale(/*-28.0*/ 0)).translateBy(frontBumpDirLeft.scale(/*-20.0*/ -50.0)), 120);
         p3.addPoint(new Translation2D(214.5, -12).translateBy(frontBumpDirRight.scale(0.0)).translateBy(frontBumpDirLeft.scale(-13.0)), 40);
         drive.setAutoPath(p3, true);
         turnOnIntakeTrack();
@@ -79,7 +81,7 @@ public class EightBallOppTrench extends TemplateAuto implements Runnable  {
         
         //Drive forward perp to bump 
         Path p4 = new Path(here());
-        p4.addPoint(new Translation2D( /*216*/ 214.5, /*-15*/ -12).translateBy(frontBumpDirRight.scale(/*-28.0*/ -15.0)).translateBy(frontBumpDirLeft.scale(/*-20.0*/ -50.0)), 40);
+        p4.addPoint(new Translation2D( /*216*/ 214.5, /*-15*/ -12).translateBy(frontBumpDirRight.scale(/*-28.0*/ -15.0)).translateBy(frontBumpDirLeft.scale(/*-20.0*/ -50.0)), 120);
         //p4.addPoint();
         drive.setAutoPath(p4, false);
         while(!drive.isFinished()) if(isDead()) return;
@@ -92,8 +94,8 @@ public class EightBallOppTrench extends TemplateAuto implements Runnable  {
 
         //Drive back to shootng position
         Path p6 = new Path(here());
-        p6.addPoint(new Translation2D(125.5, 67), 130);
-        p6.addPoint(new Translation2D(120.5, 67), 130);
+        p6.addPoint(new Translation2D(125.5, 0/*67*/), 130);
+        p6.addPoint(new Translation2D(120.5, 0/*67*/), 130);
         drive.setAutoPath(p6, false);
         while(!drive.isFinished()) if(isDead()) return;
 
