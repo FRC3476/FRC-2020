@@ -105,7 +105,7 @@ public final class Constants {
 	public static final double ExpectedPositionTolerance = 0;
 	
 	// Autonomous Driving
-	public static final double TrackRadius = -9;
+	public static final double TrackRadius = -7; //-9;
 	public static final double WheelDiameter = 6.0; //6.09; //expiermental
 	public static final double MinTurningRadius = 40;
 	public static final double MinPathSpeed = 20; 

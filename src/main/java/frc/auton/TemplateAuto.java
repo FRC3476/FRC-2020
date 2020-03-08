@@ -11,8 +11,16 @@ import frc.utility.math.*;
 @SuppressWarnings("unused")
 public class TemplateAuto implements Runnable { 
     Drive drive = Drive.getInstance();
-    //CollisionManager collisionManager = CollisionManager.getInstance();
     RobotTracker robotTracker = RobotTracker.getInstance();
+    Intake intake = Intake.getInstance();
+    VisionManager vision = VisionManager.getInstance();
+    Shooter shooter = Shooter.getInstance();
+    Hopper hopper = Hopper.getInstance();
+    //12.68, 30.6
+    Translation2D frontBumpDirRight = new Translation2D(12.68, -30.6).getUnitVector();
+    Translation2D frontBumpDirLeft = new Translation2D(30.6, 12.68).getUnitVector();
+
+    //CollisionManager collisionManager = CollisionManager.getInstance();
     
     int side = 1;
 
@@ -52,6 +60,19 @@ public class TemplateAuto implements Runnable {
     @Override
     public void run() {
 
+    }
+    public void turnOnIntakeTrack() {
+        intake.setDeployState(Intake.DeployState.DEPLOY);
+        intake.setSpeed(Constants.IntakeMotorPower);
+        hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+        hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+    }
+
+
+    public void turnOffIntakeTrack() {
+        intake.setSpeed(0);
+        hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
+        hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
     }
 
     synchronized public void shootBalls (int amountOfBalls){

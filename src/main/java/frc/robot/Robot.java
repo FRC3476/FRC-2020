@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
   AutoPosition autoPosition = AutoPosition.MIDDLE;
 
   boolean firstTeleopRun = true;
+  boolean visionOff = false;
 
   boolean shooterSetOn = false;
   boolean intakeSetDeployed = false;
@@ -233,7 +234,7 @@ public class Robot extends TimedRobot {
     }
 
     //option = new ShootAndMove(startX);
-    option = new TenBall(275);
+    option = new EightBallOppTrench(275);//TenBall(275);
     
 
     auto = new Thread(option);
@@ -314,6 +315,16 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+    fireShooter = false;
+    ejectShooter = false;
+    intakeOn = false;
+    ejectAll = false;
+    intakeEject = false;
+    shooterOn = false;
+    hopperEject = false;
+    hopperOn = false;
+
+
 
       // System.out.println("intake current: " + intake.getCurrent());
       //System.out.println(drive.getGyroAngle());
@@ -332,22 +343,22 @@ public class Robot extends TimedRobot {
       buttonPanel.update();
       wheel.update();
 
-      if(xbox.getRawAxis(2) > 0.5){
-        visionManager.setState(VisionStatus.WIN);
+      if(xbox.getRawAxis(2) > 0.5 || stick.getRawButton(1)){
+        if(visionOff || stick.getRawButton(1)){
+          shooter.setFiring(true);
+          hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+          hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+          hopperOn = true;
+        } else{
+          visionManager.setState(VisionStatus.WIN);
+          shooter.setFiring(false);
+        }
+        
       }
       
       else{
         visionManager.setState(VisionStatus.IDLE);
         drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
-        if (stick.getRawButton(1)){ //3, 0.5
-          //fire shooter
-          shooter.setFiring(true);
-          hopperOn = true;
-  
-   
-        } else{
-          shooter.setFiring(false);
-        }
       }
       
 
@@ -379,25 +390,19 @@ public class Robot extends TimedRobot {
 
       //shooter presets
       if (buttonPanel.getRisingEdge(1)){
-        hoodPosition = 25; //TODO: Adjust numbers
+        hoodPosition = 25; 
         shooterSpeed = 5500;
+        visionOff = false;
       } else if (buttonPanel.getRisingEdge(2)){
-        hoodPosition = 33; //TODO: Adjust numbers
-        //shooterSpeed = 5000;
+        hoodPosition = 33;
+        visionOff = false;
         shooterSpeed = 5700;
       } else if (buttonPanel.getRisingEdge(3)){
         hoodPosition = 65; //TODO: Adjust numbers
         shooterSpeed = 3250;
-      }
+        visionOff = true;
 
-      fireShooter = false;
-      ejectShooter = false;
-      intakeOn = false;
-      ejectAll = false;
-      intakeEject = false;
-      shooterOn = false;
-      hopperEject = false;
-      hopperOn = false;
+      }
 
       if (shooterSetOn){
         //Shoter button pushed
@@ -472,6 +477,7 @@ public class Robot extends TimedRobot {
         if (intakeOn){
           intake.setIntakeState(IntakeState.INTAKE);
 
+          
         } else if(intakeEject){
           intake.setIntakeState(IntakeState.EJECT);
 
