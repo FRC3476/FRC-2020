@@ -16,6 +16,7 @@ import frc.subsystem.VisionManager.VisionStatus;
 import frc.utility.math.*;
 import frc.utility.control.motion.Path;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -30,6 +31,7 @@ import frc.utility.Controller;
 import frc.utility.JetsonUDP;
 import frc.utility.NavXMPX_Gyro;
 import frc.utility.VisionTarget;
+
 
 
 
@@ -56,6 +58,7 @@ public class Robot extends TimedRobot {
   //public static Joystick xbox = new Joystick(0);
   public Controller stick = new Controller(1);
   public Controller buttonPanel = new Controller(2);
+  Relay light = new Relay(0);
  
   JetsonUDP jetsonUDP = JetsonUDP.getInstance();
   Drive drive = Drive.getInstance();
@@ -108,6 +111,7 @@ public class Robot extends TimedRobot {
   
   @Override
   public void robotInit() {
+    light.set(Relay.Value.kOff);
     Thread.currentThread().setPriority(5);
     drive.calibrateGyro();
     //m_chooser.addOption("Cargo F_F", "Cargo F_F");
@@ -182,6 +186,7 @@ public class Robot extends TimedRobot {
 
   public void startAll()
   {
+    light.set(Relay.Value.kOn);
     shooter.start();
     shooter.setSpeed(0);
     climber.start();
@@ -202,7 +207,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    
     startAll();
     shooter.setSpeed(0);
 
@@ -662,6 +666,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    light.set(Relay.Value.kOff);
     killAuto();
     
 
