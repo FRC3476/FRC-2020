@@ -90,7 +90,7 @@ public class Shooter extends Subsystem{
         feederMotor.config_kI(0, Constants.kFeederI, Constants.TimeoutMs);
         feederMotor.config_kD(0, Constants.kFeederD, Constants.TimeoutMs);
         feederMotor.config_IntegralZone(0, Constants.FeederIntegralZone);
-        feederMotor.setInverted(true);
+        feederMotor.setInverted(false);
 
         hoodMotor.setSmartCurrentLimit(15);
         shooterMaster.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 0, 0));
