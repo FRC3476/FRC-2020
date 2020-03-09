@@ -27,6 +27,7 @@ public class VisionManager extends Subsystem {
     Drive drive = Drive.getInstance();
     Shooter shooter = Shooter.getInstance();
     boolean go = false;
+    BlinkinLED led;
     public int winStage = 0;
    
     private static final VisionManager vm = new VisionManager();
@@ -42,6 +43,7 @@ public class VisionManager extends Subsystem {
     
     public VisionManager() {
         super(Constants.VisionManagerPeriod);
+        led = BlinkinLED.getInstance();
     }
 
     public enum VisionStatus {
@@ -71,6 +73,12 @@ public class VisionManager extends Subsystem {
                 } //else System.out.println("recieved null paquet");
                 go = go || !drive.isAiming();
                 
+                if (go){
+                    led.setColor(.77);
+                } else {
+                    led.setColor(-.11);
+                }
+                
                 break;
 
             case IDLE:
@@ -95,11 +103,13 @@ public class VisionManager extends Subsystem {
                     shooter.setFiring(true);
                     hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
                     hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+                    led.setColor(.77);
 
                 } else {
                     shooter.setFiring(false);
                     hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
                     hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
+                    led.setColor(-.11);
 
                 } 
                 break;
