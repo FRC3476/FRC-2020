@@ -414,7 +414,7 @@ public class Robot extends TimedRobot {
         shooterMode = 2;
       } else if (buttonPanel.getRisingEdge(3)){
         hoodPosition = 65; //TODO: Adjust numbers
-        shooterSpeed = 3250;
+        shooterSpeed = 5500;//3250;
         visionOff = true;
         shooterMode = 3;
 
