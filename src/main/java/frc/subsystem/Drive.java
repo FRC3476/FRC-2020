@@ -147,8 +147,8 @@ public class Drive extends Subsystem {
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(3.0, 0, 0.0, 0); //P=1.0 OR 0.8
-		turnPID.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
+		turnPID = new SynchronousPid(3.5, 0, 0.0, 0); //P=1.0 OR 0.8
+		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
 		turnPID.setSetpoint(0);
 		turnPIDAuto = new SynchronousPid(1, 0, 0, 0); //P=1.0 OR 0.8
 		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
@@ -798,10 +798,10 @@ public class Drive extends Subsystem {
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
 		} else {
 			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3.5), deltaSpeed); //2.6
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 4.5), deltaSpeed); //2.6
 		}
 		System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
-		
+		//t
 		
 		//System.out.println(deltaSpeed);
 		//deltaSpeed = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(deltaSpeed), 0, 180, 0, Constants.DriveHighSpeed), deltaSpeed);
