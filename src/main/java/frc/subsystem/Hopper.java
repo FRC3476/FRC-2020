@@ -1,7 +1,11 @@
 package frc.subsystem;
+
 import frc.robot.Constants;
 import frc.utility.LazyTalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import edu.wpi.first.wpilibj.Timer;
+
 
 public class Hopper extends Subsystem {
     public enum  FrontMotorState {
@@ -114,8 +118,11 @@ public Hopper() {
 
 	@Override
 	public void selfTest() {
-		// TODO Auto-generated method stub
-		
+        // TODO Auto-generated method stub
+        selfTestStart=Timer.getFPGATimestamp();
+        testing=true;
+        setFrontMotorState(FrontMotorState.ACTIVE);
+        setSnailMotorState(SnailMotorState.ACTIVE , true);	
 	}
 
 	@Override
@@ -126,6 +133,18 @@ public Hopper() {
 
 	@Override
 	public void update() {
+                //Sets the latest state
+                latest = new JsonObject();
+                latest.put("state", frontMotorState.toString());
+        
+                //Update stuff for self test
+                if(testing==true){
+                    if(Timer.getFPGATimestamp()-selfTestStart>2000){
+                        testing=false;
+                        setFrontMotorState(FrontMotorState.INACTIVE);
+                        setSnailMotorState(SnailMotorState.INACTIVE, false);
+                    }
+                }
 		// TODO Auto-generated method stub
 		
     }

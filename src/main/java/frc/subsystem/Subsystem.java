@@ -5,17 +5,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import com.github.cliftonlabs.json_simple.JsonObject;
 
 public abstract class Subsystem implements Runnable {
     int period = 50;
 
     FileWriter logWriter;
-    FileReader logReader; 
+    FileReader logReader;
     ThreadSignal signal = ThreadSignal.PAUSED;
     public JsonObject latest;
     public String subsystemName;
+
+    public double selfTestStart;// = Timer.getFPGATimestamp();
+    public boolean testing = false;
 
     public enum ThreadSignal {
         ALIVE, PAUSED, DEAD
@@ -73,4 +75,6 @@ public abstract class Subsystem implements Runnable {
             }
         }
     }
+
+    
 }

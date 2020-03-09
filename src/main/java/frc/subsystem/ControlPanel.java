@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 
 import com.revrobotics.ColorSensorV3;
+import com.github.cliftonlabs.json_simple.JsonObject;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -171,6 +172,17 @@ public class ControlPanel extends Subsystem {
 // --------------------------------------------------------------
 
     public synchronized void update() {
+        //Sets the latest state
+        /*latest = new JsonObject();
+        latest.put("state", spinnerState.toString());
+
+        //Update stuff for self test
+        if(testing==true){
+            if(Timer.getFPGATimestamp()-selfTestStart>2000){
+                testing=false;
+                spinnerState=SpinnerState.OFF;
+            }
+        }*/
 
         switch (spinnerState) {
         // spin wheel 4 times

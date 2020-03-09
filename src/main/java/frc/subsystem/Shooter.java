@@ -4,6 +4,7 @@ import com.ctre.phoenix.CANifier.PinValues;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.github.cliftonlabs.json_simple.JsonObject;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.ControlType;
@@ -118,6 +119,7 @@ public class Shooter extends Subsystem{
 
         if (d > 0){
             shooterState = ShooterState.SPINNING;
+            
         } else {
             shooterState = ShooterState.OFF;
         }
@@ -133,8 +135,20 @@ public class Shooter extends Subsystem{
 
         // System.out.println("Speed: " + shooterOutput + " Error: " + flywheelError );
 
-        
+        //Sets the latest state
+        latest = new JsonObject();
+        latest.put("state", shooterState.toString());
+
+        //Update stuff for self test
+        if(testing==true){
+            if(Timer.getFPGATimestamp()-selfTestStart>2000){
+                testing=false;
+                shooterState=ShooterState.OFF;
+            }
+        }
+
         switch(shooterState){
+            
             case SPINNING: 
 
                 // flywheelError = targetShooterSpeed - getRPM();                // calculate the error;
@@ -144,7 +158,6 @@ public class Shooter extends Subsystem{
                 //     tbh = shooterOutput;                             // update Take Back Half variable
                 //     prev_error = flywheelError;                       // and save the previous error
                 // }
-
                 shooterMaster.set(ControlMode.Velocity, targetShooterSpeed/Constants.ShooterRPMPerTicksPer100ms);
                 //shooterMaster.set(ControlMode.PercentOutput, .5);
    //             System.out.println("error: " +  shooterMaster.getClosedLoopError()*Constants.ShooterRPMPerTicksPer100ms + 
@@ -263,16 +276,17 @@ public class Shooter extends Subsystem{
         return Math.abs(getRPM()-targetShooterSpeed) < Constants.AutoShooterAccptableRange;
     }
 
+
     @Override
     public void selfTest() {
-        
-
+        selfTestStart=Timer.getFPGATimestamp();
+        testing=true;
+        shooterState = ShooterState.SPINNING;
     }
 
     @Override
     public void logData() {
         // TODO Auto-generated method stub
-
     }
     
 

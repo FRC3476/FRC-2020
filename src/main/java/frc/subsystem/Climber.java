@@ -4,9 +4,12 @@ import frc.robot.Constants;
 import frc.utility.LazyTalonFX;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.github.cliftonlabs.json_simple.JsonObject;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.utility.control.RateLimiter;
+
+import edu.wpi.first.wpilibj.Timer;
 
 public class Climber extends Subsystem{
 
@@ -58,7 +61,9 @@ public class Climber extends Subsystem{
 
     @Override
     public void selfTest() {
-
+        selfTestStart=Timer.getFPGATimestamp();
+        testing=true;
+        ClimberMotor.set(ControlMode.PercentOutput,20);
 
     }
 
@@ -75,9 +80,22 @@ public class Climber extends Subsystem{
 
     @Override
     public void update() {
+        latest = new JsonObject();
+
         if (hookingOn){
             ClimberMotor.set(ControlMode.Velocity, limiter.update(Constants.ClimberClimbedHeight));
+            latest.put("state", "RUNNING");
+        } else {
+            latest.put("state", "OFF");
+        }
 
+
+        //Update stuff for self test
+        if(testing==true){
+            if(Timer.getFPGATimestamp()-selfTestStart>2000){
+                testing=false;
+                ClimberMotor.set(ControlMode.PercentOutput,0);
+            }
         }
 
     }

@@ -27,6 +27,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import java.util.*;
 
 import frc.utility.Controller;
+import frc.utility.DashboardTelemetry;
 import frc.utility.JetsonUDP;
 import frc.utility.NavXMPX_Gyro;
 import frc.utility.VisionTarget;
@@ -94,6 +95,10 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> goodbad = new SendableChooser<String>();
   private final SendableChooser<String> start_chooser = new SendableChooser<String>();
   private final SendableChooser<String> red_blue = new SendableChooser<String>();
+
+  //Telemetry initialization
+  private Subsystem[] subsystems = {intake, shooter, drive, hopper, climber, controlPanel}; 
+  private DashboardTelemetry dbTelemetry = DashboardTelemetry.getInstance(100, subsystems);
 
   /**
    * This function is run when the robot is first started up and should be
@@ -322,7 +327,7 @@ public class Robot extends TimedRobot {
       
       if(profileTeleop) times.add(Timer.getFPGATimestamp());
 
-
+      System.out.println("Teleop Periodic MAN!");
      // System.out.println("get hood angle " + shooter.getHoodAngle());
       // System.out.println(hopper.getCurrent());
       //System.out.println("turret " + turret.getAngle());
@@ -496,8 +501,8 @@ public class Robot extends TimedRobot {
         //shooter.setFiring(false);
       }
     }
-
-    
+    System.out.println("THIS IS GOOD!");
+    dbTelemetry.update();
     //  shooter.setFiring(fireShooter);
       //maxl = Math.max(Math.abs(drive.getLeftSpeed()), maxl);
       //maxr = Math.max(Math.abs(drive.getRightSpeed()), maxr);

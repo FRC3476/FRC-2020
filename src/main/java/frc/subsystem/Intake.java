@@ -3,6 +3,8 @@ package frc.subsystem;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.github.cliftonlabs.json_simple.JsonObject;
+
 //import frc.utility.telemetry.TelemetryServer;
 import frc.utility.LazyTalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -99,7 +101,9 @@ public synchronized double getCurrent() {
 @Override
 public void selfTest() {
 	// TODO Auto-generated method stub
-	
+        selfTestStart=Timer.getFPGATimestamp();
+        testing=true;
+        intakeState = intakeState.INTAKE;
 }
 
 
@@ -135,5 +139,17 @@ public synchronized void update() {
                         }
 
         }*/
+                //Sets the latest state
+                latest = new JsonObject();
+                latest.put("state", intakeState.toString());
+        
+                //Update stuff for self test
+                if(testing==true){
+                    if(Timer.getFPGATimestamp()-selfTestStart>2000){
+                        testing=false;
+                        //intakeState=IntakeState.OFF;
+                        setIntakeState(IntakeState.OFF);
+                    }
+                }
 }
 }

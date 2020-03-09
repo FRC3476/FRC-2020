@@ -2,6 +2,8 @@
 
 package frc.utility.control.motion;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+
 import frc.robot.Constants;
 import frc.subsystem.Drive;
 import frc.subsystem.Drive.AutoDriveSignal;
@@ -22,6 +24,7 @@ public class PurePursuitController {
 	private Path robotPath;
 	private boolean isReversed;
 	private RateLimiter speedProfiler;
+	//private JSONPObject
 
 	public PurePursuitController(Path robotPath, boolean isReversed) {
 		this.robotPath = robotPath;
