@@ -757,7 +757,7 @@ public class Drive extends Subsystem {
 			driveState = DriveState.TURN;
 			rotateAuto = true;
 			isAiming = !getTurningDone();
-		//	configBrake();
+			configBrake();
 			
 		}
 		configHigh();
@@ -769,6 +769,7 @@ public class Drive extends Subsystem {
 			driveState = DriveState.TURN;
 			rotateAuto = false;
 			isAiming = !getTurningDone();
+			configBrake();
 			
 		}
 		configHigh();
@@ -810,11 +811,11 @@ public class Drive extends Subsystem {
 			setWheelVelocity(new DriveSignal(0, 0));
 			
 			isAiming = false;
+			configCoast();
 			if( rotateAuto )
 			{
 				synchronized (this) {
 					driveState = DriveState.DONE;
-					//configCoast();
 				}
 			}
 			

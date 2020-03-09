@@ -85,9 +85,9 @@ public class VisionManager extends Subsystem {
                 break;
             
             case WIN:
-            System.out.println("is aiming " + drive.isAiming());
+            //System.out.println("is aiming " + drive.isAiming());
                 t = jetsonUDP.getTargets();
-                System.out.println("go: " + go);
+              //  System.out.println("go: " + go);
                 
                 if (t != null){
    //                 System.out.println("TR");
