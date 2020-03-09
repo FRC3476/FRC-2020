@@ -88,6 +88,7 @@ public class Robot extends TimedRobot {
   boolean ejectShooter = false;
   boolean hopperEject = false;
   boolean hopperOn = false;
+  int shooterMode = 0;
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<String>();
@@ -349,6 +350,7 @@ public class Robot extends TimedRobot {
           hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
           hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
           hopperOn = true;
+          blinkinLED.setColor(0.77);
         } else{
           visionManager.setState(VisionStatus.WIN);
           shooter.setFiring(false);
@@ -359,6 +361,13 @@ public class Robot extends TimedRobot {
       else{
         visionManager.setState(VisionStatus.IDLE);
         drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
+        if (shooterMode == 1){
+          blinkinLED.setColor(-0.29);
+        } else if (shooterMode == 2){
+          blinkinLED.setColor(-0.23);
+        } else if (shooterMode == 3){
+          blinkinLED.setColor(-0.15);
+        }
       }
       
 
@@ -393,14 +402,17 @@ public class Robot extends TimedRobot {
         hoodPosition = 25; 
         shooterSpeed = 5500;
         visionOff = false;
+        shooterMode = 1;
       } else if (buttonPanel.getRisingEdge(2)){
         hoodPosition = 33;
         visionOff = false;
         shooterSpeed = 5700;
+        shooterMode = 2;
       } else if (buttonPanel.getRisingEdge(3)){
         hoodPosition = 65; //TODO: Adjust numbers
         shooterSpeed = 3250;
         visionOff = true;
+        shooterMode = 3;
 
       }
 

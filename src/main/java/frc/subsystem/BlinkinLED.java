@@ -24,8 +24,8 @@ public class BlinkinLED extends Subsystem{
     //Saikran said to create instances up here, to create Control Panel Locally(since its final), and to call it.    
     }
     
-    void setColor(){
-        
+    public void setColor(double color){
+        spark.set(color);
     }
 
     @Override
