@@ -1,23 +1,26 @@
 package frc.subsystem;
 
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.PWMSparkMax;
 import edu.wpi.first.wpilibj.Spark;
 
-
 //for colors Vision failure:
-public class BlinkinLED extends Subsystem{
-    public enum ActivityCheck{
+public class BlinkinLED extends Subsystem {
+    public enum ActivityCheck {
         ControlPanelActive, VisionActive, Idle
     }
 
-    private ActivityCheck activityCheck = ActivityCheck.Idle;
+    //private ActivityCheck activityCheck = ActivityCheck.Idle;
 
-    private static final BlinkinLED instance = new BlinkinLED(); 
+    private static final BlinkinLED instance = new BlinkinLED();
+
     public static BlinkinLED getInstance() {
         return instance;
     }
+
     ControlPanel controlPanel = ControlPanel.getInstance();
-    Spark spark = new Spark(1);
+
+    PWMSparkMax spark = new PWMSparkMax(0);
 
     public BlinkinLED() {
         super(Constants.BlinkinLEDPeriod);

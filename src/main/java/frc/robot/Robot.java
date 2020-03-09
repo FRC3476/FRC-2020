@@ -295,7 +295,7 @@ public class Robot extends TimedRobot {
   @Override 
   public void teleopInit() {
     startAll();
-    
+    blinkinLED.setColor(-0.23);
     killAuto();
     System.out.println("teleop init!");
     //drive.stopMovement();
@@ -386,11 +386,13 @@ public class Robot extends TimedRobot {
 
       */
 
-      if (xbox.getRisingEdge(2)){
-        intakeSetDeployed = !intakeSetDeployed;
+      if (buttonPanel.getRawButton(7)){
+        //intakeSetDeployed = !intakeSetDeployed;
 
-        intake.setDeployState(intakeSetDeployed ? DeployState.DEPLOY:DeployState.UNDEPLOY);
-
+        //intake.setDeployState(intakeSetDeployed ? DeployState.DEPLOY:DeployState.UNDEPLOY);
+        intake.setDeployState(DeployState.UNDEPLOY);
+      } else {
+        intake.setDeployState(DeployState.DEPLOY);
       }
 
      /* if(xbox.getRisingEdge(3) || buttonPanel.getRisingEdge(5)){

@@ -71,7 +71,7 @@ public final class Constants {
 
 	//Intake Constants
 	public static final int IntakeMasterId = 50;
-	public static final int IntakeSolenoidId = 5;
+	public static final int IntakeSolenoidId = 1;
 	public static final double IntakeMotorPower = 1.0;
 	public static final double IntakeOpenTime = 0.5;
 	
