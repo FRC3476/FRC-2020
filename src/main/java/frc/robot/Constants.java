@@ -201,7 +201,7 @@ public final class Constants {
 	public static final int hopperPeriod = 50;
 	public static final int DrivePeriod = 5;
 	public static final int JetsonUdpPeriod = 5;
-	public static final int RobotTrackerPeriod = 2;
+	public static final int RobotTrackerPeriod = 5;
 	public static final int VisionManagerPeriod = 12;
 	public static final int ShooterPeriod = 50;
 	public static final int ClimberPeriod = 50; 
