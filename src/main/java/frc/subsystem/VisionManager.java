@@ -87,7 +87,6 @@ public class VisionManager extends Subsystem {
             case WIN:
             //System.out.println("is aiming " + drive.isAiming());
                 t = jetsonUDP.getTargets();
-              //  System.out.println("go: " + go);
                 
                 if (t != null){
    //                 System.out.println("TR");
@@ -103,13 +102,15 @@ public class VisionManager extends Subsystem {
                     shooter.setFiring(true);
                     hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
                     hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-                    led.setColor(.77);
+                 //   led.setColor(.77);
 
                 } else {
                     shooter.setFiring(false);
                     hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
                     hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
-                    led.setColor(-.11);
+                   // led.setColor(-.11);
+
+                   System.out.println("not ready: " + go);
 
                 } 
                 break;

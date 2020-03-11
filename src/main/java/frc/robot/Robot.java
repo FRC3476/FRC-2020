@@ -369,11 +369,12 @@ public class Robot extends TimedRobot {
           hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
           hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
           hopperOn = true;
+          System.out.println("nothin here");
           blinkinLED.setColor(0.77);
-        } else{
+        } else if(xbox.getRawAxis(2) > 0.5){
           visionManager.setState(VisionStatus.WIN);
-          shooter.setFiring(false);
-        }
+          //shooter.setFiring(false);
+        } else shooter.setFiring(false);
         
       }
       

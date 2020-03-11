@@ -165,6 +165,7 @@ public class Shooter extends Subsystem{
                         if(firing){
                             feederOn = true;
                         }
+                        System.out.println("FIRING " + firing);
                         
 
                     }
