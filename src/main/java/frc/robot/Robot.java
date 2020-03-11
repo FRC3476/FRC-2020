@@ -269,7 +269,7 @@ public class Robot extends TimedRobot {
     if(option.isFinished()) {
       teleopPeriodic();
     }	
-    	System.out.println("ashwin says: " + robotTracker.getOdometry().translationMat.getX() + ", " +  robotTracker.getOdometry().translationMat.getY() + "  heading: " +  robotTracker.getOdometry().rotationMat.getDegrees());
+ //   	System.out.println("ashwin says: " + robotTracker.getOdometry().translationMat.getX() + ", " +  robotTracker.getOdometry().translationMat.getY() + "  heading: " +  robotTracker.getOdometry().rotationMat.getDegrees());
 
     
   
@@ -291,6 +291,8 @@ public class Robot extends TimedRobot {
       drive.stopMovement();
       drive.setTeleop();
     }
+    visionManager.stop();
+   // visionManager.setState(Vision);
     
   }
 
@@ -492,6 +494,8 @@ public class Robot extends TimedRobot {
       } else {
         climber.stop();
       }
+
+      if(stick.getRawButton(7) && stick.getRawButton(8)) climber.release();
       
       if(visionManager.getState() == VisionManager.VisionStatus.IDLE) {
       DeployState intakeDeployState = intake.getDeployState();

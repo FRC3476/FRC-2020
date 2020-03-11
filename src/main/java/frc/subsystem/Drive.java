@@ -801,7 +801,7 @@ public class Drive extends Subsystem {
 			deltaSpeed = turnPID.update(error);
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 4.5), deltaSpeed); //2.6
 		}
-		System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
+		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
 		//t
 		
 		//System.out.println(deltaSpeed);

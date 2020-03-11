@@ -13,7 +13,7 @@ import frc.utility.control.RateLimiter;
 public class Climber extends Subsystem{
 
     private LazyTalonFX climberMotor;
-    private Solenoid ClimberSolenoid;
+    private Solenoid climberSolenoid;
     
     private boolean hookingOn = false; 
 
@@ -35,14 +35,23 @@ public class Climber extends Subsystem{
         climberMotor.config_IntegralZone(0, Constants.ClimberIntergralZone);
         climberMotor.setNeutralMode(NeutralMode.Coast);
         climberMotor.setSelectedSensorPosition(0);
+        climberSolenoid = new Solenoid(2);
+    }
+
+    public void release() {
+        climberSolenoid.set(true);
     }
 
 
 
     public void up() {
+        if(!startClimb) climberSolenoid.set(true);
+
+
         //climberMotor.set(ControlMode.Position, Constants.ClimberClimbedHeight);
         if(Math.abs(climberMotor.getSelectedSensorPosition())<Math.abs(Constants.ClimberMaxTarget)){
-            climberMotor.set(ControlMode.PercentOutput, Constants.climberClimbSpeed);
+            if(Math.abs(climberMotor.getSelectedSensorPosition()) < Math.abs(Constants.ClimberMaxTarget) * 0.2)  climberMotor.set(ControlMode.PercentOutput, Constants.climberClimbSpeed * 0.5);
+            else climberMotor.set(ControlMode.PercentOutput, Constants.climberClimbSpeed * 0.6);
             startClimb = true; 
         } else{
             stop();
@@ -79,7 +88,7 @@ public class Climber extends Subsystem{
 
     public void reset() {
 // startClimb = false; 
-        climberMotor.set(ControlMode.PercentOutput, .2);
+        climberMotor.set(ControlMode.PercentOutput, 0.5);
         
     }
 
@@ -107,7 +116,8 @@ public class Climber extends Subsystem{
 
     @Override
     public void update() {
-      //  System.out.println(climberMotor.getSelectedSensorPosition());
+      // System.out.println(climberMotor.getSelectedSensorPosition());
+      //System.out.println(climberMotor.getOutputCurrent());
     }
     
 }

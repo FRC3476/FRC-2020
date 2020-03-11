@@ -121,6 +121,14 @@ public class VisionManager extends Subsystem {
        
     }
 
+    public void stop() {
+        shooter.setFiring(false);
+        hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
+        hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
+        led.setColor(-.11);
+        setState(VisionStatus.IDLE);
+    }
+
     public synchronized void setState(VisionStatus state){
         visionStatus = state;
         if(state == VisionStatus.IDLE)

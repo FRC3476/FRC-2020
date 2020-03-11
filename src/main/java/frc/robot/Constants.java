@@ -14,7 +14,7 @@ public final class Constants {
 	public static final String DriverStationIPv4 = "10.34.76.5"; // Temporary
 	public static final int JetsonPort = 5805;
 	public static final String JetsonIPv4 = "10.34.76.8";
-	public static final double VisionXOffset = 1.5;
+	public static final double VisionXOffset = 1.25;
 
 
 	// CAN IDs
@@ -64,7 +64,7 @@ public final class Constants {
 	public static final double HoodPIDSpeedMax = 0.8;
 	public static final double hoodMotorStalledAmps = 5; //not used
 	public static final double HoodHomeTimeout = 1.5;
-	public final static double AutoShooterOnTimePerBall = .35; //0.5
+	public final static double AutoShooterOnTimePerBall = .40; //0.5, 0.35
 	public final static boolean HoodMotorDirection = false; //True is Inverted 
 	public final static double MaxHoodReleaseAngle = 75;
 	public final static double MinHoodReleaseAngle = 12.32;
@@ -155,11 +155,11 @@ public final class Constants {
 	public static final double kClimberD = .10;
 	public static final int ClimberIntergralZone = 10;
 	public static final double climberIdleSpeed = 0;
-	public static final double climberClimbSpeed = -0.70;
+	public static final double climberClimbSpeed = -1.00;
 
 	//public static final double ClimberBottomHeight = 0;
-	public static final double ClimberMaxTarget = -339032.0*0.9;
-	public static final double ClimberClimbedHeight = ClimberMaxTarget*2;
+	public static final double ClimberMaxTarget = -508000 * 0.9; //-339032.0*0.9 * (15/12)*(15/12);
+	public static final double ClimberClimbedHeight = ClimberMaxTarget*2.2;
 	
 	
 	// Camera
