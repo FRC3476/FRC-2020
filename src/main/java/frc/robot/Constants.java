@@ -64,7 +64,7 @@ public final class Constants {
 	public static final double HoodPIDSpeedMax = 0.8;
 	public static final double hoodMotorStalledAmps = 5; //not used
 	public static final double HoodHomeTimeout = 1.5;
-	public final static double AutoShooterOnTimePerBall = .4; //0.5
+	public final static double AutoShooterOnTimePerBall = .35; //0.5
 	public final static boolean HoodMotorDirection = false; //True is Inverted 
 	public final static double MaxHoodReleaseAngle = 75;
 	public final static double MinHoodReleaseAngle = 12.32;
@@ -78,7 +78,7 @@ public final class Constants {
 	//Hopper Constants
 	public static final int FrontHopperMotorId = 40; //random number
 	public static final int SnailMotorId = 41; //random number
-	public static final double HopperFrontMotorSpeed = 0.3;
+	public static final double HopperFrontMotorSpeed = 0.5;
 	public static final double HopperSnailSpeed = 1.0;
 	public static final double SlowHopperSnailSpeed = .5;
 	
@@ -105,7 +105,7 @@ public final class Constants {
 	public static final double WheelDiameter = 6.0; //6.09; //expiermental
 	public static final double MinTurningRadius = 40;
 	public static final double MinPathSpeed = 20; 
-	public static final double MaxPathSpeed = 120; //120
+	public static final double MaxPathSpeed = 140; //120
 	public static final double MinLookAheadDistance = 14;
 	public static final double MaxLookAheadDistance = 30;
 	
@@ -154,6 +154,8 @@ public final class Constants {
 	public static final double kClimberI = .10;
 	public static final double kClimberD = .10;
 	public static final int ClimberIntergralZone = 10;
+	public static final double climberIdleSpeed = 0;
+	public static final double climberClimbSpeed = -0.70;
 
 	//public static final double ClimberBottomHeight = 0;
 	public static final double ClimberMaxTarget = -339032.0*0.9;

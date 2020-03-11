@@ -723,6 +723,7 @@ public class Drive extends Subsystem {
 	public void update() {
 	//	System.out.println("L speed " + getLeftSpeed() + " position x " + RobotTracker.getInstance().getOdometry().translationMat.getX());
 	//	System.out.println("R speed " + getRightSpeed() + " position y " + RobotTracker.getInstance().getOdometry().translationMat.getY());
+	//debugSpeed();
 	//System.out.println(driveState);	
 	DriveState snapDriveState;
 		synchronized (this) {

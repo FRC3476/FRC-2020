@@ -20,7 +20,7 @@ public class BlinkinLED extends Subsystem {
 
     ControlPanel controlPanel = ControlPanel.getInstance();
 
-    PWMSparkMax spark = new PWMSparkMax(0);
+    Spark spark = new Spark(0);
 
     public BlinkinLED() {
         super(Constants.BlinkinLEDPeriod);

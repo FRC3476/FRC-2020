@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
   boolean visionOff = false;
 
   boolean shooterSetOn = false;
-  boolean intakeSetDeployed = false;
+  boolean intakeSetDeployed = true;
   double hoodPosition = 90;
   int shooterSpeed = 6000;
   boolean ejectAll = false;
@@ -268,7 +268,9 @@ public class Robot extends TimedRobot {
     }*/
     if(option.isFinished()) {
       teleopPeriodic();
-    }
+    }	
+    	System.out.println("ashwin says: " + robotTracker.getOdometry().translationMat.getX() + ", " +  robotTracker.getOdometry().translationMat.getY() + "  heading: " +  robotTracker.getOdometry().rotationMat.getDegrees());
+
     
   
     //System.out.println(drive.get)
@@ -297,6 +299,16 @@ public class Robot extends TimedRobot {
     startAll();
     blinkinLED.setColor(-0.23);
     killAuto();
+    intake.setDeployState(DeployState.UNDEPLOY);
+    if (intake.getDeployState() == DeployState.DEPLOY){
+      intakeSetDeployed = true;
+    } else{
+      intakeSetDeployed = false;
+    }
+
+    hoodPosition = 65; //TODO: Adjust numbers, 65
+    shooterSpeed = 5000;//3250;,  5500
+    
     System.out.println("teleop init!");
     //drive.stopMovement();
 
@@ -329,6 +341,7 @@ public class Robot extends TimedRobot {
     hopperEject = false;
     hopperOn = false;
 
+    //System.out.println("ashwin says: " + robotTracker.getOdometry().translationMat.getX() + ", " +  robotTracker.getOdometry().translationMat.getY() + "  heading: " +  robotTracker.getOdometry().rotationMat.getDegrees());
 
 
       // System.out.println("intake current: " + intake.getCurrent());
@@ -386,19 +399,21 @@ public class Robot extends TimedRobot {
 
       */
 
-      if (buttonPanel.getRawButton(7)){
-        //intakeSetDeployed = !intakeSetDeployed;
+      if (xbox.getRisingEdge(2)){
+        intakeSetDeployed = !intakeSetDeployed;
 
-        //intake.setDeployState(intakeSetDeployed ? DeployState.DEPLOY:DeployState.UNDEPLOY);
-        intake.setDeployState(DeployState.UNDEPLOY);
-      } else {
-        intake.setDeployState(DeployState.DEPLOY);
+        intake.setDeployState(intakeSetDeployed ? DeployState.DEPLOY:DeployState.UNDEPLOY);
       }
+      //   intake.setDeployState(DeployState.UNDEPLOY);
+      // } else {
+      //   intake.setDeployState(DeployState.DEPLOY);
+      // }
 
      /* if(xbox.getRisingEdge(3) || buttonPanel.getRisingEdge(5)){
         shooterSetOn=!shooterSetOn;
 
       }*/
+      //System.out.println("Climber current: " + climber.getCurrent());
 
       if(buttonPanel.getRawButton(5)) shooterSetOn = true; 
       else shooterSetOn = false; 
@@ -415,8 +430,10 @@ public class Robot extends TimedRobot {
         shooterSpeed = 5700;
         shooterMode = 2;
       } else if (buttonPanel.getRisingEdge(3)){
-        hoodPosition = 65; //TODO: Adjust numbers
-        shooterSpeed = 5500;//3250;
+        //hits bootom of 3pt: 64.5, 5000
+        //
+        hoodPosition = 65; //TODO: Adjust numbers, 65
+        shooterSpeed = 5000;//3250;,  5500
         visionOff = true;
         shooterMode = 3;
 
@@ -468,7 +485,6 @@ public class Robot extends TimedRobot {
 
 
       }
-
       if (stick.getRawButton(9) && stick.getRawButton(10)){
         climber.up();
       } else if (stick.getRawButton(12)) {
@@ -476,7 +492,7 @@ public class Robot extends TimedRobot {
       } else {
         climber.stop();
       }
-
+      
       if(visionManager.getState() == VisionManager.VisionStatus.IDLE) {
       DeployState intakeDeployState = intake.getDeployState();
       if (true || DeployState.DEPLOY == intakeDeployState){
@@ -528,6 +544,7 @@ public class Robot extends TimedRobot {
         //shooter.setFiring(false);
       }
     }
+  
 
     
     //  shooter.setFiring(fireShooter);
@@ -656,6 +673,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    blinkinLED.setColor(.6);
     stick.update();
     xbox.update();
     buttonPanel.update(); 
@@ -668,6 +686,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    blinkinLED.setColor(.77);
     light.set(Relay.Value.kOff);
     killAuto();
     
