@@ -15,7 +15,9 @@ import frc.subsystem.VisionManager.VisionStatus;
 //import frc.robot.subsystem.Drive;
 import frc.utility.math.*;
 import frc.utility.control.motion.Path;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Timer;
@@ -58,7 +60,9 @@ public class Robot extends TimedRobot {
   //public static Joystick xbox = new Joystick(0);
   public Controller stick = new Controller(1);
   public Controller buttonPanel = new Controller(2);
-  Relay light = new Relay(0);
+  Relay light = new Relay(3);
+  //DigitalOutput light = new DigitalOutput(2);
+  //PWM light = new PWM(0);
  
   JetsonUDP jetsonUDP = JetsonUDP.getInstance();
   Drive drive = Drive.getInstance();
@@ -93,12 +97,12 @@ public class Robot extends TimedRobot {
   boolean hopperOn = false;
   int shooterMode = 0;
 
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<String>();
-  private final SendableChooser<String> dir_chooser = new SendableChooser<String>();
-  private final SendableChooser<String> goodbad = new SendableChooser<String>();
-  private final SendableChooser<String> start_chooser = new SendableChooser<String>();
-  private final SendableChooser<String> red_blue = new SendableChooser<String>();
+  private String autoSelected;
+  private final SendableChooser<String> autoChooser = new SendableChooser<String>();
+  //private final SendableChooser<String> dir_chooser = new SendableChooser<String>();
+  private final SendableChooser<String> goodBad = new SendableChooser<String>();
+  private final SendableChooser<String> startChooser = new SendableChooser<String>();
+  //private final SendableChooser<String> red_blue = new SendableChooser<String>();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -112,34 +116,34 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     light.set(Relay.Value.kOff);
+    //light.set(false);
+    //light.setRaw(0);
+    
     Thread.currentThread().setPriority(5);
     drive.calibrateGyro();
     //m_chooser.addOption("Cargo F_F", "Cargo F_F");
-    m_chooser.addOption("Cargo F_1", "Cargo F_1");
-    m_chooser.addOption("Cargo 1_2", "Cargo 1_2");
-    m_chooser.addOption("Rocket Mid Adaptive", "Rocket Mid Adaptive");
+    autoChooser.addOption("3 Ball", "3 Ball");
+    autoChooser.addOption("3 Ball Drive", "3 Ball Drive");
 
-    m_chooser.setDefaultOption("Rocket Mid", "Rocket Mid");
+
+    autoChooser.setDefaultOption("8 Ball", "8 Ball");
     
-    SmartDashboard.putData("Autonomous Mode", m_chooser);
+    SmartDashboard.putData("Autonomous Mode", autoChooser);
 
-    dir_chooser.setDefaultOption("Left", "Left");
-    dir_chooser.addOption("Right", "Right");
-    SmartDashboard.putData("Starting Side", dir_chooser);
+    
 
-    start_chooser.setDefaultOption("Lvl1", "Lvl1");
-    start_chooser.addOption("Lvl2", "Lvl2");
-    SmartDashboard.putData("Starting Height", start_chooser);
+    startChooser.setDefaultOption("left", "left");
+    startChooser.addOption("mid", "mid");
+    startChooser.addOption("right", "right");
 
-    red_blue.setDefaultOption("Red", "Red");
-    red_blue.addOption("Blue", "Blue");
-    SmartDashboard.putData("Red and Blue", red_blue);
+    SmartDashboard.putData("Starting Pos", startChooser);
 
-    goodbad.setDefaultOption("good", "good");
-    goodbad.addOption("bad","bad");
-    goodbad.addOption("mindBuisness", "mindBuisness");
-    goodbad.addOption("mInDbUiSnEsS", "mInDbUiSnEsS");
-    SmartDashboard.putData("Good or Bad? To be or Not to Be?", goodbad);
+  
+    goodBad.setDefaultOption("good", "good");
+    goodBad.addOption("bad","bad");
+    goodBad.addOption("mindBuisness", "mindBuisness");
+    goodBad.addOption("mInDbUiSnEsS", "mInDbUiSnEsS");
+    SmartDashboard.putData("Good or Bad? To be or Not to Be?", goodBad);
 
     shooter.homeHood();
 
@@ -155,6 +159,7 @@ public class Robot extends TimedRobot {
 
     Thread.currentThread().setPriority(7);
     jetsonUDP.start();
+    blinkinLED.setColor(0.89);
   }
 
   /**
@@ -187,6 +192,9 @@ public class Robot extends TimedRobot {
   public void startAll()
   {
     light.set(Relay.Value.kOn);
+   // light.set(true);
+    //light.setRaw(255);
+
     shooter.start();
     shooter.setSpeed(0);
     climber.start();
@@ -219,20 +227,19 @@ public class Robot extends TimedRobot {
 
 
 
-    if(dir_chooser.getSelected().equals("Right")) autoDir = -1;
-    else autoDir = 1;
+    
 
     //if(start_chooser.getSelected().equals("Lvl2")) startPos = 18+19-3;//-8;
-    autoPosition = AutoPosition.MIDDLE;
+    //autoPosition = AutoPosition.MIDDLE;
    // if(m_chooser.getSelected().equals("Cargo 1_2")&& red_blue.getSelected().equals("Red")) option = new Ship1_2Red(autoDir, startPos);
-    switch(autoPosition){
-      case MIDDLE:
+    switch(startChooser.getSelected()){
+      case "mid":
         startX = 67;
         break;
-      case LEFT:
+      case "left":
         startX = 67-48;
         break;
-      case RIGHT:
+      case "right":
         startX = 67+48;
         break;
         
@@ -240,6 +247,10 @@ public class Robot extends TimedRobot {
 
     //option = new ShootAndMove(startX);
     option = new EightBallOppTrench(275);//TenBall(275);
+
+    if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
+    else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
+
     
 
     auto = new Thread(option);
@@ -670,6 +681,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
    // drive.stopMovement();
    // scheduler.resume();
+   //light.setRaw(255);
    startAll();
   }
 
@@ -678,7 +690,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    blinkinLED.setColor(.6);
+    blinkinLED.setColor(.57);
     stick.update();
     xbox.update();
     buttonPanel.update(); 
@@ -692,7 +704,10 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     blinkinLED.setColor(.77);
+    //light.set(false);
     light.set(Relay.Value.kOff);
+    //light.setRaw(0);
+
     killAuto();
     
 

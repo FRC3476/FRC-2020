@@ -29,6 +29,7 @@ public class BlinkinLED extends Subsystem {
     
     public void setColor(double color){
         spark.set(color);
+        
     }
 
     @Override

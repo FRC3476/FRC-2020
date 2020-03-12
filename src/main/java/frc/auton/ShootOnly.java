@@ -54,7 +54,7 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
         
         while (!shooter.isHomed()) if(isDead()) return;
         shooter.setHoodAngle(33);
-        shooter.setSpeed(5300);
+        shooter.setSpeed(5700);
         //while(!drive.isFinished()) if(isDead()) return;
         //System.out.println("finsihed drive");
 
@@ -68,7 +68,7 @@ public class ShootOnly extends TemplateAuto implements Runnable  {
         System.out.println("vision finished");
         //shooter.setFiring(true);
 
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*3;
+        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*5;
 
         while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 
