@@ -1,6 +1,5 @@
 package frc.subsystem;
 
-import com.ctre.phoenix.CANifier.PinValues;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -14,7 +13,6 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.utility.LazyCANSparkMax;
 import frc.utility.LazyTalonFX;
 import frc.utility.LazyTalonSRX;
-import frc.utility.control.SynchronousPid;
 import frc.robot.Constants;
 
 public class Shooter extends Subsystem{

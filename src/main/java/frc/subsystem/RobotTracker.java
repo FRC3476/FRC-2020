@@ -4,7 +4,6 @@ package frc.subsystem;
 
 import frc.robot.Constants;
 import frc.utility.CircularQueue;
-import frc.utility.Threaded;
 import frc.utility.math.InterpolablePair;
 import frc.utility.math.RigidTransform2D;
 import frc.utility.math.Rotation2D;

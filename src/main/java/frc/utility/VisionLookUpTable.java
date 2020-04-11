@@ -3,8 +3,6 @@ package frc.utility;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import frc.utility.*;
-
 public class VisionLookUpTable{
     ArrayList<ShooterPreset> lookUpTable = new ArrayList<ShooterPreset>();
 

@@ -1,7 +1,6 @@
 package frc.subsystem;
 
 import frc.robot.Constants;
-import edu.wpi.first.wpilibj.PWMSparkMax;
 import edu.wpi.first.wpilibj.Spark;
 
 //for colors Vision failure:

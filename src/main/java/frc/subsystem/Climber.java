@@ -5,10 +5,8 @@ import frc.utility.LazyTalonFX;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.Solenoid;
-import frc.utility.control.RateLimiter;
 
 public class Climber extends Subsystem{
 
