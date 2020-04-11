@@ -87,14 +87,15 @@ public class Robot extends TimedRobot {
   boolean intakeSetDeployed = true;
   double hoodPosition = 90;
   int shooterSpeed = 6000;
-  boolean ejectAll = false;
-  boolean fireShooter = false;
-  boolean intakeOn = false;
-  boolean intakeEject = false;
-  boolean shooterOn = false;
-  boolean ejectShooter = false;
-  boolean hopperEject = false;
-  boolean hopperOn = false;
+  // TODO:Remove if new control code works
+  // boolean ejectAll = false;
+  // boolean fireShooter = false;
+  // boolean intakeOn = false;
+  // boolean intakeEject = false;
+  // boolean shooterOn = false;
+  // boolean ejectShooter = false;
+  // boolean hopperEject = false;
+  // boolean hopperOn = false;
   int shooterMode = 0;
 
   private String autoSelected;
@@ -319,17 +320,11 @@ public class Robot extends TimedRobot {
       intakeSetDeployed = false;
     }
 
-    hoodPosition = 65; //TODO: Adjust numbers, 65
-    shooterSpeed = 5000;//3250;,  5500
+    hoodPosition = 65;
+    shooterSpeed = 5000;
     
     System.out.println("teleop init!");
     //drive.stopMovement();
-
-    //elevator.resetDT();
-    //elevator.setHeight(Constants.HatchElevLow);
-   // turret.homeTurret();
-    //elevator.elevHome();
-    //manipulator.setManipulatorIntakeState(Manipulator.ManipulatorIntakeState.OFF);
     firstTeleopRun = true;
     //drive.setTeleop();
     
@@ -345,7 +340,126 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    fireShooter = false;
+      ArrayList<Double> times = new ArrayList<Double>();
+      
+      if(profileTeleop) times.add(Timer.getFPGATimestamp());
+
+      xbox.update();
+      stick.update();
+      buttonPanel.update();
+      wheel.update();
+
+      //shooter presets
+      if (buttonPanel.getRisingEdge(1)){
+        hoodPosition = 25; 
+        shooterSpeed = 5500;
+        visionOff = false;
+        shooterMode = 1;
+
+      } else if (buttonPanel.getRisingEdge(2)){
+        hoodPosition = 33;
+        visionOff = false;
+        shooterSpeed = 5700;
+        shooterMode = 2;
+
+      } else if (buttonPanel.getRisingEdge(3)){
+        //hits bootom of 3pt: 64.5, 5000
+        hoodPosition = 65;
+        shooterSpeed = 5000;//3250;,  5500
+        visionOff = true;
+        shooterMode = 3;
+
+      }
+
+      if(xbox.getRawAxis(2) > 0.5 || stick.getRawButton(1)){
+        if(visionOff || stick.getRawButton(1)){
+          shooter.setFiring(true);
+          hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+          hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+          blinkinLED.setColor(0.77);
+          
+        } else if(xbox.getRawAxis(2) > 0.5){
+          visionManager.setState(VisionStatus.WIN);
+
+        } else shooter.setFiring(false);
+        
+      }
+      
+      else{
+        visionManager.setState(VisionStatus.IDLE);
+        drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
+        if (shooterMode == 1){
+          blinkinLED.setColor(-0.29);
+        } else if (shooterMode == 2){
+          blinkinLED.setColor(-0.23);
+        } else if (shooterMode == 3){
+          blinkinLED.setColor(-0.15);
+        }
+      }
+      
+      
+
+      //Turn Shooter On
+      if (buttonPanel.getRawButton(5)){
+        shooter.setSpeed(shooterSpeed);
+        shooter.setHoodAngle(hoodPosition);
+
+      } else if (!xbox.getRawButton(4)){
+        shooter.setSpeed(0);
+
+      }
+
+      //Toggle Intake in and out
+      if (xbox.getRisingEdge(2)){
+        intakeSetDeployed = !intakeSetDeployed;
+        intake.setDeployState(intakeSetDeployed ? DeployState.DEPLOY:DeployState.UNDEPLOY);
+
+      }
+
+      
+      DeployState intakeDeployState = intake.getDeployState();
+      if(visionManager.getState() == VisionManager.VisionStatus.IDLE && (true || DeployState.DEPLOY == intakeDeployState)) {
+        if (buttonPanel.getRawButton(10)){
+          //eject all
+          intake.setIntakeState(IntakeState.EJECT);
+          hopper.setFrontMotorState(FrontMotorState.REVERSE);
+          hopper.setSnailMotorState(SnailMotorState.REVERSE , false);
+          //ejectShooter = true; Was never used but was in code...
+
+        } else if (buttonPanel.getRawButton(8)){
+          intake.setIntakeState(IntakeState.EJECT);
+          hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+          hopper.setSnailMotorState(SnailMotorState.ACTIVE , true);
+
+        }else if (xbox.getRawButton(6)){
+          intake.setIntakeState(IntakeState.EJECT);
+          hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+          hopper.setSnailMotorState(SnailMotorState.INACTIVE, false);
+
+        } else if(xbox.getRawAxis(3)>0.5){
+          //intake on 
+          intake.setIntakeState(IntakeState.INTAKE);
+          hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+          hopper.setSnailMotorState(SnailMotorState.ACTIVE , true);
+
+        }
+      }
+
+      if (stick.getRawButton(9) && stick.getRawButton(10)){
+        climber.up();
+      } else if (stick.getRawButton(12)) {
+        climber.down();
+      } else {
+        climber.stop();
+      }
+
+      if(stick.getRawButton(7) && stick.getRawButton(8)) climber.release();
+      
+    }
+
+
+  //Incase Things Break
+  /*    fireShooter = false;
     ejectShooter = false;
     intakeOn = false;
     ejectAll = false;
@@ -357,8 +471,7 @@ public class Robot extends TimedRobot {
     //System.out.println("ashwin says: " + robotTracker.getOdometry().translationMat.getX() + ", " +  robotTracker.getOdometry().translationMat.getY() + "  heading: " +  robotTracker.getOdometry().rotationMat.getDegrees());
 
 
-      // System.out.println("intake current: " + intake.getCurrent());
-      //System.out.println(drive.getGyroAngle());
+
      
       ArrayList<Double> times = new ArrayList<Double>();
       
@@ -402,32 +515,11 @@ public class Robot extends TimedRobot {
       }
       
 
-
-      /* x:flywheel togle ✔
-      right trigger:shoot  ✔
-      button panle: 3 setpoint for shooter hood position + flywheel speed saved to var ✔
-      B:Intake in/out, toggle ✔
-      left Trigger: Intake stuff  ✔
-      left bumber: intake eject ✔
-      //Button box: Reverse everything (car wash + intake) ✔
-
-      */
-
       if (xbox.getRisingEdge(2)){
         intakeSetDeployed = !intakeSetDeployed;
 
         intake.setDeployState(intakeSetDeployed ? DeployState.DEPLOY:DeployState.UNDEPLOY);
       }
-      //   intake.setDeployState(DeployState.UNDEPLOY);
-      // } else {
-      //   intake.setDeployState(DeployState.DEPLOY);
-      // }
-
-     /* if(xbox.getRisingEdge(3) || buttonPanel.getRisingEdge(5)){
-        shooterSetOn=!shooterSetOn;
-
-      }*/
-      //System.out.println("Climber current: " + climber.getCurrent());
 
       if(buttonPanel.getRawButton(5)) shooterSetOn = true; 
       else shooterSetOn = false; 
@@ -460,10 +552,10 @@ public class Robot extends TimedRobot {
       }
 
       
-      /*else {
-        fireShooter = false;
-        hopperOn = false;
-      }*/
+      // else {
+      //   fireShooter = false;
+      //   hopperOn = false;
+      // }
 
       if(xbox.getRawAxis(3)>0.5){
         //intake on 
@@ -557,125 +649,11 @@ public class Robot extends TimedRobot {
         shooter.setHoodAngle(hoodPosition);
       } else if (!xbox.getRawButton(4)){
         shooter.setSpeed(0);
-        //shooter.setFiring(false);
       }
     }
-  
-
-    
-    //  shooter.setFiring(fireShooter);
-      //maxl = Math.max(Math.abs(drive.getLeftSpeed()), maxl);
-      //maxr = Math.max(Math.abs(drive.getRightSpeed()), maxr);
-
-      //System.out.println("velocity L: " +  maxl + " Velocity R: " + maxr);
-
-
-
-      /*
-      boolean prevShooterOn;
-      boolean prevIntakeDeployed;
-      double prevHoodPosition;
-      int prevShooterSpeed;
-      boolean prevEjectAll;
-      boolean prevFireShooter;
-      boolean prevIntakeOn;
-      boolean prevIntakeEject;
-      */
-
-
-
-
-
-
-
-     
-      
-
-//  ------------------------------------------------------------      
-      // if (buttonPanel.getRisingEdge(10)){
-      //   ejectAll = true;
-      //   hopper.setFrontMotorState(FrontMotorState.REVERSE);
-      //   hopper.setSnailMotorState(SnailMotorState.REVERSE);
-      //   shooter.setEject(true);
-
-      // }
-
-      // if (buttonPanel.getFallingEdge(10)){
-      //   ejectAll = false;
-      //   hopper.setFrontMotorState(FrontMotorState.INACTIVE);
-      //   hopper.setSnailMotorState(SnailMotorState.INACTIVE);
-      //   shooter.setEject(false);
-        
-      // }
-
-
-      // if (xbox.getRisingEdge(3)){
-      //   shooterSetOn=!shooterSetOn;
-        
-      //   if(shooterSetOn){
-      //     shooter.setSpeed(shooterSpeed);
-      //   } else {
-      //     shooter.setSpeed(0);
-      //   }
-
-      // } //2&3
-
-      // if (xbox.getRisingEdge(3, 0.5)){
-      //   shooter.setFiring(true);
-
-      // } 
-      // if(xbox.getFallingEdge(3, 0.5)) {
-      //   shooter.setFiring(false);
-
-      // }
-
-      // if (xbox.getRisingEdge(2)){
-      //   intakeSetDeployed = !intakeSetDeployed;
-
-      //   if(intakeSetDeployed){
-      //     intake.setDeployState(DeployState.DEPLOY);
-      //   } else{
-      //     intake.setDeployState(DeployState.UNDEPLOY);
-      //   }
-
-      // }
-      // if (intakeSetDeployed){
-      //   if (xbox.getRawAxis(2)>0.5 && !ejectAll){
-      //     intake.setIntakeState(IntakeState.INTAKE);
-      //     hopper.setFrontMotorState(FrontMotorState.ACTIVE);
-
-      //   } else if (xbox.getRisingEdge(5)|| ejectAll){
-      //     intake.setIntakeState(IntakeState.EJECT);
-
-      //   } else{
-      //     intake.setIntakeState(IntakeState.OFF);
-
-      //   }
-      // } else{
-      //   intake.setIntakeState(IntakeState.OFF);
-
-      // }
-
-
-
-      // if (buttonPanel.getRisingEdge(1)){
-      //   hoodPosition = 0; 
-      //   shooterSpeed = 2000;
-      // } else if (buttonPanel.getRisingEdge(1)){
-      //   hoodPosition = 45;
-      //   shooterSpeed = 4000;
-      // } else if (buttonPanel.getRisingEdge(2)){
-      //   hoodPosition = 90;
-      //   shooterSpeed = 6000;
-      // }
-
-
-
-
-
-      
 
   }
+  */
 
   @Override
   public void testInit() {
