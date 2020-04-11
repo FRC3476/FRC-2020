@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 
@@ -65,13 +67,23 @@ public abstract class Subsystem implements Runnable {
 
     public void run() {
         while(signal != ThreadSignal.DEAD) {
-
-            if(signal == ThreadSignal.ALIVE) update();
-            try { 
-                Thread.sleep(period);
-            } catch(Exception e) {
-                System.out.println("Thread sleep failing");
-            }
+            //TODO: Change to old script if it does not work
+            // if(signal == ThreadSignal.ALIVE) update();
+            // try { 
+            //     Thread.sleep(period);
+            // } catch(Exception e) {
+            //     System.out.println("Thread sleep failing");
+            // }
+            
+            Timer timer = new Timer();
+            int begin = 0; //timer begins instantly.
+            int timeinterval = period; //timer executes every period.
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    if(signal == ThreadSignal.ALIVE) update();
+                }
+            },begin, timeinterval);
         }
     }
 }
