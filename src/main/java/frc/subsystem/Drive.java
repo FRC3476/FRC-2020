@@ -26,6 +26,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import frc.utility.LazyCANSparkMax;
 
 @SuppressWarnings("unused")
@@ -100,7 +103,14 @@ public class Drive extends Subsystem {
 
 	public LazyCANSparkMax leftSpark, rightSpark, leftSparkSlave, rightSparkSlave, leftSparkSlave2, rightSparkSlave2;
   	private CANPIDController leftSparkPID, rightSparkPID;
-	  private CANEncoder leftSparkEncoder, rightSparkEncoder;
+	private CANEncoder leftSparkEncoder, rightSparkEncoder;
+
+	public LazyCANSparkMax leftFrontSpark, leftBackSpark, rightFrontSpark, rightBackSpark;
+	private CANEncoder leftFrontSparkEncoder, leftBackSparkEncoder, rightFrontSparkEncoder, rightBackSparkEncoder;
+
+	public LazyCANSparkMax leftFrontSparkSwerve, leftBackSparkSwerve, rightFrontSparkSwerve, rightBackSparkSwerve;
+	private CANEncoder leftFrontSparkEncoderSwerve, leftBackSparkEncoderSwerve, rightFrontSparkEncoderSwerve, rightBackSparkEncoderSwerve;
+	SwerveDriveKinematics swerveKinematics;
 	  
 
 	private Drive() {
@@ -123,8 +133,33 @@ public class Drive extends Subsystem {
 		leftSparkEncoder = leftSpark.getEncoder();
 		rightSparkEncoder = rightSpark.getEncoder();
 
+		//Swerve Drive Motors
+		leftFrontSpark = new LazyCANSparkMax(Constants.DriveLeftFrontId, MotorType.kBrushless);
+		leftBackSpark = new LazyCANSparkMax(Constants.DriveLeftBackId, MotorType.kBrushless);
+		rightFrontSpark = new LazyCANSparkMax(Constants.DriveRightFrontId, MotorType.kBrushless);
+		rightBackSpark = new LazyCANSparkMax(Constants.DriveRightBackId, MotorType.kBrushless);
 
+		leftFrontSparkEncoder = leftFrontSpark.getEncoder();
+		leftBackSparkEncoder  = leftBackSpark.getEncoder();
+		rightFrontSparkEncoder = rightFrontSpark.getEncoder();
+		rightBackSparkEncoder = rightBackSpark.getEncoder();
+
+		leftFrontSparkSwerve = new LazyCANSparkMax(Constants.DriveLeftFrontSwerveId, MotorType.kBrushless);
+		leftBackSparkSwerve = new LazyCANSparkMax(Constants.DriveLeftBackSwerveId, MotorType.kBrushless);
+		rightFrontSparkSwerve = new LazyCANSparkMax(Constants.DriveRightFrontSwerveId, MotorType.kBrushless);
+		rightBackSparkSwerve = new LazyCANSparkMax(Constants.DriveRightBackSwerveId, MotorType.kBrushless);
+
+		leftFrontSparkEncoderSwerve = leftFrontSparkSwerve.getEncoder();
+		leftBackSparkEncoderSwerve  = leftBackSparkSwerve.getEncoder();
+		rightFrontSparkEncoderSwerve = rightFrontSparkSwerve.getEncoder();
+		rightBackSparkEncoderSwerve = rightBackSparkSwerve.getEncoder();
+		
+		
+
+		// Creating kinematics object using the module locations
+		swerveKinematics = new SwerveDriveKinematics(Constants.LeftFrontLocation, Constants.LeftBackLocation, Constants.RightFrontLocation,Constants.RightBackLocation);
 	
+
 		//leftSparkPID.
 		
 		//rightSparkSlave.follow(rightSpark);
@@ -483,6 +518,78 @@ public class Drive extends Subsystem {
 			//System.out.println(leftMotorSpeed +" , " + rightMotorSpeed);
 			setWheelVelocity(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		}
+	}
+
+	public void swerveDrive(double x1, double x2, double y1){
+		/*Things to cahnge before using
+		1. Ids
+		2. set Locations of all wheels
+		3. 
+		*/
+
+		//TODO: Set motor control modes
+		//TODO: Check if reversing the direction will allow for a faster turn
+
+		synchronized (this) {
+			driveState = DriveState.TELEOP;
+		}
+
+		ChassisSpeeds speeds = new ChassisSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1 );
+
+		SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds);
+
+		SwerveModuleState leftFront = moduleStates[0];
+		SwerveModuleState leftBack = moduleStates[1];
+		SwerveModuleState rightFront = moduleStates[2];
+		SwerveModuleState rightBack = moduleStates[3];
+
+		double leftFrontSpeed = leftFront.speedMetersPerSecond*100;
+		double leftBackSpeed = leftBack.speedMetersPerSecond*100;
+		double rightFrontSpeed = rightFront.speedMetersPerSecond*100;
+		double rightBackSpeed = rightBack.speedMetersPerSecond*100;
+
+		double maxSpeed = 0;
+		if(leftFrontSpeed > Constants.DriveHighSpeed && leftFrontSpeed > maxSpeed){
+			maxSpeed = leftFrontSpeed;
+		} 
+		if(leftBackSpeed > Constants.DriveHighSpeed && leftBackSpeed > maxSpeed){
+			maxSpeed = leftBackSpeed;
+		} 
+		if(rightFrontSpeed > Constants.DriveHighSpeed && rightFrontSpeed > maxSpeed){
+			maxSpeed = rightFrontSpeed;
+		} 
+		if(rightBackSpeed > Constants.DriveHighSpeed && rightBackSpeed > maxSpeed){
+			maxSpeed = rightBackSpeed;
+		} 
+		
+		if(maxSpeed>Constants.DriveHighSpeed){
+			double reduce = maxSpeed/Constants.DriveHighSpeed;
+			leftFrontSpeed = leftFrontSpeed/reduce;
+			leftBackSpeed = leftBackSpeed/reduce;
+			rightFrontSpeed = rightFrontSpeed/reduce;
+			rightBackSpeed = rightBackSpeed/reduce;
+		}
+	
+
+		leftFrontSpark.set(leftFrontSpeed);
+		leftBackSpark.set(leftBackSpeed);
+		rightFrontSpark.set(rightFrontSpeed);
+		rightBackSpark.set(rightBackSpeed);
+
+		leftFrontSparkSwerve.set(leftFront.angle.getDegrees());
+		leftBackSparkSwerve.set(leftBack.angle.getDegrees());
+		rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
+		rightBackSparkSwerve.set(rightBack.angle.getDegrees());
+
+
+
+		
+
+		
+
+		
+
+
 	}
 	
 	private void configMotors() {

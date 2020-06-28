@@ -3,6 +3,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorMatch;
 
@@ -24,6 +25,22 @@ public final class Constants {
 	public static final int DriveRightMasterId = 12;
 	public static final int DriveRightSlave1Id = 13;
 	//public static final int DriveRightSlave2Id = 13;//not currently used
+
+	//Swerve Constants
+	public static final int DriveLeftFrontId = 10;
+	public static final int DriveLeftBackId = 11;
+	public static final int DriveRightFrontId = 12;
+	public static final int DriveRightBackId = 13;
+	public static final int DriveLeftFrontSwerveId = 14;
+	public static final int DriveLeftBackSwerveId = 15;
+	public static final int DriveRightFrontSwerveId = 16;
+	public static final int DriveRightBackSwerveId = 17;
+
+	// Locations for the swerve drive modules relative to the robot center.
+	public static final Translation2d LeftFrontLocation = new Translation2d(0.381, 0.381);
+	public static final Translation2d LeftBackLocation = new Translation2d(0.381, -0.381);
+	public static final Translation2d RightFrontLocation = new Translation2d(-0.381, 0.381);
+	public static final Translation2d RightBackLocation = new Translation2d(-0.381, -0.381);
 
 	//Shooter constants
 	public final static int ShooterMasterId = 30;
