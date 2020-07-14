@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
@@ -528,7 +529,6 @@ public class Drive extends Subsystem {
 		*/
 
 		//TODO: Set motor control modes
-		//TODO: Check if reversing the direction will allow for a faster turn
 
 		synchronized (this) {
 			driveState = DriveState.TELEOP;
@@ -537,6 +537,7 @@ public class Drive extends Subsystem {
 		ChassisSpeeds speeds = new ChassisSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1 );
 
 		SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds);
+		SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.DriveHighSpeed / 100);
 
 		SwerveModuleState leftFront = moduleStates[0];
 		SwerveModuleState leftBack = moduleStates[1];
@@ -547,28 +548,6 @@ public class Drive extends Subsystem {
 		double leftBackSpeed = leftBack.speedMetersPerSecond*100;
 		double rightFrontSpeed = rightFront.speedMetersPerSecond*100;
 		double rightBackSpeed = rightBack.speedMetersPerSecond*100;
-
-		double maxSpeed = 0;
-		if(leftFrontSpeed > Constants.DriveHighSpeed && leftFrontSpeed > maxSpeed){
-			maxSpeed = leftFrontSpeed;
-		} 
-		if(leftBackSpeed > Constants.DriveHighSpeed && leftBackSpeed > maxSpeed){
-			maxSpeed = leftBackSpeed;
-		} 
-		if(rightFrontSpeed > Constants.DriveHighSpeed && rightFrontSpeed > maxSpeed){
-			maxSpeed = rightFrontSpeed;
-		} 
-		if(rightBackSpeed > Constants.DriveHighSpeed && rightBackSpeed > maxSpeed){
-			maxSpeed = rightBackSpeed;
-		} 
-		
-		if(maxSpeed>Constants.DriveHighSpeed){
-			double reduce = maxSpeed/Constants.DriveHighSpeed;
-			leftFrontSpeed = leftFrontSpeed/reduce;
-			leftBackSpeed = leftBackSpeed/reduce;
-			rightFrontSpeed = rightFrontSpeed/reduce;
-			rightBackSpeed = rightBackSpeed/reduce;
-		}
 	
 
 		leftFrontSpark.set(leftFrontSpeed);
@@ -580,16 +559,46 @@ public class Drive extends Subsystem {
 		leftBackSparkSwerve.set(leftBack.angle.getDegrees());
 		rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
 		rightBackSparkSwerve.set(rightBack.angle.getDegrees());
+	}
 
+	public void swerveDriveFeildRelitive(double x1, double x2, double y1){
+		/*Things to cahnge before using
+		1. Ids
+		2. set Locations of all wheels
+		3. 
+		*/
 
+		//TODO: Set motor control modes
 
-		
+		synchronized (this) {
+			driveState = DriveState.TELEOP;
+		}
 
-		
+		ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1, Rotation2d.fromDegrees(getAngle()));
 
-		
+		SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds);
+		SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.DriveHighSpeed / 100);
 
+		SwerveModuleState leftFront = moduleStates[0];
+		SwerveModuleState leftBack = moduleStates[1];
+		SwerveModuleState rightFront = moduleStates[2];
+		SwerveModuleState rightBack = moduleStates[3];
 
+		double leftFrontSpeed = leftFront.speedMetersPerSecond*100;
+		double leftBackSpeed = leftBack.speedMetersPerSecond*100;
+		double rightFrontSpeed = rightFront.speedMetersPerSecond*100;
+		double rightBackSpeed = rightBack.speedMetersPerSecond*100;
+	
+
+		leftFrontSpark.set(leftFrontSpeed);
+		leftBackSpark.set(leftBackSpeed);
+		rightFrontSpark.set(rightFrontSpeed);
+		rightBackSpark.set(rightBackSpeed);
+
+		leftFrontSparkSwerve.set(leftFront.angle.getDegrees());
+		leftBackSparkSwerve.set(leftBack.angle.getDegrees());
+		rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
+		rightBackSparkSwerve.set(rightBack.angle.getDegrees());
 	}
 	
 	private void configMotors() {
