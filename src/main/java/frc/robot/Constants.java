@@ -17,6 +17,11 @@ public final class Constants {
 	public static final String JetsonIPv4 = "10.34.76.8";
 	public static final double VisionXOffset = 1.25;
 
+	//Vision (cm)
+	public static final double CamerTargetHeightOffset = 1;
+	public static final double CameraYAngle = 0;
+
+
 
 	// CAN IDs
 	public static final int DriveLeftMasterId = 10;

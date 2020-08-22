@@ -40,7 +40,6 @@ public class PurePursuitController {
 	 * @return Speed for each side of the robot.
 	 *
 	 */
-	@SuppressWarnings("unchecked")
 	public synchronized AutoDriveSignal calculate(RigidTransform2D robotPose) {
 		if (isReversed) {
 			robotPose = new RigidTransform2D(robotPose.translationMat, robotPose.rotationMat.flip());

@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
   Relay light = new Relay(3);
   //DigitalOutput light = new DigitalOutput(2);
   //PWM light = new PWM(0);
- 
+  
   JetsonUDP jetsonUDP = JetsonUDP.getInstance();
   Drive drive = Drive.getInstance();
   RobotTracker robotTracker = RobotTracker.getInstance();
@@ -125,7 +125,6 @@ public class Robot extends TimedRobot {
     //m_chooser.addOption("Cargo F_F", "Cargo F_F");
     autoChooser.addOption("3 Ball", "3 Ball");
     autoChooser.addOption("3 Ball Drive", "3 Ball Drive");
-
 
     autoChooser.setDefaultOption("8 Ball", "8 Ball");
     
