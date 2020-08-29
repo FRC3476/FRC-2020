@@ -88,14 +88,14 @@ public class ControlPanel extends Subsystem {
 
 //-------------------------------------------------------------
 
-
+    //TODO: make not null 
     private static final ControlPanel instance = null;//new ControlPanel(); 
     public static ControlPanel getInstance() {
         return instance;
     }
 
     // init
-    ControlPanel() {
+    private ControlPanel() {
         super(Constants.controlPanelPeriod);
 
         colorMatcher.addColorMatch(Constants.kBlueTarget);

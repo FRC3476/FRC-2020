@@ -41,7 +41,7 @@ public class VisionManager extends Subsystem {
         return vm;
     }    
     
-    public VisionManager() {
+    private VisionManager() {
         super(Constants.VisionManagerPeriod);
         led = BlinkinLED.getInstance();
     }

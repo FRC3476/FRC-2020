@@ -15,6 +15,7 @@ import frc.utility.LazyTalonFX;
 import frc.utility.LazyTalonSRX;
 import frc.robot.Constants;
 
+@SuppressWarnings("unused")
 public class Shooter extends Subsystem{
     public LazyTalonFX shooterMaster, shooterSlave1, shooterSlave2, shooterSlave3; //Motor controller objects
     private LazyTalonSRX feederMotor;
@@ -35,8 +36,8 @@ public class Shooter extends Subsystem{
     //private SynchronousPid turnPID;
     
 
-    @SuppressWarnings("used")
-    public Shooter(){
+    
+    private Shooter(){
         super(Constants.ShooterPeriod);
         //Shooter Talon ports
         shooterMaster = new LazyTalonFX(Constants.ShooterMasterId);

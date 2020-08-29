@@ -16,8 +16,8 @@ public class Intake extends Subsystem {
             INTAKE, OFF, EJECT
     }
 
-public static final Intake instance = new Intake();
 
+private static final Intake instance = new Intake();
 public static Intake getInstance() {
         return instance;
 }
@@ -33,7 +33,7 @@ private double allowOpenTime = 0;
 
 // private double lastDeployCommandTime;
 
-public Intake() {
+private Intake() {
         super(Constants.intakePeriod);
         deploySolenoid = new Solenoid(Constants.IntakeSolenoidId);
         intakeMotor = new LazyTalonSRX(Constants.IntakeMasterId);

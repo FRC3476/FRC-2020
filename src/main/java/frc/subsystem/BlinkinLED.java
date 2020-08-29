@@ -21,7 +21,7 @@ public class BlinkinLED extends Subsystem {
 
     Spark spark = new Spark(0);
 
-    public BlinkinLED() {
+    private BlinkinLED() {
         super(Constants.BlinkinLEDPeriod);
     //Saikran said to create instances up here, to create Control Panel Locally(since its final), and to call it.    
     }

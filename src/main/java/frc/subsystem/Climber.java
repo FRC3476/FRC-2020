@@ -24,7 +24,7 @@ public class Climber extends Subsystem{
 	}
 
 
-    public Climber() {
+    private Climber() {
         super(Constants.ClimberPeriod);
         climberMotor = new LazyTalonFX(Constants.ClimberMotorID);
         climberMotor.config_kP(0, Constants.kClimberP, Constants.TimeoutMs);

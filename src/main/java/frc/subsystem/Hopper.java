@@ -11,35 +11,35 @@ public class Hopper extends Subsystem {
         ACTIVE, REVERSE, INACTIVE 
     }
     
-    public static final Hopper instance = new Hopper();
+    private static final Hopper instance = new Hopper();
     public static Hopper getInstance() {
         return instance;
-}
+    }
 
-private final LazyTalonSRX FrontHopperMotor;
-private final LazyTalonSRX SnailMotor;
-private FrontMotorState frontMotorState = FrontMotorState.INACTIVE;
-private SnailMotorState snailMotorState = SnailMotorState.INACTIVE;
+    private final LazyTalonSRX FrontHopperMotor;
+    private final LazyTalonSRX SnailMotor;
+    private FrontMotorState frontMotorState = FrontMotorState.INACTIVE;
+    private SnailMotorState snailMotorState = SnailMotorState.INACTIVE;
 
-public Hopper() {
-    super(Constants.hopperPeriod);
-    FrontHopperMotor = new LazyTalonSRX(Constants.FrontHopperMotorId);
-    FrontHopperMotor.configContinuousCurrentLimit(20);
-    FrontHopperMotor.configPeakCurrentLimit(0);
-    FrontHopperMotor.configPeakCurrentDuration(0);
-    FrontHopperMotor.enableCurrentLimit(true);
-    
-    SnailMotor = new LazyTalonSRX(Constants.SnailMotorId);
-    System.out.println("Current limit error " + SnailMotor.configContinuousCurrentLimit(25, 50));
-    SnailMotor.configPeakCurrentLimit(0);
-    SnailMotor.configPeakCurrentDuration(0);
-    SnailMotor.enableCurrentLimit(true);
-    //SnailMotor.enableCurrentLimit()
+    private Hopper() {
+        super(Constants.hopperPeriod);
+        FrontHopperMotor = new LazyTalonSRX(Constants.FrontHopperMotorId);
+        FrontHopperMotor.configContinuousCurrentLimit(20);
+        FrontHopperMotor.configPeakCurrentLimit(0);
+        FrontHopperMotor.configPeakCurrentDuration(0);
+        FrontHopperMotor.enableCurrentLimit(true);
+        
+        SnailMotor = new LazyTalonSRX(Constants.SnailMotorId);
+        System.out.println("Current limit error " + SnailMotor.configContinuousCurrentLimit(25, 50));
+        SnailMotor.configPeakCurrentLimit(0);
+        SnailMotor.configPeakCurrentDuration(0);
+        SnailMotor.enableCurrentLimit(true);
+        //SnailMotor.enableCurrentLimit()
     }    
 
     public FrontMotorState getFrontMotorState() {
         return frontMotorState;
-}
+    }
 
     public SnailMotorState getSnailMotorState() {
         return snailMotorState;
