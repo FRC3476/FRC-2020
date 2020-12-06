@@ -98,7 +98,6 @@ public synchronized double getCurrent() {
 
 @Override
 public void selfTest() {
-	// TODO Auto-generated method stub
 	
 }
 
@@ -109,13 +108,11 @@ public void selfTest() {
 
 @Override
 public void logData() {
-	// TODO Auto-generated method stub
 	
 }
 
 
 public void logMotorCurrent() {
-	// TODO Auto-generated method stub
 	
 }
 

@@ -3,8 +3,6 @@
 package frc.utility.control.motion;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import frc.robot.Constants;
@@ -215,7 +213,7 @@ public class Path {
 		data.closestPoint = closestPoint;
 		data.currentSegEnd = segments.get(0).getEnd();
 		Translation2D closestToEnd = closestPoint.inverse().translateBy(segments.get(0).getEnd());
-		Translation2D closestToStart = segments.get(0).getStart().inverse().translateBy(closestPoint);
+		//Translation2D closestToStart = segments.get(0).getStart().inverse().translateBy(closestPoint);
 
 		lookAheadDistance += Math.hypot(closestToRobot.getX(), closestToRobot.getY());
 		double remainingSegDist = Math.hypot(closestToEnd.getX(), closestToEnd.getY());

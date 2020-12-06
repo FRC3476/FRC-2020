@@ -12,8 +12,6 @@ public class Climber extends Subsystem{
 
     private LazyTalonFX climberMotor;
     private Solenoid climberSolenoid;
-    
-    private boolean hookingOn = false; 
 
     private boolean startClimb = false; 
 
@@ -78,14 +76,7 @@ public class Climber extends Subsystem{
         
     }
 
-    void hookOn() {
-        hookingOn = true;
-
-        
-    }
-
     public void reset() {
-// startClimb = false; 
         climberMotor.set(ControlMode.PercentOutput, 0.5);
         
     }
@@ -103,12 +94,10 @@ public class Climber extends Subsystem{
 
     @Override
     public void logData() {
-        // TODO Auto-generated method stub
 
     }
 
     public void logMotorCurrent() {
-        // TODO Auto-generated method stub
 
     }
 

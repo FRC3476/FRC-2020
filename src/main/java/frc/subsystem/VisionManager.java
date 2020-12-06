@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.Constants;
 import frc.utility.JetsonUDP;
+import frc.utility.Limelight;
 import frc.utility.ShooterPreset;
-import frc.utility.Threaded;
 import frc.utility.VisionLookUpTable;
 import frc.utility.VisionTarget;
 import frc.utility.math.Rotation2D;
@@ -17,15 +17,14 @@ import frc.subsystem.Drive.DriveState;
 @SuppressWarnings("unused")
 public class VisionManager extends Subsystem { 
    
-    
-    boolean waitingOnElevator = false; 
-    boolean waitingOnIntake = false;
+
     long prevTime;
     VisionStatus visionStatus = VisionStatus.IDLE;
     JetsonUDP jetsonUDP = JetsonUDP.getInstance();
     Hopper hopper = Hopper.getInstance();
     Drive drive = Drive.getInstance();
     Shooter shooter = Shooter.getInstance();
+    Limelight limelight = Limelight.getInstance();
     boolean go = false;
     BlinkinLED led;
     public int winStage = 0;
@@ -56,19 +55,18 @@ public class VisionManager extends Subsystem {
     
     @Override
     synchronized public void update() {
-        double starttime = Timer.getFPGATimestamp();
         VisionTarget[] t;
         switch(visionStatus){
             case AIMING:
-                t = jetsonUDP.getTargets();
-                double distance = 0;
-                if (t != null){
-                    double delta_phi = Math.toRadians((2*t[0].x/640.0 - 1) * Constants.CameraXFOV/2) * -1 + Math.toRadians(Constants.VisionXOffset);
+                
+                if (limelight.isTargetVisiable()){
+                    double distance = limelight.getDistance();
+                    double delta_phi = limelight.getHorizontalOffset();
                     drive.setRotationTeleop(Rotation2D.fromDegrees(RobotTracker.getInstance().getOdometry().rotationMat.getDegrees() + Math.toDegrees(delta_phi)));
-                    //System.out.println("trying to aim, recieving paquet " +  Math.toDegrees(delta_phi));
-                    // ShooterPreset d = VisionLookUpTable.getInstance().getShooterPreset(distance);
-                    // Shooter.getInstance().setHoodAngle(d.getHoodEjectAngle());
-                    // Shooter.getInstance().setSpeed(d.getFlyWheelSpeed());
+                    System.out.println("trying to aim, recieving paquet " +  Math.toDegrees(delta_phi));
+                    ShooterPreset d = VisionLookUpTable.getInstance().getShooterPreset(distance);
+                    Shooter.getInstance().setHoodAngle(d.getHoodEjectAngle());
+                    Shooter.getInstance().setSpeed(d.getFlyWheelSpeed());
 
                 } //else System.out.println("recieved null paquet");
                 go = go || !drive.isAiming();
@@ -152,13 +150,11 @@ public class VisionManager extends Subsystem {
 
     @Override
     public void selfTest() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void logData() {
-        // TODO Auto-generated method stub
 
     }
 

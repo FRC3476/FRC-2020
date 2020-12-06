@@ -5,6 +5,7 @@ package frc.utility.control;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 
+@Deprecated
 public class TakeBackHalfController implements Runnable {
 
 	private double oldErr, Err, gain, outVal, oldOutVal, setpoint, currRPM;

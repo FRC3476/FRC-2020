@@ -8,7 +8,6 @@ import frc.subsystem.Shooter.ShooterState;
 import frc.utility.control.*;
 import frc.utility.control.motion.Path;
 import frc.utility.math.*;
-import frc.utility.Threaded;
 
 import frc.subsystem.Intake;
 import frc.subsystem.Intake.DeployState;

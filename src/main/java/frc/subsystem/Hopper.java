@@ -114,19 +114,16 @@ public class Hopper extends Subsystem {
 
 	@Override
 	public void selfTest() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void logData() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
 		
     }
 }   

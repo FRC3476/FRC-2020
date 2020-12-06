@@ -242,8 +242,6 @@ public class ControlPanel extends Subsystem {
 
     }
 
-//----------------------------------------------------------
-
     @Override
     public void selfTest() {
         spinner.set(1.0);
@@ -274,12 +272,11 @@ public class ControlPanel extends Subsystem {
 
     @Override
     public void logData() {
-        // TODO Auto-generated method stub
 
     }
 
 
     public void logMotorCurrent() {
-        // TODO Auto-generated method stub
+
     }
 }

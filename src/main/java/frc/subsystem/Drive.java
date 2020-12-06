@@ -6,7 +6,6 @@ import frc.robot.Constants;
 import frc.utility.LazyTalonSRX;
 import frc.utility.NavXMPX_Gyro;
 import frc.utility.OrangeUtility;
-import frc.utility.Threaded;
 import frc.utility.control.RateLimiter;
 import frc.utility.control.SynchronousPid;
 import frc.utility.control.motion.Path;
@@ -1008,13 +1007,11 @@ public class Drive extends Subsystem {
 
 	@Override
 	public void selfTest() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void logData() {
-		// TODO Auto-generated method stub
 
 	}
 }

@@ -105,13 +105,11 @@ public class RobotTracker extends Subsystem {
 
 	@Override
 	public void selfTest() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void logData() {
-		// TODO Auto-generated method stub
 
 	}
 }

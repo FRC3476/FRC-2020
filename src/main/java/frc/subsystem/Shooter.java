@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.utility.LazyCANSparkMax;
 import frc.utility.LazyTalonFX;
 import frc.utility.LazyTalonSRX;
+import frc.utility.Limelight;
+import frc.utility.ShooterPreset;
+import frc.utility.VisionLookUpTable;
 import frc.robot.Constants;
 
 @SuppressWarnings("unused")
@@ -32,7 +35,9 @@ public class Shooter extends Subsystem{
     private boolean firing = false;
     private double hoodHomeStart;
     private boolean timerStarted = false;
-    private  static ShooterState shooterState = ShooterState.OFF;
+    private static ShooterState shooterState = ShooterState.OFF;
+    private VisionLookUpTable visionLookUpTable; 
+    Limelight limelight;
     //private SynchronousPid turnPID;
     
 
@@ -48,6 +53,8 @@ public class Shooter extends Subsystem{
         hoodMotor = new LazyCANSparkMax(Constants.HoodMotorId,MotorType.kBrushless);
         hoodEncoder = hoodMotor.getEncoder();
         homeSwitch = new DigitalInput(Constants.HomeSwitchId);
+        visionLookUpTable = VisionLookUpTable.getInstance();
+        limelight = Limelight.getInstance();
         
         
         
@@ -129,53 +136,24 @@ public class Shooter extends Subsystem{
     }
 
     public synchronized void update(){
-
         // System.out.println("Speed: " + shooterOutput + " Error: " + flywheelError );
 
-        
         switch(shooterState){
             case SPINNING: 
-
-                // flywheelError = targetShooterSpeed - getRPM();                // calculate the error;
-                // shooterOutput += Constants.TakeBackHalfGain * flywheelError* Constants.ShooterPeriod;                     // integrate the output;
-                // if (flywheelError*prevError<0) { // if zero crossing,
-                //     shooterOutput = 0.5 * (shooterOutput + tbh);            // then Take Back Half
-                //     tbh = shooterOutput;                             // update Take Back Half variable
-                //     prev_error = flywheelError;                       // and save the previous error
-                // }
-
                 shooterMaster.set(ControlMode.Velocity, targetShooterSpeed/Constants.ShooterRPMPerTicksPer100ms);
-                //shooterMaster.set(ControlMode.PercentOutput, .5);
-   //             System.out.println("error: " +  shooterMaster.getClosedLoopError()*Constants.ShooterRPMPerTicksPer100ms + 
-    //            " setpoint: " + shooterMaster.getClosedLoopTarget());
-
- //               System.out.println("Shooter RPM: " + getRPM() + " target: " + targetShooterSpeed);
-
                 hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 
-
-                boolean feederOn = false;
                 //check if motor has sped up
                 if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
                     double hoodError = targetHoodPosition - hoodEncoder.getPosition();
 
-                    if(Math.abs(hoodError) < Constants.HoodMaxDeviation){ // TODO: make hood do things
+                    if(Math.abs(hoodError) < Constants.HoodMaxDeviation && firing){ // TODO: make hood do things
                         //Hood Ready
-                        if(firing){
-                            feederOn = true;
-                        }
-                        System.out.println("FIRING " + firing);
-                        
-
+                        feederMotor.set(ControlMode.PercentOutput, Constants.FeederMotorSpeed);
+                    } else{
+                        feederMotor.set(ControlMode.PercentOutput, 0 );
                     }
-
-                }
-
-                if (feederOn){
-                    feederMotor.set(ControlMode.PercentOutput, Constants.FeederMotorSpeed);
-                } else{
-                    feederMotor.set(ControlMode.PercentOutput, 0 );
-
+                
                 }
                 break;
 
@@ -214,7 +192,6 @@ public class Shooter extends Subsystem{
 
                 }
 
-                
                 break;
             case EJECT:
                 feederMotor.set(ControlMode.PercentOutput, -Constants.FeederMotorSpeed);
@@ -271,7 +248,6 @@ public class Shooter extends Subsystem{
 
     @Override
     public void logData() {
-        // TODO Auto-generated method stub
 
     }
     

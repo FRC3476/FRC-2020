@@ -17,7 +17,6 @@ public class BlinkinLED extends Subsystem {
         return instance;
     }
 
-    ControlPanel controlPanel = ControlPanel.getInstance();
 
     Spark spark = new Spark(0);
 

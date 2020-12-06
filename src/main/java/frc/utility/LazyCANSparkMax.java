@@ -3,16 +3,12 @@
 package frc.utility;
 
 import com.revrobotics.*;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 /**
  * Sends only new commands to the Talon to reduce CAN usage.
  */
 public class LazyCANSparkMax extends CANSparkMax {
 	
 	private double prevValue = 0;
-	private ControlType prevControlMode = ControlType.kVoltage;
 	
 
 	public LazyCANSparkMax(int deviceNumber, MotorType type) {

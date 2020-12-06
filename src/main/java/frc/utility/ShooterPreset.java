@@ -1,7 +1,7 @@
 package frc.utility;
 
 
-public class ShooterPreset implements Comparable {
+public class ShooterPreset implements Comparable<ShooterPreset> {
     private double hoodEjectA;
     private double flywheelS;
     private double dist;
@@ -25,8 +25,7 @@ public class ShooterPreset implements Comparable {
     }
 
     @Override
-    public int compareTo(Object arg0) {
-        // TODO Auto-generated method stub
+    public int compareTo(ShooterPreset arg0) {
         ShooterPreset a = (ShooterPreset) arg0;
         if (this.getDistance() == a.getDistance()){
             return 0;
@@ -35,6 +34,5 @@ public class ShooterPreset implements Comparable {
         } else {
             return -1;
         }
-        //return Math.copySign(1,  this.getDistance()-a.getDistance());
     }
 }

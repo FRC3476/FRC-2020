@@ -6,38 +6,40 @@ import java.util.Collections;
 public class VisionLookUpTable{
     ArrayList<ShooterPreset> lookUpTable = new ArrayList<ShooterPreset>();
 
-    static VisionLookUpTable vt = new VisionLookUpTable();
+    private static VisionLookUpTable vt = new VisionLookUpTable();
 
     public static VisionLookUpTable getInstance(){
         return vt;
     }
 
-    VisionLookUpTable(){
+    private VisionLookUpTable(){
         lookUpTable.add(new ShooterPreset(10, 2000, 10));
         lookUpTable.add(new ShooterPreset(20, 3000, 20));
         lookUpTable.add(new ShooterPreset(30, 4000, 30));
         lookUpTable.add(new ShooterPreset(40, 5000, 40));
+    
 
         Collections.sort(lookUpTable);
 
     }
 
-    public ShooterPreset getShooterPreset(double DistanceFromTarget){
+    public ShooterPreset getShooterPreset(double distanceFromTarget){
 
-        if(lookUpTable.get(0).getDistance() > DistanceFromTarget){
+        if(distanceFromTarget <= lookUpTable.get(0).getDistance()){
             return lookUpTable.get(0);
         }
 
-        for (int i = 0; i < lookUpTable.size(); i++){
+        for (int i = 1; i < lookUpTable.size(); i++){
             double dist = lookUpTable.get(i).getDistance();
 
-            if(dist == DistanceFromTarget){
+            if(dist == distanceFromTarget){
                 return lookUpTable.get(i);
 
-            } else if(dist > DistanceFromTarget){
+            } else if(dist < distanceFromTarget){
 
                 double percentIn = (dist - lookUpTable.get(i-1).getDistance()) / ( lookUpTable.get(i).getDistance() - lookUpTable.get(i-1).getDistance());
-
+                
+                
                 return interpolateShooterPreset(lookUpTable.get(i-1), lookUpTable.get(i), percentIn);
             }
             
