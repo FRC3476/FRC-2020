@@ -7,3 +7,4 @@ gradlew.bat
 settings.gradle
 /build/*
 /bin/*
+.github
