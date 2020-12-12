@@ -262,6 +262,4 @@ public class Shooter extends Subsystem{
     public boolean getHomeSwitch(){
         return !homeSwitch.get();
     }
-
-
 }
