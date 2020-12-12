@@ -1,4 +1,7 @@
 # FRC-2020
+
+![Build](https://github.com/FRC3476/FRC-2020/workflows/Build/badge.svg)
+
 FRC 2020 robot code
 
 The code that we have written is located in src/main/java/frc/
