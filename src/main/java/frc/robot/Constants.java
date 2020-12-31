@@ -72,6 +72,7 @@ public final class Constants {
 
 	public static final double ShooterMaxDeviation = 10000;
 	public static final double AutoShooterAccptableRange = 100;
+	public static final double ShooterVisionMinimumTargetArea = 0.05; //TODO: Set
 
 	public static final double TakeBackHalfGain = 2.0e-6;
 
@@ -230,16 +231,6 @@ public final class Constants {
 
 
 	public static final int BlinkinLEDPeriod = 50;
-//=======
-
-// c349e488ce1535e2388178b24ceb2496f2a1bdd1
-
-	
-
-	
-
-
-	
 	
 	private Constants() {
 	}

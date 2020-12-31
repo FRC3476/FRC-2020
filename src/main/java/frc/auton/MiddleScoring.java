@@ -16,83 +16,83 @@ import frc.subsystem.Shooter.ShooterState;
 
 @SuppressWarnings("unused")
 public class MiddleScoring implements Runnable { 
-    Drive drive = Drive.getInstance();
-    Shooter shooter = Shooter.getInstance();
-    RobotTracker robotTracker = RobotTracker.getInstance();
-    Intake intake = Intake.getInstance();
-    VisionManager vision = VisionManager.getInstance();
+	Drive drive = Drive.getInstance();
+	Shooter shooter = Shooter.getInstance();
+	RobotTracker robotTracker = RobotTracker.getInstance();
+	Intake intake = Intake.getInstance();
+	VisionManager vision = VisionManager.getInstance();
 
-    int side = 1;
+	int side = 1;
 
-    private double TargetTime;
+	private double TargetTime;
 
-    boolean killSwitch = false;
-    //Translation 2D is in inches.  
+	boolean killSwitch = false;
+	//Translation 2D is in inches.  
 
-    public MiddleScoring(Translation2D start) {
-        RobotTracker.getInstance().setInitialTranslation(start);
-    }
+	public MiddleScoring(Translation2D start) {
+		RobotTracker.getInstance().setInitialTranslation(start);
+	}
 
-    public MiddleScoring(Translation2D start, int side) {
-        RobotTracker.getInstance().setInitialTranslation(start);
-        this.side = side;
-    }
+	public MiddleScoring(Translation2D start, int side) {
+		RobotTracker.getInstance().setInitialTranslation(start);
+		this.side = side;
+	}
 
-    public Translation2D here() {
-        return RobotTracker.getInstance().getOdometry().translationMat;
-    }
-    
-    public Rotation2D dir() {
-        return RobotTracker.getInstance().getOdometry().rotationMat;
-    }
+	public Translation2D here() {
+		return RobotTracker.getInstance().getOdometry().translationMat;
+	}
+	
+	public Rotation2D dir() {
+		return RobotTracker.getInstance().getOdometry().rotationMat;
+	}
 
-    synchronized public void killSwitch() {
-        killSwitch = true;
-    }
+	synchronized public void killSwitch() {
+		killSwitch = true;
+	}
 
-    synchronized public boolean isDead() {
-        return killSwitch;
-    }
-    double ShooterFinishTime = 0;
-    int stage = 0;
-    @Override
-    public void run() {
+	synchronized public boolean isDead() {
+		return killSwitch;
+	}
+	double ShooterFinishTime = 0;
+	int stage = 0;
+	@Override
+	public void run() {
 
-        //vision.setState();
-        while(!vision.isFinished()) if(isDead()) return;
-        //shooter.Shoot();
+		//vision.setState();
+		while(!vision.isFinished()) if(isDead()) return;
+		//shooter.Shoot();
 
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
-        while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
-        //shooter.StopShoot();
+		TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
+		while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
+		//shooter.StopShoot();
 
-        Path p1 = new Path(here());
-        p1.addPoint(new Translation2D(75, -194), 60); 
-        p1.addPoint(new Translation2D(20, -75), 60);
-        p1.addPoint(new Translation2D(-25, -148), 60);
-        p1.addPoint(new Translation2D(41, -80), 60);
-        p1.addPoint(new Translation2D(80, -99), 60);
+		Path p1 = new Path(here());
+		p1.addPoint(new Translation2D(75, -194), 60); 
+		p1.addPoint(new Translation2D(20, -75), 60);
+		p1.addPoint(new Translation2D(-25, -148), 60);
+		p1.addPoint(new Translation2D(41, -80), 60);
+		p1.addPoint(new Translation2D(80, -99), 60);
 
 
-        drive.setAutoPath(p1, false);
+		drive.setAutoPath(p1, false);
 
-        intake.setDeployState(DeployState.DEPLOY);
-        intake.setIntakeState(IntakeState.INTAKE);
+		intake.setDeployState(DeployState.DEPLOY);
+		intake.setIntakeState(IntakeState.INTAKE);
 
-        while(!drive.isFinished()) if(isDead()) return;
+		while(!drive.isFinished()) if(isDead()) return;
 
-        intake.setDeployState(DeployState.UNDEPLOY);
-        Path p2 = new Path(here());
-        p2.addPoint(new Translation2D(20, -75), 60); // Random Speed
+		intake.setDeployState(DeployState.UNDEPLOY);
+		Path p2 = new Path(here());
+		p2.addPoint(new Translation2D(20, -75), 60); // Random Speed
 
-        //vision.setState();
+		//vision.setState();
 
-        while(!vision.isFinished()) if(isDead()) return;
-        //shooter.Shoot();
+		while(!vision.isFinished()) if(isDead()) return;
+		//shooter.Shoot();
 
-        TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
+		TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall;
 
-        while(Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
-        //shooter.StopShoot();
-    }
+		while(Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
+		//shooter.StopShoot();
+	}
 }

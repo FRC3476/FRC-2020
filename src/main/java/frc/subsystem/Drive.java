@@ -3,7 +3,6 @@
 package frc.subsystem;
 
 import frc.robot.Constants;
-import frc.utility.LazyTalonSRX;
 import frc.utility.NavXMPX_Gyro;
 import frc.utility.OrangeUtility;
 import frc.utility.control.RateLimiter;
@@ -12,26 +11,21 @@ import frc.utility.control.motion.Path;
 import frc.utility.control.motion.PurePursuitController;
 import frc.utility.math.Rotation2D;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import com.revrobotics.*;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import frc.utility.LazyCANSparkMax;
 
-@SuppressWarnings("unused")
+
 public class Drive extends Subsystem {
 
 	public enum DriveState {
@@ -85,14 +79,11 @@ public class Drive extends Subsystem {
 	private SynchronousPid turnPID;
 	private SynchronousPid turnPIDAuto;
 	public DriveState driveState;
-	private RateLimiter moveProfiler, turnProfiler;
-	private Solenoid shifter;
+	private RateLimiter moveProfiler;
 	private Rotation2D wantedHeading;
 	private volatile double driveMultiplier;
 	boolean rotateAuto = false; 
 
-	private boolean lastSticky, clearSticky;
-	private double lastFaultTime;
 
 	double prevPositionL = 0;
 	double prevPositionR = 0;
@@ -166,17 +157,6 @@ public class Drive extends Subsystem {
 		//leftSparkSlave.follow(leftSpark);
 		//leftSparkSlave2.follow(leftSpark);
 		//rightSparkSlave2.follow(rightSpark);
-
-		//leftTalon = new LazyTalonSRX(Constants.DriveLeftMasterId);
-		//rightTalon = new LazyTalonSRX(Constants.DriveRightMasterId);
-
-		//leftTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
-		//rightTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
-
-		//leftSlaveTalon = new LazyTalonSRX(Constants.DriveLeftSlave1Id);
-		//leftSlave2Talon = new LazyTalonSRX(Constants.DriveLeftSlave2Id);
-		//rightSlaveTalon = new LazyTalonSRX(Constants.DriveRightSlave1Id);
-		//rightSlave2Talon = new LazyTalonSRX(Constants.DriveRightSlave2Id);
 		configMotors();
 
 		drivePercentVbus = true;
@@ -191,10 +171,6 @@ public class Drive extends Subsystem {
 		
 
 		moveProfiler = new RateLimiter(Constants.DriveTeleopAccLimit);
-		turnProfiler = new RateLimiter(100);
-
-		lastSticky = false;
-		lastFaultTime = Timer.getFPGATimestamp();
 
 		configHigh();
 		configAuto();
@@ -279,7 +255,7 @@ public class Drive extends Subsystem {
 		driveState = DriveState.TELEOP;
 	}
 
-    
+	
 
 	public void arcadeDrive(double moveValue, double rotateValue) {
 		//String toPrint="";
@@ -465,41 +441,41 @@ public class Drive extends Subsystem {
 	}
 
 	
-    public void skidLimitingDrive(double moveValue, double rotateValue) {
+	public void skidLimitingDrive(double moveValue, double rotateValue) {
 		synchronized(this) {
 			driveState = DriveState.TELEOP;
 		}
 		moveValue = scaleJoystickValues(moveValue, 0);
 		rotateValue = scaleJoystickValues(rotateValue, 0);
-        
+		
 		double leftMotorSpeed;
 		double rightMotorSpeed;
 		// Square values but keep sign
 		moveValue = Math.copySign(Math.pow(moveValue, 2), moveValue);
 		rotateValue = Math.copySign(Math.pow(rotateValue, 2), rotateValue);
-        
-        //Linear
-        /*
-        double slope = -1.25;
-        double maxRotate = slope * Math.abs(moveValue) + 1;
-        */
-        //Nonlinear       
-        double curvature = 4;
-        double curveCenter = 0.5;
-       
-        
-        //Concave up
-        //y = (0.5 / (5 * x)) - (0.5 / 5)
-        //double maxRotate = curveCenter / (curvature * Math.abs(moveValue)) - (curveCenter / curvature);
-        
-        //Concave down
-        //y = -2^(5 * (x - 1)) + 1
-        double maxRotate = -Math.pow((1 / curveCenter), curvature * (Math.abs(moveValue) - 1)) + 0.8;
+		
+		//Linear
+		/*
+		double slope = -1.25;
+		double maxRotate = slope * Math.abs(moveValue) + 1;
+		*/
+		//Nonlinear       
+		double curvature = 4;
+		double curveCenter = 0.5;
+	   
+		
+		//Concave up
+		//y = (0.5 / (5 * x)) - (0.5 / 5)
+		//double maxRotate = curveCenter / (curvature * Math.abs(moveValue)) - (curveCenter / curvature);
+		
+		//Concave down
+		//y = -2^(5 * (x - 1)) + 1
+		double maxRotate = -Math.pow((1 / curveCenter), curvature * (Math.abs(moveValue) - 1)) + 0.8;
 		
 	
-        
-        rotateValue = OrangeUtility.coerce(rotateValue, maxRotate, -maxRotate);
-        
+		
+		rotateValue = OrangeUtility.coerce(rotateValue, maxRotate, -maxRotate);
+		
 		double maxValue = Math.abs(moveValue) + Math.abs(rotateValue);
 		if (maxValue > 1) {
 			moveValue -= Math.copySign(maxValue - 1, moveValue);
@@ -783,45 +759,6 @@ public class Drive extends Subsystem {
 
 		//System.out.println("desired left rpm: " + rightSetpoint + " desired right rpm: " + leftSetpoint);
 		//System.out.println("actual left rpm: " + getLeftSpeed() + " actual right rpm: " + getRightSpeed());
-		//System.out.println((leftSpark.getStickyFaults() + " " + rightSpark.getStickyFaults()) );
-
-
-		// boolean thisSticky = hasStickyFaults();
-		// if(Timer.getFPGATimestamp() - lastFaultTime > 1.0 && clearSticky)// & (1 << CANSparkMax.FaultID.kCANRX.ordinal()) != 0 || rightSpark.getStickyFault(CANSparkMax.FaultID.kCANRX)) {
-		// {
-
-		// 	System.out.println("DELTA STICKY FAULT!");
-				
-		// 	leftSpark = new LazyCANSparkMax(Constants.DriveLeftMasterId, MotorType.kBrushless);
-		// 	leftSparkSlave = new LazyCANSparkMax(Constants.DriveLeftSlave1Id, MotorType.kBrushless);
-		// 	rightSpark = new LazyCANSparkMax(Constants.DriveRightMasterId, MotorType.kBrushless);
-		// 	rightSparkSlave = new LazyCANSparkMax(Constants.DriveRightSlave1Id, MotorType.kBrushless);
-
-		// 	leftSpark.setInverted(true);
-		// 	rightSpark.setInverted(false);
-		// 	leftSparkSlave.setInverted(true);
-		// 	rightSparkSlave.setInverted(false);			
-		// 	leftSparkPID = leftSpark.getPIDController();
-		// 	rightSparkPID = rightSpark.getPIDController();
-		// 	leftSparkEncoder = leftSpark.getEncoder();
-		// 	rightSparkEncoder = rightSpark.getEncoder();
-
-		// 	configMotors();
-
-		// 	clearSticky = false;
-		// 	System.out.println("RESTARTING SPARK PIDS");
-		// };
-
-		// if(thisSticky)
-		// {
-		// 	System.out.println("STICKY FAULT!");
-		// 	lastFaultTime = Timer.getFPGATimestamp();
-		// 	leftSpark.clearFaults();	
-		// 	rightSpark.clearFaults();
-		// 	clearSticky = true;
-		// }
-
-		// lastSticky = thisSticky;
 
 	}
 
@@ -917,7 +854,7 @@ public class Drive extends Subsystem {
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 4.5), deltaSpeed); //2.6
 		}
 		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
-		//t
+
 		
 		//System.out.println(deltaSpeed);
 		//deltaSpeed = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(deltaSpeed), 0, 180, 0, Constants.DriveHighSpeed), deltaSpeed);
@@ -997,12 +934,7 @@ public class Drive extends Subsystem {
 	}
 
 	public void clearStickyFaults() {
-		//leftTalon.clearStickyFaults(10);
-		//leftSlaveTalon.clearStickyFaults(10);
-		//leftSlave2Talon.clearStickyFaults(10);
-		//rightTalon.clearStickyFaults(10);
-		//rightSlaveTalon.clearStickyFaults(10);
-		//rightSlave2Talon.clearStickyFaults(10);
+
 	}
 
 	@Override
