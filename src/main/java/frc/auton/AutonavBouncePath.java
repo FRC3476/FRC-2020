@@ -1,6 +1,7 @@
 package frc.auton;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.utility.math.*;
@@ -34,12 +35,21 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-		Translation2D target = new Translation2D(90, 150);
+        Translation2D point1 = new Translation2D(60, 90);
+        Translation2D point2 = new Translation2D(90, 150);
+        
 		Translation2D robot = here();
 
         Path p1 = new Path(here());
-        p1.addPoint(target, 20);
+        p1.addPoint(point1, 20);
+        p1.addPoint(point2, 20);
         drive.setAutoPath(p1, false);
+
+        while(!drive.isFinished()) if(isDead()) return;
+
+        synchronized(this){
+            done = true;
+        }
 	}
 
 }
