@@ -26,25 +26,21 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 	boolean killSwitch = false;
 
 
-	public AutonavBouncePath(double startY) {
+	public AutonavBouncePath() {
 		//RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
-		super(new Translation2D(120.5, startY));
+		super(new Translation2D(42, 90));
 		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
 	}
 
 	@Override
 	public void run() {
-
-		//Start 75 120
-		System.out.println("Only Shoot");
-		double turnAngle = 0;
 		
 		//turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
-		Translation2D target = new Translation2D(0, 90);
+		Translation2D target = new Translation2D(90, 150);
 		Translation2D robot = here();
 
         Path p1 = new Path(here());
-        p1.addPoint(new Translation2D(90, 150), 50);
+        p1.addPoint(target, 50);
         drive.setAutoPath(p1, false);
 	}
 
