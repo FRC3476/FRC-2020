@@ -40,13 +40,12 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 		double turnAngle = 0;
 		
 		//turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
-		Translation2D target = new Translation2D(0, 67);
+		Translation2D target = new Translation2D(0, 90);
 		Translation2D robot = here();
 
-		Rotation2D pointAtTarget = robot.getAngle(target);
-		System.out.println(target);
-
-		
+        Path p1 = new Path(here());
+        p1.addPoint(new Translation2D(90, 150), 50);
+        drive.setAutoPath(p1, false);
 	}
 
 }
