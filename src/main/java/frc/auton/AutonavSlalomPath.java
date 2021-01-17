@@ -1,5 +1,7 @@
 package frc.auton;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.subsystem.*;
@@ -11,7 +13,6 @@ import frc.subsystem.Intake.DeployState;
 import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.Shooter.ShooterState;
 import frc.subsystem.VisionManager.VisionStatus;
-
 
 @SuppressWarnings("unused")
 public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
@@ -28,26 +29,41 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 
 	public AutonavSlalomPath() {
 		//RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
-		super(new Translation2D(42, 90));
+		super(new Translation2D(42, 30));
 		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
 	}
 
 	@Override
 	public void run() {
-
-		//Start 75 120
-		System.out.println("Only Shoot");
-		double turnAngle = 0;
+        ArrayList<Translation2D> points = new ArrayList<Translation2D>();
+        points.add(new Translation2D(90, 60));
+        points.add(new Translation2D(120, 90));
+        points.add(new Translation2D(180, 90));
+        points.add(new Translation2D(240, 90));
+        points.add(new Translation2D(270, 60));
+        points.add(new Translation2D(300, 30));
+        points.add(new Translation2D(330, 60));
+        points.add(new Translation2D(300, 90));
+        points.add(new Translation2D(270, 60));
+        points.add(new Translation2D(240, 30));
+        points.add(new Translation2D(180, 30));
+        points.add(new Translation2D(120, 90));
+        points.add(new Translation2D(90, 60));
+        points.add(new Translation2D(18, 90));
 		
-		//turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
-		Translation2D target = new Translation2D(0, 67);
 		Translation2D robot = here();
 
-		Rotation2D pointAtTarget = robot.getAngle(target);
-		System.out.println(target);
+        Path p1 = new Path(here());
+        for(int i = 0; i < 14; i++) {
+            p1.addPoint(points.get(i), 20);
+        }
+
+        drive.setAutoPath(p1, false);
 
         while(!drive.isFinished()) {
-            if()
+            if(isDead()) {
+                return;
+            }
         }
 
 		synchronized (this) {
