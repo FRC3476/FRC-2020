@@ -36,26 +36,21 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 	@Override
 	public void run() {
         ArrayList<Translation2D> points = new ArrayList<Translation2D>();
-        points.add(new Translation2D(90, 60));
-        points.add(new Translation2D(120, 90));
-        points.add(new Translation2D(180, 90));
-        points.add(new Translation2D(240, 90));
-        points.add(new Translation2D(270, 60));
-        points.add(new Translation2D(300, 30));
-        points.add(new Translation2D(330, 60));
-        points.add(new Translation2D(300, 90));
-        points.add(new Translation2D(270, 60));
-        points.add(new Translation2D(240, 30));
-        points.add(new Translation2D(180, 30));
-        points.add(new Translation2D(120, 90));
-        points.add(new Translation2D(90, 60));
-        points.add(new Translation2D(18, 90));
-		
-		Translation2D robot = here();
+        points.add(new Translation2D(90, 30));
+        points.add(new Translation2D(90, 90));
+        points.add(new Translation2D(270, 90));
+        points.add(new Translation2D(270, 30));
+        points.add(new Translation2D(330, 30));
+        points.add(new Translation2D(330, 90));
+        points.add(new Translation2D(270, 90));
+        points.add(new Translation2D(270, 30));
+        points.add(new Translation2D(90, 30));
+        points.add(new Translation2D(90, 90));
+        points.add(new Translation2D(42, 90));
 
         Path p1 = new Path(here());
-        for(int i = 0; i < 14; i++) {
-            p1.addPoint(points.get(i), 20);
+        for(int i = 0; i < 11; i++) {
+            p1.addPoint(points.get(i), 15);
         }
 
         drive.setAutoPath(p1, false);
