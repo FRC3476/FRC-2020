@@ -50,7 +50,7 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 
         Path p1 = new Path(here());
         for(int i = 0; i < 11; i++) {
-            p1.addPoint(points.get(i), 15);
+            p1.addPoint(points.get(i), 20);
         }
 
         drive.setAutoPath(p1, false);
