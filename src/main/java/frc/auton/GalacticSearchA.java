@@ -28,6 +28,20 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
     private int startY;
     private boolean isRed;
+
+    public void turnOnIntakeTrack() {
+		intake.setDeployState(Intake.DeployState.DEPLOY);
+		intake.setSpeed(Constants.IntakeMotorPower);
+		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+	}
+
+
+	public void turnOffIntakeTrack() {
+		intake.setSpeed(0);
+		hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
+		hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
+	}
     
 	public GalacticSearchA() {
         //RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
