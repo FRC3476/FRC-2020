@@ -48,8 +48,12 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
             points.add(new Translation2D(314, 90));
         }
         
-        Path p1 = new Path();
-        
+        turnOnIntakeTrack();
+
+        Path p1 = new Path(here());
+        drive.setAutoPath(p1, false);
+
+        turnOffIntakeTrack();
 
 		synchronized (this) {
 			done = true; 
