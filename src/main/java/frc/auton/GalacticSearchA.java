@@ -12,7 +12,6 @@ import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.Shooter.ShooterState;
 import frc.subsystem.VisionManager.VisionStatus;
 
-
 @SuppressWarnings("unused")
 public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	Drive drive = Drive.getInstance();
@@ -25,25 +24,22 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	
 	boolean killSwitch = false;
 
-
+    private int startY;
+    private boolean isRed;
+    
 	public GalacticSearchA() {
         //RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
 
         // need some vision stuff here
-        int startY;
-        if() {      // Red Path
-            startY = 90;
-        }else {     // Blue Path
-            startY = 30;
-        }
+        isRed ? startY = 90 : startY = 30;
 		super(new Translation2D(46, startY));
-		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
+        robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
 	}
 
 	@Override
 	public void run() {
         ArrayList<Translation2D> points / new ArrayList<Translation2D>;
-        if() {
+        if(isRed) {
             points.add(new Translation2D(90, 90));
             points.add(new Translation2D(150, 60));
             points.add(new Translation2D(180, 150));

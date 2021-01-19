@@ -14,7 +14,7 @@ import frc.subsystem.VisionManager.VisionStatus;
 
 
 @SuppressWarnings("unused")
-public class GalacticSearchA extends TemplateAuto implements Runnable  {
+public class GalacticSearchB extends TemplateAuto implements Runnable  {
 	Drive drive = Drive.getInstance();
 	RobotTracker robotTracker = RobotTracker.getInstance();
 	Intake intake = Intake.getInstance();
@@ -26,7 +26,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	boolean killSwitch = false;
 
 
-	public GalacticSearchA() {
+	public GalacticSearchB() {
         //RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
 		super(new Translation2D(0, 0));
 		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
