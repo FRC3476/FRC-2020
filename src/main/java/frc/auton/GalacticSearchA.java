@@ -52,6 +52,12 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
         Path p1 = new Path(here());
         drive.setAutoPath(p1, false);
+        
+        while(!drive.isFinished()) {
+            if(isDead()) {
+                return;
+            }
+        }
 
         turnOffIntakeTrack();
 
