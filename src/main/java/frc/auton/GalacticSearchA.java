@@ -1,5 +1,7 @@
 package frc.auton;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.subsystem.*;
@@ -29,16 +31,17 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
     
 	public GalacticSearchA() {
         //RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
-
+        super(new Translation2D(0, 0));
+        
         // need some vision stuff here
-        isRed ? startY = 90 : startY = 30;
-		super(new Translation2D(46, startY));
+        startY = isRed ? 90 : 30;
+		RobotTracker.getInstance().setInitialTranslation(new Translation2D(46, startY));
         robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
 	}
 
 	@Override
 	public void run() {
-        ArrayList<Translation2D> points / new ArrayList<Translation2D>;
+        ArrayList<Translation2D> points = new ArrayList<Translation2D>();
         if(isRed) {
             points.add(new Translation2D(90, 90));
             points.add(new Translation2D(150, 60));
