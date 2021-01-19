@@ -34,34 +34,23 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
+        //need some vision stuff
+        ArrayList<Translation2D> points / new ArrayList<Translation2D>;
         if() {
-            ArrayList<Translation2D> points = new ArrayList<Translation2D>;
             points.add(new Translation2D(90, 90));
             points.add(new Translation2D(150, 60));
             points.add(new Translation2D(180, 150));
             points.add(new Translation2D(314, 150));
-
-            Path p1 = new Path();
-            for(int i = 0; i < 4; i++){
-                p1.addPoint(points.get(i));
-            }
-
-
         }else {
-            ArrayList<Translation2D> points = new ArrayList<Translation2D>;
             points.add(new Translation2D(180, 30));
             points.add(new Translation2D(210, 120));
             points.add(new Translation2D(270, 90));
             points.add(new Translation2D(314, 90));
-
-            Path p1 = new Path();
-            for(int i = 0; i < 4; i++){
-                p1.addPoint(points.get(i));
-            }
-
-
         }
-		
+        
+        Path p1 = new Path();
+        
+
 		synchronized (this) {
 			done = true; 
 		}
