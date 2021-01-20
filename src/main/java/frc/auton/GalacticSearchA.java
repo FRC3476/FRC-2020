@@ -27,7 +27,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	boolean killSwitch = false;
 
     private int startY;
-    private boolean isRed;
+    private boolean pathIsRed;
 
     public void turnOnIntakeTrack() {
 		intake.setDeployState(Intake.DeployState.DEPLOY);
@@ -47,7 +47,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
         super(new Translation2D(0, 0));
         
         // need some vision stuff here
-        startY = isRed ? 90 : 30;
+        startY = pathIsRed ? 90 : 30;
 		RobotTracker.getInstance().setInitialTranslation(new Translation2D(46, startY));
         robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
 	}
@@ -55,7 +55,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	@Override
 	public void run() {
         ArrayList<Translation2D> points = new ArrayList<Translation2D>();
-        if(isRed) {
+        if(pathIsRed) {
             points.add(new Translation2D(90, 90));
             points.add(new Translation2D(150, 60));
             points.add(new Translation2D(180, 150));
