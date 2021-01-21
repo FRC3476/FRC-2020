@@ -1,6 +1,7 @@
 package frc.auton;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
@@ -30,27 +31,27 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 	public AutonavSlalomPath() {
 		//RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
 		super(new Translation2D(42, 30));
-		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
+        robotTracker.setInitialRotation(Rotation2D.fromDegrees(0));
 	}
 
 	@Override
 	public void run() {
-        ArrayList<Translation2D> points = new ArrayList<Translation2D>();
-        points.add(new Translation2D(90, 30));
-        points.add(new Translation2D(90, 90));
-        points.add(new Translation2D(270, 90));
-        points.add(new Translation2D(270, 30));
-        points.add(new Translation2D(330, 30));
-        points.add(new Translation2D(330, 90));
-        points.add(new Translation2D(270, 90));
-        points.add(new Translation2D(270, 30));
-        points.add(new Translation2D(90, 30));
-        points.add(new Translation2D(90, 90));
-        points.add(new Translation2D(42, 90));
+        Map<Translation2D, Integer> hm = new LinkedHashMap<>();
+        hm.put(new Translation2D(90, 30), 25);
+        hm.put(new Translation2D(90, 90), 50);
+        hm.put(new Translation2D(270, 90), 25);
+        hm.put(new Translation2D(270, 30), 25);
+        hm.put(new Translation2D(330, 30), 25);
+        hm.put(new Translation2D(330, 90), 25);
+        hm.put(new Translation2D(270, 90), 25);
+        hm.put(new Translation2D(270, 30), 50);
+        hm.put(new Translation2D(90, 30), 25);
+        hm.put(new Translation2D(90, 90), 25);
+        hm.put(new Translation2D(42, 90), 25);
 
         Path p1 = new Path(here());
-        for(int i = 0; i < 11; i++) {
-            p1.addPoint(points.get(i), 20);
+        for(Map.Entry<Translation2D, Integer> me : hm.entrySet()) {
+            p1.addPoint(me.getKey(), me.getValue());
         }
 
         drive.setAutoPath(p1, false);
