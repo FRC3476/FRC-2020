@@ -73,7 +73,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
         for(int i = 0; i < points.size(); i++){
             p1.addPoint(points.get(i), 30);
         }
-        drive.setAutoPath(p1, false);
+        drive.setAutoPath(p1, true);
         
         while(!drive.isFinished()) {
             if(isDead()) {
