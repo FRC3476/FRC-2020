@@ -38,14 +38,14 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 	public void run() {
         Map<Translation2D, Integer> lhm = new LinkedHashMap<>();
         lhm.put(new Translation2D(90, 30), 30);
-        lhm.put(new Translation2D(90, 90), 50);
+        lhm.put(new Translation2D(90, 90), 30);
         lhm.put(new Translation2D(270, 90), 30);
         lhm.put(new Translation2D(270, 30), 30);
-        lhm.put(new Translation2D(318, 30), 15);
+        lhm.put(new Translation2D(318, 30), 30);
         lhm.put(new Translation2D(318, 90), 30);
         lhm.put(new Translation2D(270, 90), 30);
         lhm.put(new Translation2D(270, 60), 30);
-        lhm.put(new Translation2D(270, 30), 50);
+        lhm.put(new Translation2D(270, 30), 30);
         lhm.put(new Translation2D(90, 30), 30);
         lhm.put(new Translation2D(90, 90), 30);
         lhm.put(new Translation2D(42, 87), 30);
