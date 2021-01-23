@@ -42,12 +42,13 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
         lhm.put(new Translation2D(270, 90), 30);
         lhm.put(new Translation2D(270, 30), 30);
         lhm.put(new Translation2D(318, 30), 15);
-        lhm.put(new Translation2D(318, 90), 15);
+        lhm.put(new Translation2D(318, 90), 30);
         lhm.put(new Translation2D(270, 90), 30);
+        lhm.put(new Translation2D(270, 60), 30);
         lhm.put(new Translation2D(270, 30), 50);
         lhm.put(new Translation2D(90, 30), 30);
         lhm.put(new Translation2D(90, 90), 30);
-        lhm.put(new Translation2D(42, 90), 30);
+        lhm.put(new Translation2D(42, 87), 30);
 
         Path p1 = new Path(here());
         for(Map.Entry<Translation2D, Integer> me : lhm.entrySet()) {
