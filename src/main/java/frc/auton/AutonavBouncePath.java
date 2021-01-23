@@ -30,22 +30,44 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 	public AutonavBouncePath() {
 		//RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
 		super(new Translation2D(42, 90));
-		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
+		robotTracker.setInitialRotation(Rotation2D.fromDegrees(0));
 	}
 
 	@Override
 	public void run() {
-        Translation2D point1 = new Translation2D(60, 90);
+        Translation2D point1 = new Translation2D(70, 90);
         Translation2D point2 = new Translation2D(90, 150);
         
 		Translation2D robot = here();
 
         Path p1 = new Path(here());
-        p1.addPoint(point1, 20);
-        p1.addPoint(point2, 20);
+        p1.addPoint(point1, 40);
+        p1.addPoint(point2, 40);
         drive.setAutoPath(p1, false);
 
-        while(!drive.isFinished()) if(isDead()) return;
+		while(!drive.isFinished()) if(isDead()) return;
+		
+		Path p2 = new Path(here());
+		p2.addPoint(new Translation2D(105,90), 40);
+		p2.addPoint(new Translation2D(120,30), 40);
+		p2.addPoint(new Translation2D(170,40), 40);
+		p2.addPoint(new Translation2D(180,150), 40);
+		drive.setAutoPath(p2, true);
+		while(!drive.isFinished()) if(isDead()) return;
+		
+		Path p3 = new Path(here());
+		p3.addPoint(new Translation2D(180,30), 40);
+		p3.addPoint(new Translation2D(270,30), 40);
+		p3.addPoint(new Translation2D(270,150), 20);
+		drive.setAutoPath(p3, false);
+		while(!drive.isFinished()) if(isDead()) return;
+
+		Path p4 = new Path(here());
+		p4.addPoint(new Translation2D(270,100), 20);
+		p4.addPoint(new Translation2D(330,90), 20);
+		drive.setAutoPath(p4, true);
+		while(!drive.isFinished()) if(isDead()) return;
+
 
         synchronized(this){
             done = true;
