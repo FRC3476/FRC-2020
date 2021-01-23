@@ -1,6 +1,8 @@
 package frc.auton;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
@@ -54,22 +56,23 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-        ArrayList<Translation2D> points = new ArrayList<Translation2D>();
+        Map<Translation2D, Integer> lhm = new LinkedHashMap<>();
         if(pathIsRed) {
-            points.add(new Translation2D(90, 90));
-            points.add(new Translation2D(150, 60));
-            points.add(new Translation2D(180, 150));
-            points.add(new Translation2D(314, 150));
+            lhm.put(new Translation2D(90, 90));
+            lhm.put(new Translation2D(150, 60));
+            lhm.put(new Translation2D(180, 150));
+            lhm.put(new Translation2D(314, 150));
         }else {
-            points.add(new Translation2D(180, 30));
-            points.add(new Translation2D(210, 120));
-            points.add(new Translation2D(270, 90));
-            points.add(new Translation2D(314, 90));
+            lhm.put(new Translation2D(180, 30));
+            lhm.put(new Translation2D(210, 120));
+            lhm.put(new Translation2D(270, 90));
+            lhm.put(new Translation2D(314, 90));
         }
         
         turnOnIntakeTrack();
 
         Path p1 = new Path(here());
+        for(Map.Entry me : )
         drive.setAutoPath(p1, false);
         
         while(!drive.isFinished()) {
