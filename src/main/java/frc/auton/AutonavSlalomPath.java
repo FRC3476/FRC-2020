@@ -36,24 +36,21 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-        Map<Translation2D, Integer> lhm = new LinkedHashMap<>();
-        lhm.put(new Translation2D(90, 30), 30);
-        lhm.put(new Translation2D(90, 90), 30);
-        lhm.put(new Translation2D(260, 90), 30);
-        lhm.put(new Translation2D(290, 10), 30);
-        lhm.put(new Translation2D(315, 40), 30);
-        lhm.put(new Translation2D(315, 60), 30);
-        lhm.put(new Translation2D(325, 90), 30);
-        lhm.put(new Translation2D(270, 90), 30);
-        lhm.put(new Translation2D(270, 30), 30);
-        lhm.put(new Translation2D(90, 30), 30);
-        lhm.put(new Translation2D(90, 90), 30);
-        lhm.put(new Translation2D(42, 87), 30);
+        int speed = 30;
 
         Path p1 = new Path(here());
-        for(Map.Entry<Translation2D, Integer> me : lhm.entrySet()) {
-            p1.addPoint(me.getKey(), me.getValue());
-        }
+        p1.addpoint(new Translation2D(80, 30), speed);
+        p1.addpoint(new Translation2D(100, 90), speed);
+        p1.addpoint(new Translation2D(260, 90), speed);
+        p1.addpoint(new Translation2D(290, 10), speed);
+        p1.addpoint(new Translation2D(315, 40), speed);
+        p1.addpoint(new Translation2D(315, 60), speed);
+        p1.addpoint(new Translation2D(315, 90), speed);
+        p1.addpoint(new Translation2D(280, 90), speed);
+        p1.addpoint(new Translation2D(260, 30), speed);
+        p1.addpoint(new Translation2D(100, 30), speed);
+        p1.addpoint(new Translation2D(80, 85), speed);
+        p1.addpoint(new Translation2D(42, 85), speed);
 
         drive.setAutoPath(p1, false);
 
