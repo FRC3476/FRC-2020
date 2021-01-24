@@ -28,7 +28,7 @@ public class GalacticSearchB extends TemplateAuto {
         bluePath.addPoint(new Translation2D(300,60), 30);
         bluePath.addPoint(new Translation2D(345,30), 30);
 
-        drive.setAutoPath(bluePath, false);
+        drive.setAutoPath(bluePath, true);
 
         while(!drive.isFinished()) {
             if(isDead()) {
