@@ -153,18 +153,10 @@ gradle-app.setting
 # # VS Code Specific Java Settings
 .classpath
 .project
-<<<<<<< HEAD
 /.settings/
 /bin/
-=======
-.settings/
-bin/
->>>>>>> 60babcb5d98e148ee3476f824f070ad8d90b6df3
 imgui.ini
 
 
 # End of https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
-<<<<<<< HEAD
 /.gradle/
-=======
->>>>>>> 60babcb5d98e148ee3476f824f070ad8d90b6df3
