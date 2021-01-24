@@ -41,30 +41,30 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 		Translation2D robot = here();
 
         Path p1 = new Path(here());
-        p1.addPoint(point1, 40);
-        p1.addPoint(point2, 40);
+        p1.addPoint(point1, 60);
+        p1.addPoint(point2, 60);
         drive.setAutoPath(p1, false);
 
 		while(!drive.isFinished()) if(isDead()) return;
 		
 		Path p2 = new Path(here());
-		p2.addPoint(new Translation2D(105,90), 40);
-		p2.addPoint(new Translation2D(120,30), 40);
-		p2.addPoint(new Translation2D(170,40), 40);
-		p2.addPoint(new Translation2D(180,150), 40);
+		p2.addPoint(new Translation2D(105,90), 60);
+		p2.addPoint(new Translation2D(120,30), 60);
+		p2.addPoint(new Translation2D(170,40), 60);
+		p2.addPoint(new Translation2D(180,150), 60);
 		drive.setAutoPath(p2, true);
 		while(!drive.isFinished()) if(isDead()) return;
 		
 		Path p3 = new Path(here());
-		p3.addPoint(new Translation2D(180,30), 40);
-		p3.addPoint(new Translation2D(270,30), 40);
-		p3.addPoint(new Translation2D(270,150), 20);
+		p3.addPoint(new Translation2D(180,30), 60);
+		p3.addPoint(new Translation2D(270,30), 60);
+		p3.addPoint(new Translation2D(270,150), 60);
 		drive.setAutoPath(p3, false);
 		while(!drive.isFinished()) if(isDead()) return;
 
 		Path p4 = new Path(here());
-		p4.addPoint(new Translation2D(270,100), 20);
-		p4.addPoint(new Translation2D(330,90), 20);
+		p4.addPoint(new Translation2D(270,100), 60);
+		p4.addPoint(new Translation2D(330,90), 60);
 		drive.setAutoPath(p4, true);
 		while(!drive.isFinished()) if(isDead()) return;
 
