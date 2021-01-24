@@ -16,7 +16,7 @@ public class GalacticSearchB extends TemplateAuto {
     boolean killSwitch = false;
 
     public GalacticSearchB() {
-        super(new Translation2D(15, 60));
+        super(new Translation2D(45, 60));
         robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
     }
 
