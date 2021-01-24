@@ -1,5 +1,6 @@
 package frc.auton;
 
+import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.utility.math.*;
 import frc.utility.control.motion.Path;
