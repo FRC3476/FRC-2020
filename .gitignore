@@ -137,7 +137,6 @@ $RECYCLE.BIN/
 ### Gradle ###
 .gradle
 /build/
-gradle/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -154,11 +153,10 @@ gradle-app.setting
 # # VS Code Specific Java Settings
 .classpath
 .project
-.settings/
-bin/
+/.settings/
+/bin/
 imgui.ini
 
 
 # End of https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
-
 /.gradle/
