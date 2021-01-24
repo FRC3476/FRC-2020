@@ -20,6 +20,13 @@ public class GalacticSearchB extends TemplateAuto {
         robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
     }
 
+    public void turnOnIntakeTrack() {
+		intake.setDeployState(Intake.DeployState.DEPLOY);
+		intake.setSpeed(Constants.IntakeMotorPower);
+		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+	}
+
     public void run(){
         Path bluePath = new Path(here());
 
@@ -28,6 +35,7 @@ public class GalacticSearchB extends TemplateAuto {
         bluePath.addPoint(new Translation2D(300,60), 30);
         bluePath.addPoint(new Translation2D(345,30), 30);
 
+        turnOnIntakeTrack();
         drive.setAutoPath(bluePath, true);
 
         while(!drive.isFinished()) {
