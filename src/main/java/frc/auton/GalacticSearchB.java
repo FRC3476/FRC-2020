@@ -18,7 +18,9 @@ public class GalacticSearchB extends TemplateAuto {
     public GalacticSearchB() {
         super(new Translation2D(15, 60));
         robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
-        
+    }
+
+    public void run(){
         Path bluePath = new Path(here());
 
         bluePath.addPoint(new Translation2D(180,60), 30);
@@ -37,6 +39,5 @@ public class GalacticSearchB extends TemplateAuto {
 		synchronized (this) {
 			done = true; 
 		}
-
     }
 }
