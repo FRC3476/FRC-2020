@@ -36,10 +36,21 @@ public class GalacticSearchB extends TemplateAuto {
         bluePath.addPoint(new Translation2D(300,60), 30);
         bluePath.addPoint(new Translation2D(345,30), 30);
 
+        
+
+        System.out.println("");
+
         turnOnIntakeTrack();
         drive.setAutoPath(bluePath, true);
 
         while(!drive.isFinished()) {
+            if(bluePath.getPercentage() >= 95){
+                intake.setDeployState(Intake.DeployState.UNDEPLOY);
+                intake.setSpeed(0);
+                hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
+                hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
+            }
+
             if(isDead()) {
                 return;
             }
