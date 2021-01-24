@@ -218,7 +218,7 @@ public class Robot extends TimedRobot {
 		else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
 
 		
-		option = new AutonavSlalomPath();
+		option = new GalacticSearchB();
 		auto = new Thread(option);
 	
 		auto.start();
@@ -415,6 +415,10 @@ public class Robot extends TimedRobot {
 					hopper.setFrontMotorState(FrontMotorState.ACTIVE);
 					hopper.setSnailMotorState(SnailMotorState.ACTIVE , true);
 
+				} else{
+					intake.setIntakeState(IntakeState.OFF);
+					hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+					hopper.setSnailMotorState(SnailMotorState.INACTIVE , true);
 				}
 			}
 
