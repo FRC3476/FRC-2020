@@ -74,12 +74,14 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
         drive.setAutoPath(p1, true);
         
         while(!drive.isFinished()) {
+            if(p1.getPercentage() == 85) {
+                turnOffIntakeTrack();
+            }
+
             if(isDead()) {
                 return;
             }
         }
-
-        turnOffIntakeTrack();
 
 		synchronized (this) {
 			done = true; 
