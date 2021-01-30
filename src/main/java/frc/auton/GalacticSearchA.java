@@ -55,7 +55,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-        int speed = 30;
+        int speed = pathIsRed ? 60 : 70;
 
         Path p1 = new Path(here());
         if(pathIsRed) {
@@ -75,7 +75,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
         drive.setAutoPath(p1, true);
         
         while(!drive.isFinished()) {
-            if(p1.getPercentage() == 85) {
+            if(p1.getPercentage() > 0.95) {
                 turnOffIntakeTrack();
             }
 
