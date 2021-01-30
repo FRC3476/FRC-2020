@@ -36,6 +36,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	}
 
 	public void turnOffIntakeTrack() {
+        intake.setDeployState(Intake.DeployState.UNDEPLOY);
 		intake.setSpeed(0);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
