@@ -61,7 +61,7 @@ public class GalacticSearchB extends TemplateAuto {
         }
 
         while(!drive.isFinished()) {
-            if(isDead()) {
+            if(bluePath.getPercentage() >= 80){
                 intake.setDeployState(Intake.DeployState.UNDEPLOY);
                 intake.setSpeed(0);
                 hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
