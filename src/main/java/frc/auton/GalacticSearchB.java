@@ -33,7 +33,7 @@ public class GalacticSearchB extends TemplateAuto {
         Path redPath = new Path(here());
 
         // Will default to Blue Path
-        Boolean isBlue = true;
+        Boolean isBlue = false;
 
         //Blue Path Points
         bluePath.addPoint(new Translation2D(180,60), 30);
@@ -44,7 +44,7 @@ public class GalacticSearchB extends TemplateAuto {
         //Red Path Points
         redPath.addPoint(new Translation2D(150,60), 30);
         redPath.addPoint(new Translation2D(210,120), 30);
-        redPath.addPoint(new Translation2D(300,60), 30);
+        //redPath.addPoint(new Translation2D(300,60), 30);
         redPath.addPoint(new Translation2D(345,120), 30);
 
         // Vision Stuff To Decide Which Will Decide Which Path, And Set var isBlue accordingly (Is manual right now)

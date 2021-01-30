@@ -141,6 +141,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
+		//System.out.println("Distance: " + Limelight.getInstance().getDistance() + " tx: " + Limelight.getInstance().getHorizontalOffset());
 
 	}
 
@@ -282,9 +283,9 @@ public class Robot extends TimedRobot {
 		shooterSpeed = 5000;
 		
 		System.out.println("teleop init!");
-		//drive.stopMovement();
+		drive.stopMovement();
 		firstTeleopRun = true;
-		//drive.setTeleop();
+		drive.setTeleop();
 		
 		
 		
