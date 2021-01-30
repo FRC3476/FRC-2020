@@ -26,7 +26,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	
 	boolean killSwitch = false;
 
-    private boolean pathIsRed;
+    private boolean pathIsRed = true;
 
     public void turnOnIntakeTrack() {
 		intake.setDeployState(Intake.DeployState.DEPLOY);
