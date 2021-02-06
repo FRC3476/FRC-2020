@@ -17,7 +17,7 @@ public class GalacticSearchB extends TemplateAuto {
     boolean killSwitch = false;
 
     public GalacticSearchB() {
-        super(new Translation2D(45, 120));
+        super(new Translation2D(45, 60));
         robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
     }
 
@@ -56,8 +56,10 @@ public class GalacticSearchB extends TemplateAuto {
 
         // Checks Which Path To Run Depending On Boolean Change
         if(isBlue == true) {
+            RobotTracker.getInstance().setInitialTranslation(45, 60);
             drive.setAutoPath(bluePath, true);
         } else {
+            RobotTracker.getInstance().setInitialTranslation(45, 120);
             drive.setAutoPath(redPath, true);
         }
 
