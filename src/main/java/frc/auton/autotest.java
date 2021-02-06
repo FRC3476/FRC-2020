@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.utility.math.*;
+import frc.utility.Limelight;
 import frc.utility.control.motion.Path;
 
 import frc.subsystem.Intake;
@@ -20,6 +21,7 @@ public class autotest extends TemplateAuto implements Runnable  {
 	Intake intake = Intake.getInstance();
 	VisionManager vision = VisionManager.getInstance();
 	Shooter shooter = Shooter.getInstance();
+	Limelight limelight = Limelight.getInstance();
 
 	private double TargetTime;
 	
@@ -35,21 +37,30 @@ public class autotest extends TemplateAuto implements Runnable  {
 	@Override
 	public void run() {
 
-		//Start 75 120
-		System.out.println("Only Shoot");
-		double turnAngle = 0;
-		
-		//turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
-		Translation2D target = new Translation2D(0, 67);
-		Translation2D robot = here();
+		if(limelight.getHorizontalOffset() < 0){
+			//Run path 1
+			//Start 75 120
+			System.out.println("Path One");
+			double turnAngle = 0;
+			
+			//turnAngle = Math.toDegrees(Math.atan2(75 , here().getX()-48));
+			Translation2D target = new Translation2D(0, 67);
+			Translation2D robot = here();
 
-		Path p1 = new Path(here());
-		p1.addPoint(new Translation2D(0, 100), 50);
-		p1.addPoint(new Translation2D(50, 150), 50);
-		p1.addPoint(new Translation2D(50, 300), 50);
-		drive.setAutoPath(p1, false);
-		
-		while(!drive.isFinished()) if(isDead()) return;
+			Path p1 = new Path(here());
+			p1.addPoint(new Translation2D(0, 100), 50);
+			p1.addPoint(new Translation2D(50, 150), 50);
+			p1.addPoint(new Translation2D(50, 300), 50);
+			drive.setAutoPath(p1, false);
+			
+			while(!drive.isFinished()) if(isDead()) return;
+		} else {
+			//run path 2
+			//Start 75 120
+			System.out.println("Path Two");
+		}
+
+
 
 		synchronized (this) {
 			done = true; 
