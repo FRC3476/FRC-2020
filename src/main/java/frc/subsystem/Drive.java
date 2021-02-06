@@ -573,7 +573,7 @@ public class Drive extends Subsystem {
 		}
 		
 		if (Math.abs(rightBackSparkEncoderSwerve.getPosition() - rightBack.angle.getDegrees()) > 90) {
-			rightBackSpark.set(-rightBackSpeed)
+			rightBackSpark.set(-rightBackSpeed);
 			rightBackSparkSwerve.set(rightBack.angle.getDegrees() - 180);
 		}else {
 			rightBackSpark.set(rightBackSpeed);
