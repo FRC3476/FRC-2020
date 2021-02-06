@@ -26,7 +26,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	
 	boolean killSwitch = false;
 
-    private boolean pathIsRed = false;
+    private boolean pathIsRed = true;
 
     public void turnOnIntakeTrack() {
 		intake.setDeployState(Intake.DeployState.DEPLOY);
@@ -55,7 +55,11 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
+<<<<<<< HEAD
         int speed = 70;
+=======
+        int speed = pathIsRed ? 60 : 70;
+>>>>>>> cd9e60d493de8aea19f8812e1354d21e7b2e78c6
 
         Path p1 = new Path(here());
         if(pathIsRed) {
