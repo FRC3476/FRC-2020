@@ -56,10 +56,10 @@ public class GalacticSearchB extends TemplateAuto {
 
         // Checks Which Path To Run Depending On Boolean Change
         if(isBlue == true) {
-            RobotTracker.getInstance().setInitialTranslation(45, 60);
+            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 60));
             drive.setAutoPath(bluePath, true);
         } else {
-            RobotTracker.getInstance().setInitialTranslation(45, 120);
+            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120));
             drive.setAutoPath(redPath, true);
         }
 
