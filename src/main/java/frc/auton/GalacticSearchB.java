@@ -36,21 +36,22 @@ public class GalacticSearchB extends TemplateAuto {
         Boolean isBlue = true;
 
         //Blue Path Points
-        bluePath.addPoint(new Translation2D(180,60), 30);
-        bluePath.addPoint(new Translation2D(240,120), 30);
-        bluePath.addPoint(new Translation2D(300,60), 30);
-        bluePath.addPoint(new Translation2D(345,30), 30);
+        bluePath.addPoint(new Translation2D(180,60), 50);
+        bluePath.addPoint(new Translation2D(240,120), 50);
+        bluePath.addPoint(new Translation2D(300,60), 50);
+        bluePath.addPoint(new Translation2D(345,30), 50);
         
         //Red Path Points
-        redPath.addPoint(new Translation2D(150,60), 30);
-        redPath.addPoint(new Translation2D(210,120), 30);
-        redPath.addPoint(new Translation2D(300,60), 30);
-        redPath.addPoint(new Translation2D(345,120), 30);
+        redPath.addPoint(new Translation2D(150,60), 50);
+        redPath.addPoint(new Translation2D(210,120), 50);
+        // redPath.addPoint(new Translation2D(300,60), 30);
+        redPath.addPoint(new Translation2D(345,120), 50);
 
         // Vision Stuff To Decide Which Will Decide Which Path, And Set var isBlue accordingly (Is manual right now)
 
-        System.out.println("");
+        System.out.println("Vision Stuff");
         
+        // Turns On Intake
         turnOnIntakeTrack();
 
         // Checks Which Path To Run Depending On Boolean Change
