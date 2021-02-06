@@ -500,7 +500,6 @@ public class Drive extends Subsystem {
 
 		swerveDrive(new ChassisSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1));
 
-
 	}
 
 	public void swerveDriveFeildRelitive(double x1, double x2, double y1){
@@ -538,15 +537,48 @@ public class Drive extends Subsystem {
 		double rightBackSpeed = rightBack.speedMetersPerSecond*100;
 	
 
-		leftFrontSpark.set(leftFrontSpeed);
-		leftBackSpark.set(leftBackSpeed);
-		rightFrontSpark.set(rightFrontSpeed);
-		rightBackSpark.set(rightBackSpeed);
+		// leftFrontSpark.set(leftFrontSpeed);
+		// leftBackSpark.set(leftBackSpeed);
+		// rightFrontSpark.set(rightFrontSpeed);
+		// rightBackSpark.set(rightBackSpeed);
 
-		leftFrontSparkSwerve.set(leftFront.angle.getDegrees());
-		leftBackSparkSwerve.set(leftBack.angle.getDegrees());
-		rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
-		rightBackSparkSwerve.set(rightBack.angle.getDegrees());
+
+		//leftFrontSparkSwerve.set(leftFront.angle.getDegrees());//
+		//leftBackSparkSwerve.set(leftBack.angle.getDegrees());
+		//rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
+		//rightBackSparkSwerve.set(rightBack.angle.getDegrees());
+
+		if (Math.abs(leftFrontSparkEncoderSwerve.getPosition() - leftFront.angle.getDegrees()) > 90) {
+			leftFrontSpark.set(-leftFrontSpeed);
+			leftFrontSparkSwerve.set(leftFront.angle.getDegrees() - 180);
+		}else{
+			leftFrontSpark.set(leftFrontSpeed);
+			leftFrontSparkSwerve.set(leftFront.angle.getDegrees());
+		}
+
+		if (Math.abs(leftBackSparkEncoderSwerve.getPosition() - leftBack.angle.getDegrees()) > 90) {
+			leftBackSpark.set(-leftBackSpeed);
+			leftBackSparkSwerve.set(leftBack.angle.getDegrees() - 180);
+		}else {
+			leftBackSpark.set(leftBackSpeed);
+			leftBackSparkSwerve.set(leftBack.angle.getDegrees());
+		}
+
+		if (Math.abs(rightFrontSparkEncoderSwerve.getPosition() - rightFront.angle.getDegrees()) > 90) {
+			rightFrontSpark.set(-rightFrontSpeed);
+			rightFrontSparkSwerve.set(rightFront.angle.getDegrees() - 180);
+		}else {
+			rightFrontSpark.set(rightFrontSpeed);
+			rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
+		}
+		
+		if (Math.abs(rightBackSparkEncoderSwerve.getPosition() - rightBack.angle.getDegrees()) > 90) {
+			rightBackSpark.set(-rightBackSpeed);
+			rightBackSparkSwerve.set(rightBack.angle.getDegrees() - 180);
+		}else {
+			rightBackSpark.set(rightBackSpeed);
+			rightBackSparkSwerve.set(rightBack.angle.getDegrees());
+		}
 	}
 	
 	private void configMotors() {
