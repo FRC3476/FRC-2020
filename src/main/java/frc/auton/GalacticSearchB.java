@@ -39,7 +39,7 @@ public class GalacticSearchB extends TemplateAuto {
         bluePath.addPoint(new Translation2D(180,60), 50);
         bluePath.addPoint(new Translation2D(240,120), 50);
         bluePath.addPoint(new Translation2D(300,60), 50);
-        bluePath.addPoint(new Translation2D(345,30), 50);
+        bluePath.addPoint(new Translation2D(314,30), 50);
         
         //Red Path Points
         redPath.addPoint(new Translation2D(150,60), 50);
@@ -62,6 +62,9 @@ public class GalacticSearchB extends TemplateAuto {
         }
 
         while(!drive.isFinished()) {
+            if(isDead()) {
+                return;
+            }
             if(bluePath.getPercentage() >= 80){
                 intake.setDeployState(Intake.DeployState.UNDEPLOY);
                 intake.setSpeed(0);
