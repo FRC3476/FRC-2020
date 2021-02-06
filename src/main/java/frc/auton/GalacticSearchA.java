@@ -26,7 +26,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	
 	boolean killSwitch = false;
 
-    private boolean pathIsRed;
+    private boolean pathIsRed = false;
 
     public void turnOnIntakeTrack() {
 		intake.setDeployState(Intake.DeployState.DEPLOY);
@@ -36,6 +36,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	}
 
 	public void turnOffIntakeTrack() {
+        intake.setDeployState(Intake.DeployState.UNDEPLOY);
 		intake.setSpeed(0);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
@@ -54,7 +55,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-        int speed = 30;
+        int speed = 70;
 
         Path p1 = new Path(here());
         if(pathIsRed) {
@@ -74,7 +75,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
         drive.setAutoPath(p1, true);
         
         while(!drive.isFinished()) {
-            if(p1.getPercentage() == 85) {
+            if(p1.getPercentage() > 0.95) {
                 turnOffIntakeTrack();
             }
 
