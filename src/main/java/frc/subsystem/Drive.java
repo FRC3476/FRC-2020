@@ -557,7 +557,7 @@ public class Drive extends Subsystem {
 		rightBackSparkSwerve.set(currentAngle[3] + diffRotation2ds[3].getDegrees());
 
 		leftFrontSpark.set(targetSpeeds[0]);
-		leftBackSpark.set(targetSpeeds[1]);
+		leftBackSpark.set(targetSpeeds[1]); 
 		rightFrontSpark.set(targetSpeeds[2]);
 		rightBackSpark.set(targetSpeeds[3]);
 
