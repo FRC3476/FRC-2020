@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.utility.math.*;
+import frc.utility.Limelight;
 import frc.utility.control.motion.Path;
 
 import frc.subsystem.Intake;
@@ -46,20 +47,17 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
         //RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
         super(new Translation2D(0, 0));
         int startY;
-        
-        // need some vision stuff here
+
+        pathIsRed = Limelight.getInstance().isTargetVisiable();
         startY = pathIsRed ? 90 : 30;
+        
 		RobotTracker.getInstance().setInitialTranslation(new Translation2D(46, startY));
         robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
 	}
 
 	@Override
 	public void run() {
-<<<<<<< HEAD
-        int speed = 70;
-=======
         int speed = pathIsRed ? 60 : 70;
->>>>>>> cd9e60d493de8aea19f8812e1354d21e7b2e78c6
 
         Path p1 = new Path(here());
         if(pathIsRed) {
