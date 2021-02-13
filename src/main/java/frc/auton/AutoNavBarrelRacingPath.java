@@ -36,9 +36,9 @@ public class AutoNavBarrelRacingPath extends TemplateAuto implements Runnable  {
 	public void run() {
 
 		Path p1 = new Path(here());
-		p1.addPoint(new Translation2D(0, 100), 50);
-		p1.addPoint(new Translation2D(50, 300), 50);
-		p1.addPoint(new Translation2D(50, 150), 50);
+		p1.addPoint(new Translation2D(150, 60), 10);
+		p1.addPoint(new Translation2D(250, 120), 10);
+		p1.addPoint(new Translation2D(300, 60), 10);
 		drive.setAutoPath(p1, false);
 		
 		while(!drive.isFinished()) if(isDead()) return;
