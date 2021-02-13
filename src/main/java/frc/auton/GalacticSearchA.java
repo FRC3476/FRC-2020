@@ -60,7 +60,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
         int speed = pathIsRed ? 60 : 70;
 
         Path p1 = new Path(here());
-        if(pathIsRed) {
+        if(!pathIsRed) {
             p1.addPoint(new Translation2D(90, 90), speed);
             p1.addPoint(new Translation2D(150, 60), speed);
             p1.addPoint(new Translation2D(180, 150), speed);
