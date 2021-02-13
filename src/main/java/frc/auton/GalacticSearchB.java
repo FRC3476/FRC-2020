@@ -3,6 +3,7 @@ package frc.auton;
 import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.utility.math.*;
+import frc.utility.Limelight;
 import frc.utility.control.motion.Path;
 
 import frc.subsystem.Intake;
@@ -49,12 +50,12 @@ public class GalacticSearchB extends TemplateAuto {
 
         // Vision Stuff To Decide Which Will Decide Which Path, And Set var isBlue accordingly (Is manual right now)
 
-        if(Limelight.getInstance().isTargetVisiable() == true) {
-            System.out.println("Blue Path")
+        if(Limelight.getInstance().isTargetVisiable()) {
+            System.out.println("Blue Path");
             RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 60));
             drive.setAutoPath(bluePath, true);
-        } else{
-            System.out.println("Red Path")
+        } else {
+            System.out.println("Red Path");
             RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120));
             isBlue = false;
             drive.setAutoPath(redPath, true);
@@ -70,9 +71,9 @@ public class GalacticSearchB extends TemplateAuto {
             if(isDead()) {
                 return;
             }
-            if(isBlue === true){
+            if(isBlue) {
 
-                if(bluePath.getPercentage() >= 80){
+                if(bluePath.getPercentage() >= 90){
                     intake.setDeployState(Intake.DeployState.UNDEPLOY);
                     intake.setSpeed(0);
                     hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
@@ -80,12 +81,13 @@ public class GalacticSearchB extends TemplateAuto {
                     return;
                 }
             } else {
-                if(redPath.getPercentage() >= 80){
+                if(redPath.getPercentage() >= 90){
                     intake.setDeployState(Intake.DeployState.UNDEPLOY);
                     intake.setSpeed(0);
                     hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
                     hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
                     return;
+                }
             }
         }
 
