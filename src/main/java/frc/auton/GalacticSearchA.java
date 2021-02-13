@@ -27,7 +27,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	
 	boolean killSwitch = false;
 
-    private boolean pathIsRed;
+    private boolean pathIsBlue;
 
     public void turnOnIntakeTrack() {
 		intake.setDeployState(Intake.DeployState.DEPLOY);
@@ -48,8 +48,8 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
         super(new Translation2D(0, 0));
         int startY;
 
-        pathIsRed = Limelight.getInstance().isTargetVisiable();
-        startY = pathIsRed ? 90 : 30;
+        pathIsBlue = Limelight.getInstance().isTargetVisiable();
+        startY = pathIsBlue ? 30 : 90;
         
 		RobotTracker.getInstance().setInitialTranslation(new Translation2D(46, startY));
         robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
@@ -57,10 +57,10 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-        int speed = pathIsRed ? 60 : 70;
+        int speed = pathIsBlue ? 70 : 60;
 
         Path p1 = new Path(here());
-        if(!pathIsRed) {
+        if(pathIsBlue) {
             p1.addPoint(new Translation2D(90, 90), speed);
             p1.addPoint(new Translation2D(150, 60), speed);
             p1.addPoint(new Translation2D(180, 150), speed);
