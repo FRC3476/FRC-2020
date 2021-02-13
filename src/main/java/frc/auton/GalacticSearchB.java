@@ -49,19 +49,21 @@ public class GalacticSearchB extends TemplateAuto {
 
         // Vision Stuff To Decide Which Will Decide Which Path, And Set var isBlue accordingly (Is manual right now)
 
-        System.out.println("Vision Stuff");
+        if(Limelight.getInstance().isTargetVisiable() == true) {
+            System.out.println("Blue Path")
+            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 60));
+            drive.setAutoPath(bluePath, true);
+        } else{
+            System.out.println("Red Path")
+            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120));
+            drive.setAutoPath(redPath, true);
+        }
         
         // Turns On Intake
         turnOnIntakeTrack();
 
         // Checks Which Path To Run Depending On Boolean Change
-        if(isBlue == true) {
-            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 60));
-            drive.setAutoPath(bluePath, true);
-        } else {
-            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120));
-            drive.setAutoPath(redPath, true);
-        }
+        
 
         while(!drive.isFinished()) {
             if(isDead()) {
