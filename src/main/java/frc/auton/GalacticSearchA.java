@@ -61,15 +61,16 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
         Path p1 = new Path(here());
         if(pathIsBlue) {
-            p1.addPoint(new Translation2D(90, 90), speed);
-            p1.addPoint(new Translation2D(150, 60), speed);
-            p1.addPoint(new Translation2D(180, 150), speed);
-            p1.addPoint(new Translation2D(314, 150), speed);
-        }else {
             p1.addPoint(new Translation2D(180, 30), speed);
             p1.addPoint(new Translation2D(210, 120), speed);
             p1.addPoint(new Translation2D(270, 90), speed);
             p1.addPoint(new Translation2D(314, 90), speed);
+        }else {
+            p1.addPoint(new Translation2D(90, 90), speed);
+            p1.addPoint(new Translation2D(150, 60), speed);
+            p1.addPoint(new Translation2D(180, 150), speed);
+            p1.addPoint(new Translation2D(314, 150), speed);
+            
         }
         
         turnOnIntakeTrack();
