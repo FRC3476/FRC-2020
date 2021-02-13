@@ -56,6 +56,7 @@ public class GalacticSearchB extends TemplateAuto {
         } else{
             System.out.println("Red Path")
             RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120));
+            isBlue = false;
             drive.setAutoPath(redPath, true);
         }
         
@@ -69,12 +70,22 @@ public class GalacticSearchB extends TemplateAuto {
             if(isDead()) {
                 return;
             }
-            if(bluePath.getPercentage() >= 80){
-                intake.setDeployState(Intake.DeployState.UNDEPLOY);
-                intake.setSpeed(0);
-                hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
-                hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
-                return;
+            if(isBlue === true){
+
+                if(bluePath.getPercentage() >= 80){
+                    intake.setDeployState(Intake.DeployState.UNDEPLOY);
+                    intake.setSpeed(0);
+                    hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
+                    hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
+                    return;
+                }
+            } else {
+                if(redPath.getPercentage() >= 80){
+                    intake.setDeployState(Intake.DeployState.UNDEPLOY);
+                    intake.setSpeed(0);
+                    hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
+                    hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
+                    return;
             }
         }
 
