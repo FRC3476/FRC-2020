@@ -57,11 +57,11 @@ public class GalacticSearchB extends TemplateAuto {
             RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120));
             path = new Path(here());
             //Red Path Points
-            path.addPoint(new Translation2D(90,120), 70);
-            path.addPoint(new Translation2D(150,60), 70);
-            path.addPoint(new Translation2D(210,120), 70);
+            path.addPoint(new Translation2D(90,120), 80);
+            path.addPoint(new Translation2D(150,60), 80);
+            path.addPoint(new Translation2D(210,120), 80);
             // path.addPoint(new Translation2D(300,60), 30);
-            path.addPoint(new Translation2D(314,120), 70);
+            path.addPoint(new Translation2D(314,120), 80);
             isBlue = false;
             drive.setAutoPath(path, true);
         }
@@ -77,7 +77,7 @@ public class GalacticSearchB extends TemplateAuto {
             if(isDead()) {
                 return;
             }
-            if(path.getPercentage() >= 90){
+            if(path.getPercentage() >= 0.95){
                 intake.setDeployState(Intake.DeployState.UNDEPLOY);
                 intake.setSpeed(0);
                 hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
