@@ -40,29 +40,31 @@ public class GalacticSearchB extends TemplateAuto {
 
         // Vision Stuff To Decide Which Will Decide Which Path, And Set var isBlue accordingly (Is manual right now)
 
+        Path path;
         if(Limelight.getInstance().isTargetVisiable()) {
             System.out.println("Blue Path");
             RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 60));
-            Path bluePath = new Path(here());
+            path = new Path(here());
             //Blue Path Points
-            bluePath.addPoint(new Translation2D(180,60), 50);
-            bluePath.addPoint(new Translation2D(240,120), 50);
-            bluePath.addPoint(new Translation2D(300,60), 50);
-            bluePath.addPoint(new Translation2D(314,30), 50);
+            path.addPoint(new Translation2D(180,60), 50);
+            path.addPoint(new Translation2D(240,120), 50);
+            path.addPoint(new Translation2D(300,60), 50);
+            path.addPoint(new Translation2D(314,30), 50);
             isBlue = true;
-            drive.setAutoPath(bluePath, true);
+            drive.setAutoPath(path, true);
         } else {
             System.out.println("Red Path");
             RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120));
-            Path redPath = new Path(here());
+            path = new Path(here());
             //Red Path Points
-            redPath.addPoint(new Translation2D(150,60), 50);
-            redPath.addPoint(new Translation2D(210,120), 50);
-            // redPath.addPoint(new Translation2D(300,60), 30);
-            redPath.addPoint(new Translation2D(345,120), 50);
+            path.addPoint(new Translation2D(150,60), 50);
+            path.addPoint(new Translation2D(210,120), 50);
+            // path.addPoint(new Translation2D(300,60), 30);
+            path.addPoint(new Translation2D(345,120), 50);
             isBlue = false;
-            drive.setAutoPath(redPath, true);
+            drive.setAutoPath(path, true);
         }
+        
         
         // Turns On Intake
         turnOnIntakeTrack();
@@ -74,22 +76,12 @@ public class GalacticSearchB extends TemplateAuto {
             if(isDead()) {
                 return;
             }
-            if(isBlue) {
-                if(bluePath.getPercentage() >= 90){
-                    intake.setDeployState(Intake.DeployState.UNDEPLOY);
-                    intake.setSpeed(0);
-                    hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
-                    hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
-                    return;
-                }
-            } else {
-                if(redPath.getPercentage() >= 90){
-                    intake.setDeployState(Intake.DeployState.UNDEPLOY);
-                    intake.setSpeed(0);
-                    hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
-                    hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
-                    return;
-                }
+            if(path.getPercentage() >= 90){
+                intake.setDeployState(Intake.DeployState.UNDEPLOY);
+                intake.setSpeed(0);
+                hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
+                hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
+                return;
             }
         }
 
