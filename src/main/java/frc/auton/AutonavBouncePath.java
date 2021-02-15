@@ -35,7 +35,7 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-		Time time = Timer.getFPGATimestamp;
+		double time = Timer.getFPGATimestamp();
         Translation2D point1 = new Translation2D(70, 90);
         Translation2D point2 = new Translation2D(90, 150);
         
@@ -59,18 +59,18 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 		
 		Path p3 = new Path(here());
 		p3.addPoint(new Translation2D(190,40), 70);
-		p3.addPoint(new Translation2D(260,40), 70);
-		p3.addPoint(new Translation2D(270,70), 70);
+		p3.addPoint(new Translation2D(250,40), 70);
+		p3.addPoint(new Translation2D(260,70), 70);
 		p3.addPoint(new Translation2D(270,150), 70);
 		drive.setAutoPath(p3, false);
 		while(!drive.isFinished()) if(isDead()) return;
 
 		Path p4 = new Path(here());
 		p4.addPoint(new Translation2D(270,130), 70);
-		p4.addPoint(new Translation2D(330,110), 70);
+		p4.addPoint(new Translation2D(330,105), 70);
 		drive.setAutoPath(p4, true);
 		while(!drive.isFinished()) if(isDead()) return;
-		System.out.println((time-Timer.getFPGATimestamp))
+		System.out.println((time-Timer.getFPGATimestamp())*1000000);
 
         synchronized(this){
             done = true;
