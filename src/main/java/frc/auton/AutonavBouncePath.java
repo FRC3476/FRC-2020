@@ -63,8 +63,8 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 		while(!drive.isFinished()) if(isDead()) return;
 
 		Path p4 = new Path(here());
-		p4.addPoint(new Translation2D(270,100), 60);
-		p4.addPoint(new Translation2D(330,90), 60);
+		p4.addPoint(new Translation2D(270,110), 60);
+		p4.addPoint(new Translation2D(330,100), 60);
 		drive.setAutoPath(p4, true);
 		while(!drive.isFinished()) if(isDead()) return;
 

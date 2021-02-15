@@ -220,6 +220,7 @@ public class Robot extends TimedRobot {
 		
 		option = new AutonavBouncePath();
 		auto = new Thread(option);
+	
 		auto.start();
 		
 	
@@ -414,6 +415,10 @@ public class Robot extends TimedRobot {
 					hopper.setFrontMotorState(FrontMotorState.ACTIVE);
 					hopper.setSnailMotorState(SnailMotorState.ACTIVE , true);
 
+				} else{
+					intake.setIntakeState(IntakeState.OFF);
+					hopper.setFrontMotorState(FrontMotorState.INACTIVE);
+					hopper.setSnailMotorState(SnailMotorState.INACTIVE , true);
 				}
 			}
 
