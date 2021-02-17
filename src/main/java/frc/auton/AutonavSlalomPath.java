@@ -33,7 +33,7 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-        int speed = 30;
+        int speed = 60;
 
         Path p1 = new Path(here());
         p1.addPoint(new Translation2D(75, 30), speed);
