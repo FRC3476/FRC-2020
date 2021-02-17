@@ -45,19 +45,11 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
         
         drive.setAutoPath(p1, false);
 
-        while(!drive.isFinished()) {
-            if(isDead()) {
-                return;
-            }
-        }
+        while(!drive.isFinished()) if(isDead()) return;
 
         drive.setRotation(Rotation2D.fromDegrees(135));
 
-        while(!drive.isFinished()) {
-            if(isDead()) {
-                return;
-            }
-        }
+        while(!drive.isFinished()) if(isDead()) return;
 
         Path p2 = new Path(here());
 
@@ -68,11 +60,7 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 
         drive.setAutoPath(p2, false);
 
-        while(!drive.isFinished()) {
-            if(isDead()) {
-                return;
-            }
-        }
+        while(!drive.isFinished()) if(isDead()) return;
 
 		synchronized (this) {
 			done = true; 
