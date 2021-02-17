@@ -53,7 +53,7 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 
         Path p2 = new Path(here());
 
-        p2.addPoint(new Translation2D(270, 30), speed);
+        p2.addPoint(new Translation2D(270, 30), 30);
         p2.addPoint(new Translation2D(105, 30), speed);
         p2.addPoint(new Translation2D(75, 85), speed);
         p2.addPoint(new Translation2D(42, 85), speed);
@@ -63,7 +63,7 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
         while(!drive.isFinished()) if(isDead()) return;
 
 		synchronized (this) {
-			done = true; 
+			done = true;
 		}
 		
 	}
