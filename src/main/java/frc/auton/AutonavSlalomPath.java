@@ -53,6 +53,12 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 
         drive.setRotation(Rotation2D.fromDegrees(135));
 
+        while(!drive.isFinished()) {
+            if(isDead()) {
+                return;
+            }
+        }
+
         Path p2 = new Path(here());
 
         p2.addPoint(new Translation2D(270, 30), speed);
