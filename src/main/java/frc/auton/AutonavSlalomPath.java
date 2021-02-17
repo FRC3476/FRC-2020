@@ -41,7 +41,7 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
         p1.addPoint(new Translation2D(250, 90), speed);
         p1.addPoint(new Translation2D(280, 10), speed);
         p1.addPoint(new Translation2D(300, 80), speed);
-        p1.addPoint(new Translation2D(285, 80), speed);
+        p1.addPoint(new Translation2D(290, 90), speed);
         
         drive.setAutoPath(p1, false);
 
