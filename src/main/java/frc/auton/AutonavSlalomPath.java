@@ -33,15 +33,15 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-        int speed = 60;
+        int speed = 75;
 
         Path p1 = new Path(here());
-        p1.addPoint(new Translation2D(75, 30), speed);
+        p1.addPoint(new Translation2D(60, 30), speed);
         p1.addPoint(new Translation2D(105, 90), speed);
         p1.addPoint(new Translation2D(250, 90), speed);
         p1.addPoint(new Translation2D(280, 10), speed);
-        p1.addPoint(new Translation2D(310, 80), speed);
-        p1.addPoint(new Translation2D(290, 80), speed);
+        p1.addPoint(new Translation2D(320, 80), speed);
+        p1.addPoint(new Translation2D(300, 70), speed);
         
         drive.setAutoPath(p1, false);
 
@@ -50,9 +50,10 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
         Path p2 = new Path(here());
 
         p2.addPoint(new Translation2D(270, 40), speed);
-        p2.addPoint(new Translation2D(105, 30), speed);
-        p2.addPoint(new Translation2D(75, 85), speed);
-        p2.addPoint(new Translation2D(42, 85), speed);
+        p2.addPoint(new Translation2D(250, 20), speed);
+        p2.addPoint(new Translation2D(110, 25), speed);
+        p2.addPoint(new Translation2D(80, 85), speed);
+        p2.addPoint(new Translation2D(42, 90), speed);
 
         drive.setAutoPath(p2, false);
 

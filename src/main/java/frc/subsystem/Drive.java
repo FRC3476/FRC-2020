@@ -201,10 +201,10 @@ public class Drive extends Subsystem {
 	}
 
 	private void configCoast() {
-		leftSpark.setIdleMode(IdleMode.kCoast);
-		rightSpark.setIdleMode(IdleMode.kCoast);
-		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+		leftSpark.setIdleMode(IdleMode.kBrake);
+		rightSpark.setIdleMode(IdleMode.kBrake);
+		leftSparkSlave.setIdleMode(IdleMode.kBrake);
+		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
 	}
 
 	private void configAuto() {
@@ -580,10 +580,10 @@ public class Drive extends Subsystem {
 		leftSparkSlave.follow(leftSpark);
 		rightSparkSlave.follow(rightSpark);
 		
-		leftSpark.setIdleMode(IdleMode.kCoast);
-		rightSpark.setIdleMode(IdleMode.kCoast);
-		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+		leftSpark.setIdleMode(IdleMode.kBrake);
+		rightSpark.setIdleMode(IdleMode.kBrake);
+		leftSparkSlave.setIdleMode(IdleMode.kBrake);
+		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
 
 		// leftSparkEncoder.setInverted(true);
 		// rightSparkEncoder.setInverted(true);

@@ -124,13 +124,13 @@ public final class Constants {
 	public static final double ExpectedPositionTolerance = 0;
 	
 	// Autonomous Driving
-	public static final double TrackRadius = -7; //-9;
+	public static final double TrackRadius = -7.5; //-9;
 	public static final double WheelDiameter = 6.0; //6.09; //expiermental
 	public static final double MinTurningRadius = 40;
 	public static final double MinPathSpeed = 20; 
 	public static final double MaxPathSpeed = 140; //120
 	public static final double MinLookAheadDistance = 14;
-	public static final double MaxLookAheadDistance = 20;
+	public static final double MaxLookAheadDistance = 30;
 	
 	// Subsystems
 	public static final int TimeoutMs = 10;
