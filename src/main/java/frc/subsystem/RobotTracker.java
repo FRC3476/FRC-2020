@@ -48,7 +48,7 @@ public class RobotTracker extends Subsystem {
 
 	synchronized public RigidTransform2D getOdometry() {
 		Pose2d pose = differentialDrivePoseEstimator.getEstimatedPosition();
-		return new RigidTransform2D(Translation2D.fromWPITranslation2d(pose.getTranslation()), Rotation2D.fromWPIRotation2d(pose.getRotation()));
+		return new RigidTransform2D(Translation2D.fromWPITranslation2d(pose.getTranslation()).scale(Constants.InchesPerMeter), Rotation2D.fromWPIRotation2d(pose.getRotation()));
 	}
 
 	synchronized public void resetOdometry() {
@@ -64,9 +64,9 @@ public class RobotTracker extends Subsystem {
 	@Override
 	public void update() {
 
-		differentialDrivePoseEstimator.update(new Rotation2d(driveBase.getAngle()), new DifferentialDriveWheelSpeeds(driveBase.getLeftSpeed()*Constants.InchesPerMeter, 
-		driveBase.getRightSpeed()*Constants.InchesPerMeter), 
-		(driveBase.getLeftDistance()-leftPrevDistInches)*Constants.InchesPerMeter, (driveBase.getRightDistance()-rightPrevDistInches)*Constants.InchesPerMeter);
+		differentialDrivePoseEstimator.update(new Rotation2d(driveBase.getAngle()), new DifferentialDriveWheelSpeeds(driveBase.getLeftSpeed()/Constants.InchesPerMeter, 
+		driveBase.getRightSpeed()/Constants.InchesPerMeter), 
+		(driveBase.getLeftDistance()-leftPrevDistInches)/Constants.InchesPerMeter, (driveBase.getRightDistance()-rightPrevDistInches)/Constants.InchesPerMeter);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class RobotTracker extends Subsystem {
 
 	synchronized public void setInitialTranslation(Translation2D translation2D) {
 		Pose2d pose = differentialDrivePoseEstimator.getEstimatedPosition();
-		differentialDrivePoseEstimator.resetPosition(new Pose2d(translation2D.getWPITranslation2d(), pose.getRotation()), new Rotation2d(driveBase.getAngle()));
+		differentialDrivePoseEstimator.resetPosition(new Pose2d(translation2D.scale(1/Constants.InchesPerMeter).getWPITranslation2d(), pose.getRotation()), new Rotation2d(driveBase.getAngle()));
 		leftPrevDistInches = driveBase.getLeftDistance();
 		rightPrevDistInches = driveBase.getRightDistance();
 	}
