@@ -122,6 +122,7 @@ public final class Constants {
 	public static final double ExpectedCurrentTolerance = 0;
 	public static final double ExpectedRPMTolerance = 0;
 	public static final double ExpectedPositionTolerance = 0;
+	public static final double InchesPerMeter = 39.3700787;
 	
 	// Autonomous Driving
 	public static final double TrackRadius = -7; //-9;
