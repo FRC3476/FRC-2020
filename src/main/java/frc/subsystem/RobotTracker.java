@@ -34,7 +34,7 @@ public class RobotTracker extends Subsystem {
 		driveBase = Drive.getInstance();
 		leftPrevDistInches = driveBase.getLeftDistance();
 		rightPrevDistInches = driveBase.getRightDistance();
-		differentialDrivePoseEstimator = new DifferentialDrivePoseEstimator(new Rotation2d(driveBase.getAngle()), new Pose2d(),
+		differentialDrivePoseEstimator = new DifferentialDrivePoseEstimator(Rotation2d.fromDegrees(driveBase.getAngle()), new Pose2d(),
         new MatBuilder<>(Nat.N5(), Nat.N1()).fill(0.02, 0.02, 0.01, 0.02, 0.02), // State measurement standard deviations. X, Y, theta.
         new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01), // Local measurement standard deviations. Left encoder, right encoder, gyro.
 		new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01), // Global measurement standard deviations. X, Y, and theta.
@@ -52,7 +52,7 @@ public class RobotTracker extends Subsystem {
 	}
 
 	synchronized public void resetOdometry() {
-		differentialDrivePoseEstimator.resetPosition(new Pose2d(), new Rotation2d(driveBase.getAngle()));
+		differentialDrivePoseEstimator.resetPosition(new Pose2d(), Rotation2d.fromDegrees(driveBase.getAngle()));
 		leftPrevDistInches = driveBase.getLeftDistance();
 		rightPrevDistInches = driveBase.getRightDistance();
 	}
@@ -64,32 +64,33 @@ public class RobotTracker extends Subsystem {
 	@Override
 	public void update() {
 
-		differentialDrivePoseEstimator.update(new Rotation2d(driveBase.getAngle()), new DifferentialDriveWheelSpeeds(driveBase.getLeftSpeed()/Constants.InchesPerMeter, 
+		differentialDrivePoseEstimator.update(Rotation2d.fromDegrees(driveBase.getAngle()), new DifferentialDriveWheelSpeeds(driveBase.getLeftSpeed()/Constants.InchesPerMeter, 
 		driveBase.getRightSpeed()/Constants.InchesPerMeter), 
 		(driveBase.getLeftDistance()-leftPrevDistInches)/Constants.InchesPerMeter, (driveBase.getRightDistance()-rightPrevDistInches)/Constants.InchesPerMeter);
 	}
 
 	/**
-	 *
-	 * 
+	 * @param rotation2D rotation in degrees
 	 */
 	synchronized public void setInitialRotation(Rotation2D rotation2D) {
 		Pose2d pose = differentialDrivePoseEstimator.getEstimatedPosition();
-		differentialDrivePoseEstimator.resetPosition(new Pose2d(pose.getTranslation(), rotation2D.getWPIRotation2d()), new Rotation2d(driveBase.getAngle()));
+		differentialDrivePoseEstimator.resetPosition(new Pose2d(pose.getTranslation(), rotation2D.getWPIRotation2d()), Rotation2d.fromDegrees(driveBase.getAngle()));
 		leftPrevDistInches = driveBase.getLeftDistance();
 		rightPrevDistInches = driveBase.getRightDistance();
 	}
-
+	/**
+	 * @param translation2D translation 2D in inches
+	 */
 	synchronized public void setInitialTranslation(Translation2D translation2D) {
 		Pose2d pose = differentialDrivePoseEstimator.getEstimatedPosition();
-		differentialDrivePoseEstimator.resetPosition(new Pose2d(translation2D.scale(1/Constants.InchesPerMeter).getWPITranslation2d(), pose.getRotation()), new Rotation2d(driveBase.getAngle()));
+		differentialDrivePoseEstimator.resetPosition(new Pose2d(translation2D.scale(1/Constants.InchesPerMeter).getWPITranslation2d(), pose.getRotation()), Rotation2d.fromDegrees(driveBase.getAngle()));
 		leftPrevDistInches = driveBase.getLeftDistance();
 		rightPrevDistInches = driveBase.getRightDistance();
 	}
 	/**
 	 * Add a vision measurement to the Unscented Kalman Filter. This will correct the odometry pose estimate while still accounting for measurement noise.
 	 * This method can be called as infrequently as you want
-	 * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+	 * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera (meters).
 	 * @param timestampSeconds The timestamp of the vision measurement in seconds.
 	 */
 	synchronized public void addVisionMeasurment(Pose2d visionRobotPoseMeters, double timestampSeconds){
