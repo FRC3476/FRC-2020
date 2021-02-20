@@ -93,7 +93,7 @@ public class RobotTracker extends Subsystem {
 	 * @param timestampSeconds The timestamp of the vision measurement in seconds.
 	 */
 	synchronized public void addVisionMeasurment(Pose2d visionRobotPoseMeters, double timestampSeconds){
-		differentialDrivePoseEstimator.addVisionMeasurement(pose, timestampSeconds);
+		differentialDrivePoseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
 	}
 
 	@Override
