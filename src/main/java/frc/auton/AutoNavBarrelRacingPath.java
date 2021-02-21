@@ -40,7 +40,7 @@ public class AutoNavBarrelRacingPath extends TemplateAuto implements Runnable  {
 		p1.addPoint(new Translation2D(170,60), 30);
 		p1.addPoint(new Translation2D(150,40), 30);
 		p1.addPoint(new Translation2D(145,70), 30);
-		p1.addPoint(new Translation2D(240,100), 20);
+		p1.addPoint(new Translation2D(240,90), 30);
 		p1.addPoint(new Translation2D(280,125), 30);
 		p1.addPoint(new Translation2D(250,140), 30);
 		p1.addPoint(new Translation2D(200,120), 30);
