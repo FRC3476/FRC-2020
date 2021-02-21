@@ -299,6 +299,9 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+			DecimalFormat df = new DecimalFormat();
+			System.out.println("robot angle: " + df.format(robotTracker.getOdometry().rotationMat.getDegrees()) + " position: X: " + 
+				df.format(robotTracker.getOdometry().translationMat.getX()) + " Y: " + df.format(robotTracker.getOdometry().translationMat.getY()));
 
 			ArrayList<Double> times = new ArrayList<Double>();
 			
