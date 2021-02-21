@@ -36,22 +36,22 @@ public class AutoNavBarrelRacingPath extends TemplateAuto implements Runnable  {
 	@Override
 	public void run() {
 		Path p1 = new Path(here());
-		p1.addPoint(new Translation2D(150, 90), 30);
-		p1.addPoint(new Translation2D(170,60), 30);
-		p1.addPoint(new Translation2D(150,40), 30);
-		p1.addPoint(new Translation2D(145,70), 30);
-		p1.addPoint(new Translation2D(200,60), 30);
-		p1.addPoint(new Translation2D(240,75), 30);
-		p1.addPoint(new Translation2D(280,125), 30);
-		p1.addPoint(new Translation2D(250,140), 30);
-		p1.addPoint(new Translation2D(200,120), 30);
-		p1.addPoint(new Translation2D(240,75), 30);
-		p1.addPoint(new Translation2D(280,40), 30);
-		p1.addPoint(new Translation2D(300,35), 30);
-		p1.addPoint(new Translation2D(320,65), 30);
-		p1.addPoint(new Translation2D(280,75), 30);
-		p1.addPoint(new Translation2D(165,80), 30);
-		p1.addPoint(new Translation2D(50,90), 30);
+		p1.addPoint(new Translation2D(150, 90), 60);
+		p1.addPoint(new Translation2D(170,60), 60);
+		p1.addPoint(new Translation2D(150,40), 60);
+		p1.addPoint(new Translation2D(145,70), 60);
+		p1.addPoint(new Translation2D(200,60), 60);
+		p1.addPoint(new Translation2D(240,75), 60);
+		p1.addPoint(new Translation2D(280,125), 60);
+		p1.addPoint(new Translation2D(250,140), 60);
+		p1.addPoint(new Translation2D(200,120), 60);
+		p1.addPoint(new Translation2D(240,75), 60);
+		p1.addPoint(new Translation2D(280,40), 60);
+		p1.addPoint(new Translation2D(300,35), 60);
+		p1.addPoint(new Translation2D(320,65), 60);
+		p1.addPoint(new Translation2D(280,75), 60);
+		p1.addPoint(new Translation2D(165,85), 60);
+		p1.addPoint(new Translation2D(40,90), 60);
 		drive.setAutoPath(p1, false);
 		
 		while(!drive.isFinished()) if(isDead()) return;
