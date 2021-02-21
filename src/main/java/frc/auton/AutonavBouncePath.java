@@ -1,7 +1,13 @@
 package frc.auton;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.utility.math.*;
@@ -35,6 +41,29 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
+		
+        Pose2d startPoint = robotTracker.getOdometryMeters();
+
+        ArrayList<Translation2d> points = new ArrayList<>();
+
+		points.add(new Translation2D(105,90).getScaledWPITranslation2d());
+		points.add(new Translation2D(120,40).getScaledWPITranslation2d());
+		points.add(new Translation2D(140,40).getScaledWPITranslation2d());
+		points.add(new Translation2D(150,90).getScaledWPITranslation2d());
+		points.add(new Translation2D(170,150).getScaledWPITranslation2d());
+
+
+		TrajectoryConfig config = new TrajectoryConfig(Units.inchesToMeters(Constants.MaxPathSpeed), Units.inchesToMeters(5));
+		config.setReversed(true);
+		config.addConstraint(new DifferentialDriveKinematicsConstraint());
+
+
+
+
+
+
+
+
 		double time = Timer.getFPGATimestamp();
         Translation2D point1 = new Translation2D(70, 90);
         Translation2D point2 = new Translation2D(90, 150);

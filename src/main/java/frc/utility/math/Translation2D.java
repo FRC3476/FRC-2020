@@ -3,6 +3,7 @@
 package frc.utility.math;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import frc.robot.Constants;
 
 /**
  * Stores an x and y value. Rotates and Translates of objects returns a new
@@ -171,6 +172,15 @@ public class Translation2D implements Interpolable<Translation2D> {
 
 	public Translation2d getWPITranslation2d(){
 		return new Translation2d(getX(), getY());
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Translation2d getScaledWPITranslation2d(){
+		Translation2D t = scale(1/Constants.InchesPerMeter);
+		return new Translation2d(t.getX(), t.getY());
 	}
 
 	@Override

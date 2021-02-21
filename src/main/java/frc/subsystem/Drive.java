@@ -19,17 +19,20 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import frc.utility.LazyCANSparkMax;
 
 
 public class Drive extends Subsystem {
 
 	public enum DriveState {
-		TELEOP, PUREPURSUIT, TURN, HOLD, DONE
+		TELEOP, PUREPURSUIT, TURN, HOLD, DONE, RAMSETE
 	}
 
 	public static class DriveSignal {
@@ -84,6 +87,10 @@ public class Drive extends Subsystem {
 	private volatile double driveMultiplier;
 	boolean rotateAuto = false; 
 
+	//TODO: Change
+	public DifferentialDriveKinematics diffDriveKinematics = new DifferentialDriveKinematics(10);
+	RamseteController ramseteController = new RamseteController(2.0, 0.7);
+
 
 	double prevPositionL = 0;
 	double prevPositionR = 0;
@@ -102,6 +109,7 @@ public class Drive extends Subsystem {
 	public LazyCANSparkMax leftFrontSparkSwerve, leftBackSparkSwerve, rightFrontSparkSwerve, rightBackSparkSwerve;
 	private CANEncoder leftFrontSparkEncoderSwerve, leftBackSparkEncoderSwerve, rightFrontSparkEncoderSwerve, rightBackSparkEncoderSwerve;
 	SwerveDriveKinematics swerveKinematics;
+	Trajectory currentAutoTrajectory;
 	  
 
 	private Drive() {
@@ -645,6 +653,15 @@ public class Drive extends Subsystem {
 	public synchronized void setAutoPath(Path autoPath, boolean isReversed) {
 		driveState = DriveState.PUREPURSUIT;
 		autonomousDriver = new PurePursuitController(autoPath, isReversed);
+		autonomousDriver.resetTime();
+		configAuto();
+		//System.out.println("even more bad");
+		updatePurePursuit();
+	}
+
+	public synchronized void setAutoPath(Trajectory trajectory) {
+		driveState = DriveState.RAMSETE;
+		this.currentAutoTrajectory = trajectory;
 		autonomousDriver.resetTime();
 		configAuto();
 		//System.out.println("even more bad");
