@@ -497,46 +497,21 @@ public class Drive extends Subsystem {
 	}
 
 	public void swerveDrive(double x1, double x2, double y1){
-		/*Things to cahnge before using
-		1. Ids
-		2. set Locations of all wheels
-		3. 
-		*/
 
-		//TODO: Set motor control modes
+		swerveDrive(new ChassisSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1));
 
-		synchronized (this) {
-			driveState = DriveState.TELEOP;
-		}
 
-		ChassisSpeeds speeds = new ChassisSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1 );
-
-		SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds);
-		SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.DriveHighSpeed / 100);
-
-		SwerveModuleState leftFront = moduleStates[0];
-		SwerveModuleState leftBack = moduleStates[1];
-		SwerveModuleState rightFront = moduleStates[2];
-		SwerveModuleState rightBack = moduleStates[3];
-
-		double leftFrontSpeed = leftFront.speedMetersPerSecond*100;
-		double leftBackSpeed = leftBack.speedMetersPerSecond*100;
-		double rightFrontSpeed = rightFront.speedMetersPerSecond*100;
-		double rightBackSpeed = rightBack.speedMetersPerSecond*100;
-	
-
-		leftFrontSpark.set(leftFrontSpeed);
-		leftBackSpark.set(leftBackSpeed);
-		rightFrontSpark.set(rightFrontSpeed);
-		rightBackSpark.set(rightBackSpeed);
-
-		leftFrontSparkSwerve.set(leftFront.angle.getDegrees());
-		leftBackSparkSwerve.set(leftBack.angle.getDegrees());
-		rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
-		rightBackSparkSwerve.set(rightBack.angle.getDegrees());
 	}
 
 	public void swerveDriveFeildRelitive(double x1, double x2, double y1){
+
+
+		swerveDrive(ChassisSpeeds.fromFieldRelativeSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1, Rotation2d.fromDegrees(getAngle())));
+
+	}
+
+	private void swerveDrive(ChassisSpeeds chassisSpeeds){
+
 		/*Things to cahnge before using
 		1. Ids
 		2. set Locations of all wheels
@@ -549,9 +524,7 @@ public class Drive extends Subsystem {
 			driveState = DriveState.TELEOP;
 		}
 
-		ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1, Rotation2d.fromDegrees(getAngle()));
-
-		SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds);
+		SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 		SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.DriveHighSpeed / 100);
 
 		SwerveModuleState leftFront = moduleStates[0];
