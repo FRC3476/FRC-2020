@@ -287,6 +287,7 @@ public class Robot extends TimedRobot {
 		//drive.stopMovement();
 		firstTeleopRun = true;
 		//drive.setTeleop();
+		robotTracker.resetOdometry();
 		
 		
 		

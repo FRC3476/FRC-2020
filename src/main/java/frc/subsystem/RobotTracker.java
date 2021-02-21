@@ -38,7 +38,7 @@ public class RobotTracker extends Subsystem {
         new MatBuilder<>(Nat.N5(), Nat.N1()).fill(0.02, 0.02, 0.01, 0.02, 0.02), // State measurement standard deviations. X, Y, theta.
         new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01), // Local measurement standard deviations. Left encoder, right encoder, gyro.
 		new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01), // Global measurement standard deviations. X, Y, and theta.
-		Constants.RobotTrackerPeriod/1000); 
+		 ((double) Constants.RobotTrackerPeriod)/1000); 
 		
 	}
 

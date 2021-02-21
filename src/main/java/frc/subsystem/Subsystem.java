@@ -5,6 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 
@@ -27,8 +30,11 @@ public abstract class Subsystem implements Runnable {
 
 	public Subsystem(int period) {
 		this.period = period;
-		if (period != -1)
-			new Thread(this).start();
+		if (period != -1){
+			ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+			service.scheduleAtFixedRate(this,0, (long) (period), TimeUnit.MILLISECONDS);
+		}
+			
 		try {
 			String fileTime = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 			subsystemName = this.getClass().getSimpleName();
@@ -66,16 +72,13 @@ public abstract class Subsystem implements Runnable {
 	
 
 	public void run() {
-		while(signal != ThreadSignal.DEAD) {
+		if(signal != ThreadSignal.DEAD) {
 			double startTime = Timer.getFPGATimestamp();
 			if(signal == ThreadSignal.ALIVE) update();
 
 			double executionTimeMS = (Timer.getFPGATimestamp()-startTime)*1000;
-			try { 
-				Thread.sleep((long) (period-executionTimeMS));
-			} catch(Exception e) {
-				System.out.println("Thread sleep failing");
-			}
+        	
+			
 			
 		}
 	}
