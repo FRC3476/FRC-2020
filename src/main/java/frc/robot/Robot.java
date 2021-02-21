@@ -217,7 +217,8 @@ public class Robot extends TimedRobot {
 		if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
 		else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
 
-	
+		
+		option = new AutonavBouncePath();
 		auto = new Thread(option);
 	
 		auto.start();

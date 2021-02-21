@@ -201,6 +201,7 @@ public class Drive extends Subsystem {
 	}
 
 	private void configCoast() {
+		//TODO: CHange back to coast
 		leftSpark.setIdleMode(IdleMode.kBrake);
 		rightSpark.setIdleMode(IdleMode.kBrake);
 		leftSparkSlave.setIdleMode(IdleMode.kBrake);
@@ -552,7 +553,8 @@ public class Drive extends Subsystem {
 	private void configMotors() {
 		leftSparkSlave.follow(leftSpark);
 		rightSparkSlave.follow(rightSpark);
-		
+
+		//TODO: CHange back to coast
 		leftSpark.setIdleMode(IdleMode.kBrake);
 		rightSpark.setIdleMode(IdleMode.kBrake);
 		leftSparkSlave.setIdleMode(IdleMode.kBrake);

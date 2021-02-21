@@ -48,6 +48,10 @@ public class RobotTracker extends Subsystem {
 		return new RigidTransform2D(Translation2D.fromWPITranslation2d(pose.getTranslation()).scale(Constants.InchesPerMeter), Rotation2D.fromWPIRotation2d(pose.getRotation()));
 	}
 
+	synchronized public Pose2d getOdometryMeters() {
+		return differentialDrivePoseEstimator.getEstimatedPosition();
+	};
+
 	synchronized public void resetOdometry() {
 		differentialDrivePoseEstimator.resetPosition(new Pose2d(), Rotation2d.fromDegrees(driveBase.getAngle()));
 		leftPrevDistInches = driveBase.getLeftDistance();
