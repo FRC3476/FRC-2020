@@ -165,7 +165,7 @@ public class Drive extends Subsystem {
 		turnPID = new SynchronousPid(3.5, 0, 0.0, 0); //P=1.0 OR 0.8
 		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
 		turnPID.setSetpoint(0);
-		turnPIDAuto = new SynchronousPid(1, 0, 0, 0); //P=1.0 OR 0.8
+		turnPIDAuto = new SynchronousPid(4, 0, 0, 0); //P=1.0 OR 0.8
 		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
 		turnPIDAuto.setSetpoint(0);
 		
@@ -201,10 +201,10 @@ public class Drive extends Subsystem {
 	}
 
 	private void configCoast() {
-		leftSpark.setIdleMode(IdleMode.kCoast);
-		rightSpark.setIdleMode(IdleMode.kCoast);
-		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+		leftSpark.setIdleMode(IdleMode.kBrake);
+		rightSpark.setIdleMode(IdleMode.kBrake);
+		leftSparkSlave.setIdleMode(IdleMode.kBrake);
+		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
 	}
 
 	private void configAuto() {
@@ -553,10 +553,10 @@ public class Drive extends Subsystem {
 		leftSparkSlave.follow(leftSpark);
 		rightSparkSlave.follow(rightSpark);
 		
-		leftSpark.setIdleMode(IdleMode.kCoast);
-		rightSpark.setIdleMode(IdleMode.kCoast);
-		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+		leftSpark.setIdleMode(IdleMode.kBrake);
+		rightSpark.setIdleMode(IdleMode.kBrake);
+		leftSparkSlave.setIdleMode(IdleMode.kBrake);
+		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
 
 		// leftSparkEncoder.setInverted(true);
 		// rightSparkEncoder.setInverted(true);

@@ -125,7 +125,7 @@ public final class Constants {
 	public static final double InchesPerMeter = 39.3700787;
 	
 	// Autonomous Driving
-	public static final double TrackRadius = -7; //-9;
+	public static final double TrackRadius = -7.5; //-9;
 	public static final double WheelDiameter = 6.0; //6.09; //expiermental
 	public static final double MinTurningRadius = 40;
 	public static final double MinPathSpeed = 20; 
@@ -139,8 +139,8 @@ public final class Constants {
 	// Drive
 	public static final double kDriveInchesPerSecPerRPM = Math.PI* Constants.WheelDiameter/60d/10d;
 	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
-	public static final double maxTurnError = 0.85;
-	public static final double maxPIDStopSpeed = 5.2;
+	public static final double maxTurnError = 10;
+	public static final double maxPIDStopSpeed = 15;
 	public static final double DriveHighSpeed = 145;
 	
 	public static final double kDriveRightAutoP = 4*0.0005263 * kDriveInchesPerSecPerRPM; //0.00065

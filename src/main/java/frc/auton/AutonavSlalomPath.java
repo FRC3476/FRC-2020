@@ -1,8 +1,5 @@
 package frc.auton;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.subsystem.*;
@@ -36,32 +33,34 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-        int speed = 30;
+        int speed = 75;
 
         Path p1 = new Path(here());
-        p1.addPoint(new Translation2D(75, 30), speed);
+        p1.addPoint(new Translation2D(60, 30), speed);
         p1.addPoint(new Translation2D(105, 90), speed);
-        p1.addPoint(new Translation2D(260, 90), speed);
-        p1.addPoint(new Translation2D(290, 10), speed);
-        p1.addPoint(new Translation2D(315, 40), speed);
-        p1.addPoint(new Translation2D(315, 60), speed);
-        p1.addPoint(new Translation2D(315, 90), speed);
-        p1.addPoint(new Translation2D(290, 110), speed);
-        p1.addPoint(new Translation2D(260, 30), speed);
-        p1.addPoint(new Translation2D(105, 30), speed);
-        p1.addPoint(new Translation2D(75, 85), speed);
-        p1.addPoint(new Translation2D(42, 85), speed);
+        p1.addPoint(new Translation2D(250, 90), speed);
+        p1.addPoint(new Translation2D(280, 10), speed);
+        p1.addPoint(new Translation2D(320, 80), speed);
+        p1.addPoint(new Translation2D(290, 70), speed);
+        
+        // drive.setAutoPath(p1, false);
+
+        // while(!drive.isFinished()) if(isDead()) return;
+
+        // Path p2 = new Path(here());
+
+        p1.addPoint(new Translation2D(270, 40), speed);
+        p1.addPoint(new Translation2D(250, 20), speed);
+        p1.addPoint(new Translation2D(110, 25), speed);
+        p1.addPoint(new Translation2D(80, 85), speed);
+        p1.addPoint(new Translation2D(42, 90), speed);
 
         drive.setAutoPath(p1, false);
 
-        while(!drive.isFinished()) {
-            if(isDead()) {
-                return;
-            }
-        }
+        while(!drive.isFinished()) if(isDead()) return;
 
 		synchronized (this) {
-			done = true; 
+			done = true;
 		}
 		
 	}
