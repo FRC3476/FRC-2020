@@ -1,14 +1,8 @@
-// Copyright 2019 FRC Team 3476 Code Orange
-
 package frc.subsystem;
 
-import edu.wpi.first.wpilibj.estimator.DifferentialDrivePoseEstimator;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpiutil.math.MatBuilder;
-import edu.wpi.first.wpiutil.math.Nat;
 import frc.robot.Constants;
+import frc.utility.CircularQueue;
+import frc.utility.math.InterpolablePair;
 import frc.utility.math.RigidTransform2D;
 import frc.utility.math.Rotation2D;
 import frc.utility.math.Translation2D;
@@ -21,41 +15,38 @@ public class RobotTracker extends Subsystem {
 		return RobotTracker.trackingInstance;
 	}
 
-	DifferentialDrivePoseEstimator differentialDrivePoseEstimator;	
-	Drive driveBase;
-	double leftPrevDistInches;
-	double rightPrevDistInches;
+	private Drive driveBase;
+	private RigidTransform2D currentOdometry;
+	private CircularQueue<RigidTransform2D> vehicleHistory;
+	private CircularQueue<Rotation2D> gyroHistory;
+
+	private double currentDistance, oldDistance, deltaDistance;
+	private Rotation2D rotationOffset;
+	private Translation2D translationOffset;
 
 	private RobotTracker() {
 		super(Constants.RobotTrackerPeriod);
+		vehicleHistory = new CircularQueue<>(100);
+		gyroHistory = new CircularQueue<>(200);
 		driveBase = Drive.getInstance();
-		leftPrevDistInches = driveBase.getLeftDistance();
-		rightPrevDistInches = driveBase.getRightDistance();
-		differentialDrivePoseEstimator = new DifferentialDrivePoseEstimator(Rotation2d.fromDegrees(driveBase.getAngle()), new Pose2d(),
-        new MatBuilder<>(Nat.N5(), Nat.N1()).fill(0.02, 0.02, 0.01, 0.02, 0.02), // State measurement standard deviations. X, Y, theta.
-        new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01), // Local measurement standard deviations. Left encoder, right encoder, gyro.
-		new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01), // Global measurement standard deviations. X, Y, and theta.
-		 ((double) Constants.RobotTrackerPeriod)/1000); 
-		
+		currentOdometry = new RigidTransform2D(new Translation2D(), driveBase.getGyroAngle());
+		rotationOffset = Rotation2D.fromDegrees(0);
+		translationOffset = new Translation2D();
 	}
 
 	synchronized public Rotation2D getGyroAngle(long time) {
-		return null;
+		return gyroHistory.getInterpolatedKey(time);
 	}
 
 	synchronized public RigidTransform2D getOdometry() {
-		Pose2d pose = differentialDrivePoseEstimator.getEstimatedPosition();
-		return new RigidTransform2D(Translation2D.fromWPITranslation2d(pose.getTranslation()).scale(Constants.InchesPerMeter), Rotation2D.fromWPIRotation2d(pose.getRotation()));
+		return currentOdometry;
 	}
 
-	synchronized public Pose2d getOdometryMeters() {
-		return differentialDrivePoseEstimator.getEstimatedPosition();
-	};
-
 	synchronized public void resetOdometry() {
-		differentialDrivePoseEstimator.resetPosition(new Pose2d(), Rotation2d.fromDegrees(driveBase.getAngle()));
-		leftPrevDistInches = driveBase.getLeftDistance();
-		rightPrevDistInches = driveBase.getRightDistance();
+		driveBase.resetGyro();
+		currentOdometry = new RigidTransform2D(new Translation2D().translateBy(translationOffset),
+				Rotation2D.fromDegrees(0).rotateBy(rotationOffset));
+		oldDistance = driveBase.getDistance();
 	}
 
 	/**
@@ -64,38 +55,50 @@ public class RobotTracker extends Subsystem {
 	 */
 	@Override
 	public void update() {
+		double leftDist = driveBase.getLeftDistance();
+		double rightDist = driveBase.getRightDistance();
 
-		differentialDrivePoseEstimator.update(Rotation2d.fromDegrees(driveBase.getAngle()), new DifferentialDriveWheelSpeeds(driveBase.getLeftSpeed()/Constants.InchesPerMeter, 
-		driveBase.getRightSpeed()/Constants.InchesPerMeter), 
-		(driveBase.getLeftDistance()-leftPrevDistInches)/Constants.InchesPerMeter, (driveBase.getRightDistance()-rightPrevDistInches)/Constants.InchesPerMeter);
+		/*
+		 * Solve problem where Talon returns 0 for distance due to an error This
+		 * causes an abnormal deltaPosition
+		 */
+		if (leftDist != 0 && rightDist != 0) {
+			currentDistance = (leftDist + rightDist) / 2;
+		} else {
+			return;
+		}
+		deltaDistance = currentDistance - oldDistance;
+		Translation2D deltaPosition = new Translation2D(deltaDistance, 0);
+		Rotation2D deltaRotation = driveBase.getGyroAngle().inverse().rotateBy(rotationOffset);
+		synchronized (this) {
+			deltaRotation = currentOdometry.rotationMat.inverse().rotateBy(deltaRotation);
+			Rotation2D halfRotation = Rotation2D.fromRadians(deltaRotation.getRadians() / 2.0);
+			currentOdometry = currentOdometry
+					.transform(new RigidTransform2D(deltaPosition.rotateBy(halfRotation), deltaRotation));
+			vehicleHistory.add(new InterpolablePair<>(System.nanoTime(), currentOdometry));
+			gyroHistory.add(new InterpolablePair<>(System.nanoTime(), driveBase.getGyroAngle()));
+		}
+		oldDistance = currentDistance;
+		/*
+		 System.out.println("Position: " +
+		 currentOdometry.translationMat.getX() + " " +
+		 currentOdometry.translationMat.getY());
+		 System.out.println("Gyro: " +
+		 currentOdometry.rotationMat.getDegrees());
+		 */
 	}
 
 	/**
-	 * @param rotation2D rotation in degrees
+	 *
+	 * @param offset
 	 */
-	synchronized public void setInitialRotation(Rotation2D rotation2D) {
-		Pose2d pose = differentialDrivePoseEstimator.getEstimatedPosition();
-		differentialDrivePoseEstimator.resetPosition(new Pose2d(pose.getTranslation(), rotation2D.getWPIRotation2d()), Rotation2d.fromDegrees(driveBase.getAngle()));
-		leftPrevDistInches = driveBase.getLeftDistance();
-		rightPrevDistInches = driveBase.getRightDistance();
+	synchronized public void setInitialRotation(Rotation2D offset) {
+		this.rotationOffset = offset;
 	}
-	/**
-	 * @param translation2D translation 2D in inches
-	 */
-	synchronized public void setInitialTranslation(Translation2D translation2D) {
-		Pose2d pose = differentialDrivePoseEstimator.getEstimatedPosition();
-		differentialDrivePoseEstimator.resetPosition(new Pose2d(translation2D.scale(1/Constants.InchesPerMeter).getWPITranslation2d(), pose.getRotation()), Rotation2d.fromDegrees(driveBase.getAngle()));
-		leftPrevDistInches = driveBase.getLeftDistance();
-		rightPrevDistInches = driveBase.getRightDistance();
-	}
-	/**
-	 * Add a vision measurement to the Unscented Kalman Filter. This will correct the odometry pose estimate while still accounting for measurement noise.
-	 * This method can be called as infrequently as you want
-	 * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera (meters).
-	 * @param timestampSeconds The timestamp of the vision measurement in seconds.
-	 */
-	synchronized public void addVisionMeasurment(Pose2d visionRobotPoseMeters, double timestampSeconds){
-		differentialDrivePoseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+
+	synchronized public void setInitialTranslation(Translation2D offset) {
+		this.translationOffset = offset;
+		resetOdometry();
 	}
 
 	@Override

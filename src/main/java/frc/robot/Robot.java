@@ -184,7 +184,7 @@ public class Robot extends TimedRobot {
 		startAll();
 		shooter.setSpeed(0);
 
-		robotTracker.resetOdometry();
+		//robotTracker.resetOdometry();
 
 		autoDone = false;
 
@@ -218,7 +218,7 @@ public class Robot extends TimedRobot {
 		else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
 
 		
-		option = new AutonavBouncePath();
+		option = new AutonavBarralRacingPath();
 		auto = new Thread(option);
 	
 		auto.start();
@@ -233,10 +233,10 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		DecimalFormat df = new DecimalFormat();
-		df.setMaximumFractionDigits(2);
-		System.out.println("robot angle: " + df.format(robotTracker.getOdometry().rotationMat.getDegrees()) + " position: X: " + 
-			df.format(robotTracker.getOdometry().translationMat.getX()) + " Y: " + df.format(robotTracker.getOdometry().translationMat.getY()));
+		// DecimalFormat df = new DecimalFormat();
+		// df.setMaximumFractionDigits(2);
+		// System.out.println("robot angle: " + df.format(robotTracker.getOdometry().rotationMat.getDegrees()) + " position: X: " + 
+		// 	df.format(robotTracker.getOdometry().translationMat.getX()) + " Y: " + df.format(robotTracker.getOdometry().translationMat.getY()));
 		/*
 		buttonPanel.update();
 		if(!autoDone) {
@@ -295,16 +295,14 @@ public class Robot extends TimedRobot {
 	}
 	
 
- 
 	/**
 	 * This function is called periodically during operator control.
 	 */
 	@Override
 	public void teleopPeriodic() {
-			DecimalFormat df = new DecimalFormat();
-			System.out.println("robot angle: " + df.format(robotTracker.getOdometry().rotationMat.getDegrees()) + " position: X: " + 
-				df.format(robotTracker.getOdometry().translationMat.getX()) + " Y: " + df.format(robotTracker.getOdometry().translationMat.getY()));
-
+			// DecimalFormat df = new DecimalFormat();
+			// System.out.println("robot angle: " + df.format(robotTracker.getOdometry().rotationMat.getDegrees()) + " position: X: " + 
+			// 	df.format(robotTracker.getOdometry().translationMat.getX()) + " Y: " + df.format(robotTracker.getOdometry().translationMat.getY()));
 			ArrayList<Double> times = new ArrayList<Double>();
 			
 			if(profileTeleop) times.add(Timer.getFPGATimestamp());

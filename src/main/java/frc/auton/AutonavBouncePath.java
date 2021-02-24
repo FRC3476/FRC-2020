@@ -4,13 +4,17 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.utility.math.*;
+import frc.utility.OrangeUtility;
 import frc.utility.control.motion.Path;
 
 import frc.subsystem.Intake;
@@ -32,38 +36,19 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 	
 	boolean killSwitch = false;
 
+	Trajectory trajectory;
 
 	public AutonavBouncePath() {
+		super(new Translation2D(42,90));
 		//RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
-		super(new Translation2D(42, 90));
+		//robotTracker.setPose(new Pose2d(new Translation2d(Units.inchesToMeters(0),Units.inchesToMeters(0)), new Rotation2d(0)));
 		robotTracker.setInitialRotation(Rotation2D.fromDegrees(0));
+
 	}
 
 	@Override
 	public void run() {
 		
-        Pose2d startPoint = robotTracker.getOdometryMeters();
-
-        ArrayList<Translation2d> points = new ArrayList<>();
-
-		points.add(new Translation2D(105,90).getScaledWPITranslation2d());
-		points.add(new Translation2D(120,40).getScaledWPITranslation2d());
-		points.add(new Translation2D(140,40).getScaledWPITranslation2d());
-		points.add(new Translation2D(150,90).getScaledWPITranslation2d());
-		points.add(new Translation2D(170,150).getScaledWPITranslation2d());
-
-
-		TrajectoryConfig config = new TrajectoryConfig(Units.inchesToMeters(Constants.MaxPathSpeed), Units.inchesToMeters(5));
-		config.setReversed(true);
-		config.addConstraint(new DifferentialDriveKinematicsConstraint());
-
-
-
-
-
-
-
-
 		double time = Timer.getFPGATimestamp();
         Translation2D point1 = new Translation2D(70, 90);
         Translation2D point2 = new Translation2D(90, 150);
@@ -100,10 +85,11 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 		drive.setAutoPath(p4, true);
 		while(!drive.isFinished()) if(isDead()) return;
 		System.out.println((time-Timer.getFPGATimestamp())*1000000);
-
+		
         synchronized(this){
             done = true;
 		}
+		
 		
 	}
 

@@ -9,7 +9,9 @@ import frc.utility.control.RateLimiter;
 import frc.utility.control.SynchronousPid;
 import frc.utility.control.motion.Path;
 import frc.utility.control.motion.PurePursuitController;
+import frc.utility.math.RigidTransform2D;
 import frc.utility.math.Rotation2D;
+import frc.utility.math.Translation2D;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -19,15 +21,20 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic.Unit;
 import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.utility.LazyCANSparkMax;
-
 
 public class Drive extends Subsystem {
 
@@ -76,8 +83,9 @@ public class Drive extends Subsystem {
 
 	private boolean drivePercentVbus;
 
-	private NavXMPX_Gyro gyroSensor;// = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
-	//private LazyTalonSRX leftTalon, rightTalon, leftSlaveTalon, leftSlave2Talon, rightSlaveTalon, rightSlave2Talon;
+	private NavXMPX_Gyro gyroSensor = new NavXMPX_Gyro(SPI.Port.kMXP);// = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+	// private LazyTalonSRX leftTalon, rightTalon, leftSlaveTalon, leftSlave2Talon,
+	// rightSlaveTalon, rightSlave2Talon;
 	private PurePursuitController autonomousDriver;
 	private SynchronousPid turnPID;
 	private SynchronousPid turnPIDAuto;
@@ -85,43 +93,42 @@ public class Drive extends Subsystem {
 	private RateLimiter moveProfiler;
 	private Rotation2D wantedHeading;
 	private volatile double driveMultiplier;
-	boolean rotateAuto = false; 
+	boolean rotateAuto = false;
 
-	//TODO: Change
-	public DifferentialDriveKinematics diffDriveKinematics = new DifferentialDriveKinematics(10);
-	RamseteController ramseteController = new RamseteController(2.0, 0.7);
-
+	// TODO: Change
+	public DifferentialDriveKinematics diffDriveKinematics = new DifferentialDriveKinematics(Units.inchesToMeters(25));
+	RamseteController ramseteController = new RamseteController(1, 0.7);
 
 	double prevPositionL = 0;
 	double prevPositionR = 0;
 
-	public boolean isAiming = false; 
+	public boolean isAiming = false;
 
 	double prevTime;
 
 	public LazyCANSparkMax leftSpark, rightSpark, leftSparkSlave, rightSparkSlave, leftSparkSlave2, rightSparkSlave2;
-  	private CANPIDController leftSparkPID, rightSparkPID;
+	private CANPIDController leftSparkPID, rightSparkPID;
 	private CANEncoder leftSparkEncoder, rightSparkEncoder;
 
 	public LazyCANSparkMax leftFrontSpark, leftBackSpark, rightFrontSpark, rightBackSpark;
 	private CANEncoder leftFrontSparkEncoder, leftBackSparkEncoder, rightFrontSparkEncoder, rightBackSparkEncoder;
 
 	public LazyCANSparkMax leftFrontSparkSwerve, leftBackSparkSwerve, rightFrontSparkSwerve, rightBackSparkSwerve;
-	private CANEncoder leftFrontSparkEncoderSwerve, leftBackSparkEncoderSwerve, rightFrontSparkEncoderSwerve, rightBackSparkEncoderSwerve;
+	private CANEncoder leftFrontSparkEncoderSwerve, leftBackSparkEncoderSwerve, rightFrontSparkEncoderSwerve,
+			rightBackSparkEncoderSwerve;
 	SwerveDriveKinematics swerveKinematics;
 	Trajectory currentAutoTrajectory;
-	  
 
 	private Drive() {
 		super(Constants.DrivePeriod);
-		gyroSensor = new NavXMPX_Gyro(SPI.Port.kMXP);
+		ramseteController.setTolerance(new Pose2d(new Translation2D(5,5).getScaledWPITranslation2d(), Rotation2d.fromDegrees(10)));
 
 		leftSpark = new LazyCANSparkMax(Constants.DriveLeftMasterId, MotorType.kBrushless);
 		leftSparkSlave = new LazyCANSparkMax(Constants.DriveLeftSlave1Id, MotorType.kBrushless);
 		rightSpark = new LazyCANSparkMax(Constants.DriveRightMasterId, MotorType.kBrushless);
 		rightSparkSlave = new LazyCANSparkMax(Constants.DriveRightSlave1Id, MotorType.kBrushless);
-		//rightSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
-		//leftSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
+		// rightSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
+		// leftSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
 		leftSpark.setInverted(true);
 		rightSpark.setInverted(false);
 		leftSparkSlave.setInverted(true);
@@ -132,14 +139,14 @@ public class Drive extends Subsystem {
 		leftSparkEncoder = leftSpark.getEncoder();
 		rightSparkEncoder = rightSpark.getEncoder();
 
-		//Swerve Drive Motors
+		// Swerve Drive Motors
 		leftFrontSpark = new LazyCANSparkMax(Constants.DriveLeftFrontId, MotorType.kBrushless);
 		leftBackSpark = new LazyCANSparkMax(Constants.DriveLeftBackId, MotorType.kBrushless);
 		rightFrontSpark = new LazyCANSparkMax(Constants.DriveRightFrontId, MotorType.kBrushless);
 		rightBackSpark = new LazyCANSparkMax(Constants.DriveRightBackId, MotorType.kBrushless);
 
 		leftFrontSparkEncoder = leftFrontSpark.getEncoder();
-		leftBackSparkEncoder  = leftBackSpark.getEncoder();
+		leftBackSparkEncoder = leftBackSpark.getEncoder();
 		rightFrontSparkEncoder = rightFrontSpark.getEncoder();
 		rightBackSparkEncoder = rightBackSpark.getEncoder();
 
@@ -149,34 +156,31 @@ public class Drive extends Subsystem {
 		rightBackSparkSwerve = new LazyCANSparkMax(Constants.DriveRightBackSwerveId, MotorType.kBrushless);
 
 		leftFrontSparkEncoderSwerve = leftFrontSparkSwerve.getEncoder();
-		leftBackSparkEncoderSwerve  = leftBackSparkSwerve.getEncoder();
+		leftBackSparkEncoderSwerve = leftBackSparkSwerve.getEncoder();
 		rightFrontSparkEncoderSwerve = rightFrontSparkSwerve.getEncoder();
 		rightBackSparkEncoderSwerve = rightBackSparkSwerve.getEncoder();
-		
-		
 
 		// Creating kinematics object using the module locations
-		swerveKinematics = new SwerveDriveKinematics(Constants.LeftFrontLocation, Constants.LeftBackLocation, Constants.RightFrontLocation,Constants.RightBackLocation);
-	
+		swerveKinematics = new SwerveDriveKinematics(Constants.LeftFrontLocation, Constants.LeftBackLocation,
+				Constants.RightFrontLocation, Constants.RightBackLocation);
 
-		//leftSparkPID.
-		
-		//rightSparkSlave.follow(rightSpark);
-		//leftSparkSlave.follow(leftSpark);
-		//leftSparkSlave2.follow(leftSpark);
-		//rightSparkSlave2.follow(rightSpark);
+		// leftSparkPID.
+
+		// rightSparkSlave.follow(rightSpark);
+		// leftSparkSlave.follow(leftSpark);
+		// leftSparkSlave2.follow(leftSpark);
+		// rightSparkSlave2.follow(rightSpark);
 		configMotors();
 
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(3.5, 0, 0.0, 0); //P=1.0 OR 0.8
-		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
+		turnPID = new SynchronousPid(3.5, 0, 0.0, 0); // P=1.0 OR 0.8
+		turnPID.setOutputRange(Constants.DriveHighSpeed / 5, -Constants.DriveHighSpeed / 5);
 		turnPID.setSetpoint(0);
-		turnPIDAuto = new SynchronousPid(4, 0, 0, 0); //P=1.0 OR 0.8
-		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
+		turnPIDAuto = new SynchronousPid(4, 0, 0, 0); // P=1.0 OR 0.8
+		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed / 8, -Constants.DriveHighSpeed / 8);
 		turnPIDAuto.setSetpoint(0);
-		
 
 		moveProfiler = new RateLimiter(Constants.DriveTeleopAccLimit);
 
@@ -185,14 +189,14 @@ public class Drive extends Subsystem {
 	}
 
 	public void debug() {
-		System.out.println("L enc: " + getLeftDistance()+ " velo " + getLeftSpeed()); 
-		System.out.println("R enc: " + getRightDistance() + " velo " + getRightSpeed()); 
-		System.out.println("Gyro: " + getAngle()/*getGyroAngle().getDegrees()*/);
+		System.out.println("L enc: " + getLeftDistance() + " velo " + getLeftSpeed());
+		System.out.println("R enc: " + getRightDistance() + " velo " + getRightSpeed());
+		System.out.println("Gyro: " + getAngle()/* getGyroAngle().getDegrees() */);
 	}
 
 	public void debugSpeed() {
-		System.out.println("L speed " +  " actual " + getLeftSpeed());
-		System.out.println("R speed " +   " actual " + getRightSpeed());
+		System.out.println("L speed " + " actual " + getLeftSpeed());
+		System.out.println("R speed " + " actual " + getRightSpeed());
 
 	}
 
@@ -200,82 +204,76 @@ public class Drive extends Subsystem {
 		setWheelVelocity(new DriveSignal(40, 0));
 	}
 
-
 	private void configBrake() {
 		leftSpark.setIdleMode(IdleMode.kBrake);
 		rightSpark.setIdleMode(IdleMode.kBrake);
 		leftSparkSlave.setIdleMode(IdleMode.kBrake);
-		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
+		rightSparkSlave.setIdleMode(IdleMode.kBrake);
 	}
 
 	private void configCoast() {
-		//TODO: CHange back to coast
-		leftSpark.setIdleMode(IdleMode.kBrake);
-		rightSpark.setIdleMode(IdleMode.kBrake);
-		leftSparkSlave.setIdleMode(IdleMode.kBrake);
-		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
+		// TODO: CHange back to coast
+		leftSpark.setIdleMode(IdleMode.kCoast);
+		rightSpark.setIdleMode(IdleMode.kCoast);
+		leftSparkSlave.setIdleMode(IdleMode.kCoast);
+		rightSparkSlave.setIdleMode(IdleMode.kCoast);
 	}
 
 	private void configAuto() {
 		/*
-		rightTalon.config_kP(0, Constants.kDriveRightAutoP, 10);
-		rightTalon.config_kD(0, Constants.kDriveRightAutoD, 10);
-		rightTalon.config_kF(0, Constants.kDriveRightAutoF, 10);
-		leftTalon.config_kP(0, Constants.kDriveLeftAutoP, 10);
-		leftTalon.config_kD(0, Constants.kDriveRightAutoD, 10);
-		leftTalon.config_kF(0, Constants.kDriveLeftAutoF, 10);
-		driveMultiplier = Constants.DriveHighSpeed;
-		rightTalon.configClosedloopRamp(12d / 200d, 10);
-		leftTalon.configClosedloopRamp(12d / 200d, 10);
-		*/
-		//System.out.println(rightTalon.)
+		 * rightTalon.config_kP(0, Constants.kDriveRightAutoP, 10);
+		 * rightTalon.config_kD(0, Constants.kDriveRightAutoD, 10);
+		 * rightTalon.config_kF(0, Constants.kDriveRightAutoF, 10);
+		 * leftTalon.config_kP(0, Constants.kDriveLeftAutoP, 10); leftTalon.config_kD(0,
+		 * Constants.kDriveRightAutoD, 10); leftTalon.config_kF(0,
+		 * Constants.kDriveLeftAutoF, 10); driveMultiplier = Constants.DriveHighSpeed;
+		 * rightTalon.configClosedloopRamp(12d / 200d, 10);
+		 * leftTalon.configClosedloopRamp(12d / 200d, 10);
+		 */
+		// System.out.println(rightTalon.)
 		rightSparkPID.setP(Constants.kDriveRightAutoP, 0);
 		rightSparkPID.setD(Constants.kDriveRightAutoD, 0);
-		rightSparkPID.setFF(Constants.kDriveRightAutoF,0);
+		rightSparkPID.setFF(Constants.kDriveRightAutoF, 0);
 		rightSparkPID.setOutputRange(-1, 1);
-
 
 		leftSparkPID.setP(Constants.kDriveLeftAutoP, 0);
 		leftSparkPID.setD(Constants.kDriveLeftAutoD, 0);
-		leftSparkPID.setFF(Constants.kDriveLeftAutoF,0);
+		leftSparkPID.setFF(Constants.kDriveLeftAutoF, 0);
 		leftSparkPID.setOutputRange(-1, 1);
-		
 
-		
 	}
 
 	private void configHigh() {
-		//rightTalon.config_kP(0, Constants.kDriveRightHighP, 10);
-		//rightTalon.config_kD(0, Constants.kDriveRightHighD, 10);
-		//rightTalon.config_kF(0, Constants.kDriveRightHighF, 10);
-		//rightTalon.configClosedloopRamp(12d / 200d, 10);
-		//leftTalon.config_kP(0, Constants.kDriveLeftHighP, 10);
-		//leftTalon.config_kD(0, Constants.kDriveRightHighD, 10);
-		//leftTalon.config_kF(0, Constants.kDriveLeftHighF, 10);
-		//leftTalon.configClosedloopRamp(12d / 200d, 10);
+		// rightTalon.config_kP(0, Constants.kDriveRightHighP, 10);
+		// rightTalon.config_kD(0, Constants.kDriveRightHighD, 10);
+		// rightTalon.config_kF(0, Constants.kDriveRightHighF, 10);
+		// rightTalon.configClosedloopRamp(12d / 200d, 10);
+		// leftTalon.config_kP(0, Constants.kDriveLeftHighP, 10);
+		// leftTalon.config_kD(0, Constants.kDriveRightHighD, 10);
+		// leftTalon.config_kF(0, Constants.kDriveLeftHighF, 10);
+		// leftTalon.configClosedloopRamp(12d / 200d, 10);
 
 		driveMultiplier = Constants.DriveHighSpeed;
 	}
 
+	boolean teleopstart = true;
 
-	boolean teleopstart =true;
+	private double autoStartTime;
 
 	synchronized public void setTeleop() {
 		driveState = DriveState.TELEOP;
 	}
 
-	
-
 	public void arcadeDrive(double moveValue, double rotateValue) {
-		//String toPrint="";
-		//double time = Timer.getFPGATimestamp();
-		synchronized(this) {
+		// String toPrint="";
+		// double time = Timer.getFPGATimestamp();
+		synchronized (this) {
 			driveState = DriveState.TELEOP;
 		}
 		moveValue = scaleJoystickValues(moveValue, 0);
 		rotateValue = scaleJoystickValues(rotateValue, Constants.steeringWheel ? 1 : 0);
-		//double t = Timer.getFPGATimestamp() - time;
-		//if(teleopstart) toPrint += (t) + " 12\n";
+		// double t = Timer.getFPGATimestamp() - time;
+		// if(teleopstart) toPrint += (t) + " 12\n";
 
 		double leftMotorSpeed;
 		double rightMotorSpeed;
@@ -286,34 +284,39 @@ public class Drive extends Subsystem {
 		if (maxValue > 1) {
 			moveValue -= Math.copySign(maxValue - 1, moveValue);
 		}
-		//if(teleopstart) toPrint += (Timer.getFPGATimestamp() - time) + " 12\n";
+		// if(teleopstart) toPrint += (Timer.getFPGATimestamp() - time) + " 12\n";
 
 		leftMotorSpeed = moveValue + rotateValue;
 		rightMotorSpeed = moveValue - rotateValue;
 		if (drivePercentVbus) {
-			//System.out.println("left " + getLeftSpeed() + " power: " + leftMotorSpeed);
-			//System.out.println("right " + getRightSpeed() + " power: " + rightMotorSpeed);
-			
+			// System.out.println("left " + getLeftSpeed() + " power: " + leftMotorSpeed);
+			// System.out.println("right " + getRightSpeed() + " power: " +
+			// rightMotorSpeed);
+
 			setWheelPower(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		} else {
-			leftMotorSpeed = moveValue + rotateValue*0.5;
-			rightMotorSpeed = moveValue - rotateValue*0.5;
+			leftMotorSpeed = moveValue + rotateValue * 0.5;
+			rightMotorSpeed = moveValue - rotateValue * 0.5;
 			leftMotorSpeed *= Constants.DriveHighSpeed;
 			rightMotorSpeed *= Constants.DriveHighSpeed;
 
-		//	System.out.println("left " + (leftMotorSpeed - getLeftSpeed() ));
-			//System.out.println("right " + (rightMotorSpeed - getRightSpeed() ));
-			//System.out.println("left " + leftMotorSpeed + " right " + rightMotorSpeed);
-			//System.out.println("REQUESTED WHELEVE VROLOCITY: " + leftMotorSpeed + ", " + rightMotorSpeed);
+			// System.out.println("left " + (leftMotorSpeed - getLeftSpeed() ));
+			// System.out.println("right " + (rightMotorSpeed - getRightSpeed() ));
+			// System.out.println("left " + leftMotorSpeed + " right " + rightMotorSpeed);
+			// System.out.println("REQUESTED WHELEVE VROLOCITY: " + leftMotorSpeed + ", " +
+			// rightMotorSpeed);
 
 			setWheelVelocity(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		}
-		//System.out.println("left motor speed " + leftMotorSpeed + " right motor speed " + rightMotorSpeed);
-		//if(teleopstart) toPrint += (Timer.getFPGATimestamp() - time) + " 12\n";
-		//System.out.print(toPrint);
+		// System.out.println("left motor speed " + leftMotorSpeed + " right motor speed
+		// " + rightMotorSpeed);
+		// if(teleopstart) toPrint += (Timer.getFPGATimestamp() - time) + " 12\n";
+		// System.out.print(toPrint);
 		teleopstart = false;
-		//System.out.println("Left: " + moveValue + ", " + leftSparkEncoder.getVelocity());
-		//System.out.println("Right: " + moveValue + ", " + rightSparkEncoder.getVelocity());
+		// System.out.println("Left: " + moveValue + ", " +
+		// leftSparkEncoder.getVelocity());
+		// System.out.println("Right: " + moveValue + ", " +
+		// rightSparkEncoder.getVelocity());
 	}
 
 	public void calibrateGyro() {
@@ -353,7 +356,7 @@ public class Drive extends Subsystem {
 			if (moveValue < 0.2) {
 				quickStopAccumulator = 0.9 * quickStopAccumulator + 0.1 * rotateValue * 2;
 			}
-			angularPower = rotateValue * 0.4; //0.2
+			angularPower = rotateValue * 0.4; // 0.2
 		} else {
 			overPower = 0;
 			angularPower = 1.1 * Math.abs(moveValue) * rotateValue - quickStopAccumulator;
@@ -386,7 +389,7 @@ public class Drive extends Subsystem {
 		}
 
 		leftMotorSpeed = OrangeUtility.coerce(leftMotorSpeed, 1, -1);
-		rightMotorSpeed = OrangeUtility.coerce(rightMotorSpeed, 1, -1);	
+		rightMotorSpeed = OrangeUtility.coerce(rightMotorSpeed, 1, -1);
 
 		if (drivePercentVbus) {
 			setWheelPower(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
@@ -398,15 +401,15 @@ public class Drive extends Subsystem {
 	}
 
 	public void hold() {
-		//leftSparkPID.setReference(leftSparkEncoder.getPosition(), ControlType.kPosition);
-		//rightSparkPID.setReference(leftSparkEncoder.getPosition(), ControlType.kPosition);
-		//driveState = DriveState.HOLD;
+		// leftSparkPID.setReference(leftSparkEncoder.getPosition(),
+		// ControlType.kPosition);
+		// rightSparkPID.setReference(leftSparkEncoder.getPosition(),
+		// ControlType.kPosition);
+		// driveState = DriveState.HOLD;
 		double errorL = prevPositionL - getLeftDistance();
 		double errorR = prevPositionR - getRightDistance();
-		setWheelVelocity(new DriveSignal(errorL * Constants.kHoldP , errorR* Constants.kHoldP));
+		setWheelVelocity(new DriveSignal(errorL * Constants.kHoldP, errorR * Constants.kHoldP));
 
-
-		
 	}
 
 	public void orangeDrive(double moveValue, double rotateValue, boolean isQuickTurn) {
@@ -449,42 +452,38 @@ public class Drive extends Subsystem {
 		}
 	}
 
-	
 	public void skidLimitingDrive(double moveValue, double rotateValue) {
-		synchronized(this) {
+		synchronized (this) {
 			driveState = DriveState.TELEOP;
 		}
 		moveValue = scaleJoystickValues(moveValue, 0);
 		rotateValue = scaleJoystickValues(rotateValue, 0);
-		
+
 		double leftMotorSpeed;
 		double rightMotorSpeed;
 		// Square values but keep sign
 		moveValue = Math.copySign(Math.pow(moveValue, 2), moveValue);
 		rotateValue = Math.copySign(Math.pow(rotateValue, 2), rotateValue);
-		
-		//Linear
+
+		// Linear
 		/*
-		double slope = -1.25;
-		double maxRotate = slope * Math.abs(moveValue) + 1;
-		*/
-		//Nonlinear       
+		 * double slope = -1.25; double maxRotate = slope * Math.abs(moveValue) + 1;
+		 */
+		// Nonlinear
 		double curvature = 4;
 		double curveCenter = 0.5;
-	   
-		
-		//Concave up
-		//y = (0.5 / (5 * x)) - (0.5 / 5)
-		//double maxRotate = curveCenter / (curvature * Math.abs(moveValue)) - (curveCenter / curvature);
-		
-		//Concave down
-		//y = -2^(5 * (x - 1)) + 1
+
+		// Concave up
+		// y = (0.5 / (5 * x)) - (0.5 / 5)
+		// double maxRotate = curveCenter / (curvature * Math.abs(moveValue)) -
+		// (curveCenter / curvature);
+
+		// Concave down
+		// y = -2^(5 * (x - 1)) + 1
 		double maxRotate = -Math.pow((1 / curveCenter), curvature * (Math.abs(moveValue) - 1)) + 0.8;
-		
-	
-		
+
 		rotateValue = OrangeUtility.coerce(rotateValue, maxRotate, -maxRotate);
-		
+
 		double maxValue = Math.abs(moveValue) + Math.abs(rotateValue);
 		if (maxValue > 1) {
 			moveValue -= Math.copySign(maxValue - 1, moveValue);
@@ -500,34 +499,32 @@ public class Drive extends Subsystem {
 			rightMotorSpeed = moveValue - rotateValue;
 			leftMotorSpeed *= Constants.DriveHighSpeed;
 			rightMotorSpeed *= Constants.DriveHighSpeed;
-			//System.out.println(leftMotorSpeed +" , " + rightMotorSpeed);
+			// System.out.println(leftMotorSpeed +" , " + rightMotorSpeed);
 			setWheelVelocity(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
 		}
 	}
 
-	public void swerveDrive(double x1, double x2, double y1){
+	public void swerveDrive(double x1, double x2, double y1) {
 
-		swerveDrive(new ChassisSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1));
-
-
-	}
-
-	public void swerveDriveFeildRelitive(double x1, double x2, double y1){
-
-
-		swerveDrive(ChassisSpeeds.fromFieldRelativeSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1, Rotation2d.fromDegrees(getAngle())));
+		swerveDrive(
+				new ChassisSpeeds((Constants.DriveHighSpeed / 100) * x1, (Constants.DriveHighSpeed / 100) * x2, y1));
 
 	}
 
-	private void swerveDrive(ChassisSpeeds chassisSpeeds){
+	public void swerveDriveFeildRelitive(double x1, double x2, double y1) {
 
-		/*Things to cahnge before using
-		1. Ids
-		2. set Locations of all wheels
-		3. 
-		*/
+		swerveDrive(ChassisSpeeds.fromFieldRelativeSpeeds((Constants.DriveHighSpeed / 100) * x1,
+				(Constants.DriveHighSpeed / 100) * x2, y1, Rotation2d.fromDegrees(getAngle())));
 
-		//TODO: Set motor control modes
+	}
+
+	private void swerveDrive(ChassisSpeeds chassisSpeeds) {
+
+		/*
+		 * Things to cahnge before using 1. Ids 2. set Locations of all wheels 3.
+		 */
+
+		// TODO: Set motor control modes
 
 		synchronized (this) {
 			driveState = DriveState.TELEOP;
@@ -541,11 +538,10 @@ public class Drive extends Subsystem {
 		SwerveModuleState rightFront = moduleStates[2];
 		SwerveModuleState rightBack = moduleStates[3];
 
-		double leftFrontSpeed = leftFront.speedMetersPerSecond*100;
-		double leftBackSpeed = leftBack.speedMetersPerSecond*100;
-		double rightFrontSpeed = rightFront.speedMetersPerSecond*100;
-		double rightBackSpeed = rightBack.speedMetersPerSecond*100;
-	
+		double leftFrontSpeed = leftFront.speedMetersPerSecond * 100;
+		double leftBackSpeed = leftBack.speedMetersPerSecond * 100;
+		double rightFrontSpeed = rightFront.speedMetersPerSecond * 100;
+		double rightBackSpeed = rightBack.speedMetersPerSecond * 100;
 
 		leftFrontSpark.set(leftFrontSpeed);
 		leftBackSpark.set(leftBackSpeed);
@@ -557,45 +553,42 @@ public class Drive extends Subsystem {
 		rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
 		rightBackSparkSwerve.set(rightBack.angle.getDegrees());
 	}
-	
+
 	private void configMotors() {
 		leftSparkSlave.follow(leftSpark);
 		rightSparkSlave.follow(rightSpark);
 
-		//TODO: CHange back to coast
+		// TODO: CHange back to coast
 		leftSpark.setIdleMode(IdleMode.kBrake);
 		rightSpark.setIdleMode(IdleMode.kBrake);
 		leftSparkSlave.setIdleMode(IdleMode.kBrake);
-		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
+		rightSparkSlave.setIdleMode(IdleMode.kBrake);
 
 		// leftSparkEncoder.setInverted(true);
 		// rightSparkEncoder.setInverted(true);
 		/*
-		leftSlaveTalon.set(ControlMode.Follower, Constants.DriveLeftMasterId);
-		leftSlave2Talon.set(ControlMode.Follower, Constants.DriveLeftMasterId);
-		rightSlaveTalon.set(ControlMode.Follower, Constants.DriveRightMasterId);
-		rightSlave2Talon.set(ControlMode.Follower, Constants.DriveRightMasterId);
-		setBrakeState(NeutralMode.Brake);
+		 * leftSlaveTalon.set(ControlMode.Follower, Constants.DriveLeftMasterId);
+		 * leftSlave2Talon.set(ControlMode.Follower, Constants.DriveLeftMasterId);
+		 * rightSlaveTalon.set(ControlMode.Follower, Constants.DriveRightMasterId);
+		 * rightSlave2Talon.set(ControlMode.Follower, Constants.DriveRightMasterId);
+		 * setBrakeState(NeutralMode.Brake);
+		 * 
+		 * leftTalon.setInverted(true); leftSlaveTalon.setInverted(true);
+		 * leftSlave2Talon.setInverted(true);
+		 * 
+		 * rightTalon.setInverted(false); rightSlaveTalon.setInverted(false);
+		 * rightSlave2Talon.setInverted(false);
+		 * 
+		 * leftTalon.setSensorPhase(false); rightTalon.setSensorPhase(false);
+		 * 
+		 * rightTalon.setNeutralMode(NeutralMode.Brake);
+		 * leftTalon.setNeutralMode(NeutralMode.Brake);
+		 * rightSlaveTalon.setNeutralMode(NeutralMode.Brake);
+		 * leftSlaveTalon.setNeutralMode(NeutralMode.Brake);
+		 * rightSlave2Talon.setNeutralMode(NeutralMode.Brake);
+		 * leftSlave2Talon.setNeutralMode(NeutralMode.Brake);
+		 */
 
-		leftTalon.setInverted(true);
-		leftSlaveTalon.setInverted(true);
-		leftSlave2Talon.setInverted(true);
-
-		rightTalon.setInverted(false);
-		rightSlaveTalon.setInverted(false);
-		rightSlave2Talon.setInverted(false);
-
-		leftTalon.setSensorPhase(false);
-		rightTalon.setSensorPhase(false);
-
-		rightTalon.setNeutralMode(NeutralMode.Brake);
-		leftTalon.setNeutralMode(NeutralMode.Brake);
-		rightSlaveTalon.setNeutralMode(NeutralMode.Brake);
-		leftSlaveTalon.setNeutralMode(NeutralMode.Brake);
-		rightSlave2Talon.setNeutralMode(NeutralMode.Brake);
-		leftSlave2Talon.setNeutralMode(NeutralMode.Brake);
-		*/
-		
 	}
 
 	public void resetMotionProfile() {
@@ -615,38 +608,42 @@ public class Drive extends Subsystem {
 		return Rotation2D.fromDegrees(gyroSensor.getAngle());
 	}
 
-	public double getLeftDistance() { 
+	public double getLeftDistance() {
 		/*
-		return leftTalon.getSelectedSensorPosition(0) / Constants.EncoderTicksPerRotation * Constants.WheelDiameter
-				* Math.PI * 22d / 62d / 3d;
-		*/
+		 * return leftTalon.getSelectedSensorPosition(0) /
+		 * Constants.EncoderTicksPerRotation * Constants.WheelDiameter Math.PI * 22d /
+		 * 62d / 3d;
+		 */
 		return leftSparkEncoder.getPosition() * Constants.kDriveInchesPerRevolution;
 	}
 
 	public double getRightDistance() {
-		//return rightTalon.getSelectedSensorPosition(0) / Constants.EncoderTicksPerRotation * Constants.WheelDiameter
-		//		* Math.PI * 22d / 62d / 3d;
+		// return rightTalon.getSelectedSensorPosition(0) /
+		// Constants.EncoderTicksPerRotation * Constants.WheelDiameter
+		// * Math.PI * 22d / 62d / 3d;
 		return rightSparkEncoder.getPosition() * Constants.kDriveInchesPerRevolution;
 	}
 
 	public double getSpeed() {
 		/*
-		return (-leftSparkEncoder.getVelocity() + rightSparkEncoder.getVelocity())
-		 / 10 / 2 * Constants.WheelDiameter * Math.PI;  */
-		return (getLeftSpeed()+getRightSpeed())/2;
+		 * return (-leftSparkEncoder.getVelocity() + rightSparkEncoder.getVelocity()) /
+		 * 10 / 2 * Constants.WheelDiameter * Math.PI;
+		 */
+		return (getLeftSpeed() + getRightSpeed()) / 2;
 	}
 
 	public double getLeftSpeed() {
-		return leftSparkEncoder.getVelocity()  * Constants.kDriveInchesPerSecPerRPM;
+		return leftSparkEncoder.getVelocity() * Constants.kDriveInchesPerSecPerRPM;
 	}
 
 	public double getRightSpeed() {
-		return rightSparkEncoder.getVelocity()  * Constants.kDriveInchesPerSecPerRPM;
+		return rightSparkEncoder.getVelocity() * Constants.kDriveInchesPerSecPerRPM;
 	}
 
 	public double scaleJoystickValues(double rawValue, int profile) {
-		return Math.copySign(OrangeUtility.coercedNormalize(Math.abs(rawValue), Constants.MinControllerInput[profile],
-				Constants.MaxControllerInput, Constants.MinControllerOutput, Constants.MaxControllerOutput),
+		return Math.copySign(
+				OrangeUtility.coercedNormalize(Math.abs(rawValue), Constants.MinControllerInput[profile],
+						Constants.MaxControllerInput, Constants.MinControllerOutput, Constants.MaxControllerOutput),
 				rawValue);
 	}
 
@@ -655,74 +652,76 @@ public class Drive extends Subsystem {
 		autonomousDriver = new PurePursuitController(autoPath, isReversed);
 		autonomousDriver.resetTime();
 		configAuto();
-		//System.out.println("even more bad");
 		updatePurePursuit();
 	}
 
 	public synchronized void setAutoPath(Trajectory trajectory) {
 		driveState = DriveState.RAMSETE;
 		this.currentAutoTrajectory = trajectory;
-		autonomousDriver.resetTime();
+		autoStartTime = Timer.getFPGATimestamp();
 		configAuto();
-		//System.out.println("even more bad");
-		updatePurePursuit();
+		configCoast();
+		updateRamsete();
 	}
 
 	public void setBrakeState(NeutralMode mode) {
-		//leftTalon.setNeutralMode(mode);
-		//rightTalon.setNeutralMode(mode);
-		//leftSlaveTalon.setNeutralMode(mode);
-		//rightSlaveTalon.setNeutralMode(mode);
-		//leftSlave2Talon.setNeutralMode(mode);
-		//rightSlave2Talon.setNeutralMode(mode);
+		// leftTalon.setNeutralMode(mode);
+		// rightTalon.setNeutralMode(mode);
+		// leftSlaveTalon.setNeutralMode(mode);
+		// rightSlaveTalon.setNeutralMode(mode);
+		// leftSlave2Talon.setNeutralMode(mode);
+		// rightSlave2Talon.setNeutralMode(mode);
 	}
 
 	public double getVoltage() {
 		return 0;
-		//return (leftTalon.getMotorOutputVoltage() + rightTalon.getMotorOutputVoltage()
-		//		+ leftSlaveTalon.getMotorOutputVoltage() + rightSlaveTalon.getMotorOutputVoltage()
-		//		+ rightSlave2Talon.getMotorOutputVoltage() + leftSlave2Talon.getMotorOutputVoltage()) / 6;
+		// return (leftTalon.getMotorOutputVoltage() +
+		// rightTalon.getMotorOutputVoltage()
+		// + leftSlaveTalon.getMotorOutputVoltage() +
+		// rightSlaveTalon.getMotorOutputVoltage()
+		// + rightSlave2Talon.getMotorOutputVoltage() +
+		// leftSlave2Talon.getMotorOutputVoltage()) / 6;
 	}
 
 	private void setWheelPower(DriveSignal setVelocity) {
-		//leftTalon.set(ControlMode.PercentOutput, setVelocity.rightVelocity);
-		//rightTalon.set(ControlMode.PercentOutput, setVelocity.leftVelocity);
-		//System.out.println(leftSpark.getLastError());
-		
+		// leftTalon.set(ControlMode.PercentOutput, setVelocity.rightVelocity);
+		// rightTalon.set(ControlMode.PercentOutput, setVelocity.leftVelocity);
+		// System.out.println(leftSpark.getLastError());
 
-		//System.out.println(setVelocity.leftVelocity + ", " + setVelocity.rightVelocity);
+		// System.out.println(setVelocity.leftVelocity + ", " +
+		// setVelocity.rightVelocity);
 
-		
 		leftSpark.set(setVelocity.leftVelocity);
-		leftSparkSlave.set(setVelocity.leftVelocity); //tmp //TODO 
+		leftSparkSlave.set(setVelocity.leftVelocity); // tmp //TODO
 
 		rightSpark.set(setVelocity.rightVelocity);
-		rightSparkSlave.set(setVelocity.rightVelocity); //tmp
+		rightSparkSlave.set(setVelocity.rightVelocity); // tmp
 
-	/*	System.out.println(
-			"Left Spark: " + leftSpark.getOutputCurrent() + "\n" +
-			"Left Slave: " + leftSparkSlave.getOutputCurrent() + "\n" +
-			"Right Spark: " + rightSpark.getOutputCurrent() + "\n" +
-			"Right Slave: " + rightSparkSlave.getOutputCurrent() + "\n"
-		); */
-		//System.out.println("velo: " + setVelocity.leftVelocity);
+		/*
+		 * System.out.println( "Left Spark: " + leftSpark.getOutputCurrent() + "\n" +
+		 * "Left Slave: " + leftSparkSlave.getOutputCurrent() + "\n" + "Right Spark: " +
+		 * rightSpark.getOutputCurrent() + "\n" + "Right Slave: " +
+		 * rightSparkSlave.getOutputCurrent() + "\n" );
+		 */
+		// System.out.println("velo: " + setVelocity.leftVelocity);
 
-		//leftSparkPID.setReference(setVelocity.leftVelocity, ControlType.kDutyCycle);
-		//rightSparkPID.setReference(setVelocity.rightVelocity, ControlType.kDutyCycle);
+		// leftSparkPID.setReference(setVelocity.leftVelocity, ControlType.kDutyCycle);
+		// rightSparkPID.setReference(setVelocity.rightVelocity,
+		// ControlType.kDutyCycle);
 	}
 
-	public boolean hasStickyFaults()
-	{
-		short kCANRXmask = (short)(1 << CANSparkMax.FaultID.kCANRX.ordinal());
-		short kCANTXmask = (short)(1 << CANSparkMax.FaultID.kCANTX.ordinal());
-		short kHasResetmask = (short)(1 << CANSparkMax.FaultID.kHasReset.ordinal());
+	public boolean hasStickyFaults() {
+		short kCANRXmask = (short) (1 << CANSparkMax.FaultID.kCANRX.ordinal());
+		short kCANTXmask = (short) (1 << CANSparkMax.FaultID.kCANTX.ordinal());
+		short kHasResetmask = (short) (1 << CANSparkMax.FaultID.kHasReset.ordinal());
 		short leftFaults = leftSpark.getStickyFaults();
 		short rightFaults = rightSpark.getStickyFaults();
-		//System.out.println("left: " + leftFaults + " right: " + rightFaults);
+		// System.out.println("left: " + leftFaults + " right: " + rightFaults);
 
-
-		boolean leftSticky = (leftFaults & kCANRXmask) != 0 || (leftFaults & kCANTXmask) != 0 || (leftFaults & kHasResetmask) != 0;
-		boolean rightSticky = (rightFaults & kCANRXmask) != 0 || (rightFaults & kCANTXmask) != 0 || (rightFaults & kHasResetmask) != 0;
+		boolean leftSticky = (leftFaults & kCANRXmask) != 0 || (leftFaults & kCANTXmask) != 0
+				|| (leftFaults & kHasResetmask) != 0;
+		boolean rightSticky = (rightFaults & kCANRXmask) != 0 || (rightFaults & kCANTXmask) != 0
+				|| (rightFaults & kHasResetmask) != 0;
 		return leftSticky || rightSticky;
 	}
 
@@ -733,29 +732,28 @@ public class Drive extends Subsystem {
 			DriverStation.reportError("Velocity set over " + Constants.DriveHighSpeed + " !", false);
 			return;
 		}
-		 //System.out.println("Left: " + setVelocity.leftVelocity);
-		 //+ getLeftSpeed());
+		// System.out.println("Left: " + setVelocity.leftVelocity);
+		// + getLeftSpeed());
 		// inches per sec to rotations per min
-		double leftSetpoint = (setVelocity.leftVelocity)/Constants.kDriveInchesPerSecPerRPM;
-		double rightSetpoint = (setVelocity.rightVelocity)/Constants.kDriveInchesPerSecPerRPM;
+		double leftSetpoint = (setVelocity.leftVelocity) / Constants.kDriveInchesPerSecPerRPM;
+		double rightSetpoint = (setVelocity.rightVelocity) / Constants.kDriveInchesPerSecPerRPM;
 
+		// leftTalon.set(ControlMode.Velocity, leftSetpoint);
+		// rightTalon.set(ControlMode.Velocity, rightSetpoint);
 
-
-		//leftTalon.set(ControlMode.Velocity, leftSetpoint);
-		//rightTalon.set(ControlMode.Velocity, rightSetpoint);
-
-
-		
 		leftSparkPID.setReference(leftSetpoint, ControlType.kVelocity);
 		rightSparkPID.setReference(rightSetpoint, ControlType.kVelocity);
 
-		//System.out.println("desired left rpm: " + rightSetpoint + " desired right rpm: " + leftSetpoint);
-		//System.out.println("actual left rpm: " + getLeftSpeed() + " actual right rpm: " + getRightSpeed());
+		// System.out.println("desired left rpm: " + rightSetpoint + " desired right
+		// rpm: " + leftSetpoint);
+		// System.out.println("actual left rpm: " + getLeftSpeed() + " actual right rpm:
+		// " + getRightSpeed());
 
 	}
 
 	public synchronized void setSimpleDrive(boolean setting) {
-		if(drivePercentVbus != setting) System.out.println("Simple drive: " + setting);
+		if (drivePercentVbus != setting)
+			System.out.println("Simple drive: " + setting);
 		drivePercentVbus = setting;
 	}
 
@@ -765,33 +763,56 @@ public class Drive extends Subsystem {
 
 	@Override
 	public void update() {
-	//	System.out.println("L speed " + getLeftSpeed() + " position x " + RobotTracker.getInstance().getOdometry().translationMat.getX());
-	//	System.out.println("R speed " + getRightSpeed() + " position y " + RobotTracker.getInstance().getOdometry().translationMat.getY());
-	//debugSpeed();
-	//System.out.println(driveState);	
-	DriveState snapDriveState;
+		// System.out.println("L speed " + getLeftSpeed() + " position x " +
+		// RobotTracker.getInstance().getOdometry().translationMat.getX());
+		// System.out.println("R speed " + getRightSpeed() + " position y " +
+		// RobotTracker.getInstance().getOdometry().translationMat.getY());
+		// debugSpeed();
+		// System.out.println(driveState);
+		DriveState snapDriveState;
 		synchronized (this) {
 			snapDriveState = driveState;
 		}
 		switch (snapDriveState) {
 			case TELEOP:
-			//System.out.println(leftSpark.getStickyFaults() + " slave faults " + leftSparkSlave.getStickyFaults());
-		//CANSparkMax.FaultID.kCANTX
-				
+				// System.out.println(leftSpark.getStickyFaults() + " slave faults " +
+				// leftSparkSlave.getStickyFaults());
+				// CANSparkMax.FaultID.kCANTX
+
 				break;
 			case PUREPURSUIT:
-				//System.out.println("bad!");
+				// System.out.println("bad!");
 				updatePurePursuit();
 				break;
 			case TURN:
 				updateTurn();
 				break;
+			case RAMSETE:
+				updateRamsete();
 			case HOLD:
 				hold();
 				break;
 		}
-		
+
 	}
+
+	private void updateRamsete() {
+		Trajectory.State goal = currentAutoTrajectory.sample(Timer.getFPGATimestamp()-autoStartTime);
+		//System.out.println(goal);
+		RigidTransform2D transform = RobotTracker.getInstance().getOdometry();
+		ChassisSpeeds adjustedSpeeds = ramseteController.calculate(new Pose2d(transform.translationMat.getScaledWPITranslation2d(),
+			transform.rotationMat.getWPIRotation2d()), goal);
+		DifferentialDriveWheelSpeeds wheelspeeds = diffDriveKinematics.toWheelSpeeds(adjustedSpeeds);
+		setWheelVelocity(new DriveSignal(Units.metersToInches(wheelspeeds.leftMetersPerSecond), Units.metersToInches(wheelspeeds.rightMetersPerSecond)));
+		//System.out.println(ramseteController.atReference());
+		//System.out.println("target speed" + wheelspeeds + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
+		//TODO: not working
+		if(ramseteController.atReference() && (Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
+			driveState = DriveState.DONE;
+			stopMovement();
+		}
+	}
+
 	synchronized public boolean isAiming() {
 		return isAiming; 
 	}
