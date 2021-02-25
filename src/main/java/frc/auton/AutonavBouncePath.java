@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
@@ -50,14 +53,16 @@ public class AutonavBouncePath extends TemplateAuto implements Runnable  {
 		points.add(new Translation2D(120,40).getScaledWPITranslation2d());
 		points.add(new Translation2D(140,40).getScaledWPITranslation2d());
 		points.add(new Translation2D(150,90).getScaledWPITranslation2d());
-		points.add(new Translation2D(170,150).getScaledWPITranslation2d());
+		Pose2d endPoint = new Pose2d(new Translation2D(170,150).getScaledWPITranslation2d(), Rotation2d.fromDegrees(-90));
+
 
 
 		TrajectoryConfig config = new TrajectoryConfig(Units.inchesToMeters(Constants.MaxPathSpeed), Units.inchesToMeters(5));
 		config.setReversed(true);
-		config.addConstraint(new DifferentialDriveKinematicsConstraint());
+		config.addConstraint(new DifferentialDriveKinematicsConstraint(drive.diffDriveKinematics, Units.inchesToMeters(Constants.MaxPathSpeed)));
+		//TODO add CentripetalAccelerationConstraint
 
-
+		Trajectory trajectory = TrajectoryGenerator.generateTrajectory(startPoint, points, endPoint, config);
 
 
 
