@@ -74,7 +74,8 @@ public class VisionManager extends Subsystem {
 			case WIN:
 				if (limelight.isTargetVisiable()){            
 					double delta_phi = limelight.getHorizontalOffset();
-					drive.setRotationTeleop(Rotation2D.fromDegrees(RobotTracker.getInstance().getOdometry().rotationMat.getDegrees() + Math.toDegrees(delta_phi)));
+					drive.setRotationTeleop(Rotation2D.fromDegrees(RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()
+					 + Math.toDegrees(delta_phi)));
 				}
 
 				shoot = shoot || !drive.isAiming();

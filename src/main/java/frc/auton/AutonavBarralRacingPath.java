@@ -61,6 +61,7 @@ public class AutonavBarralRacingPath extends TemplateAuto {
             OrangeUtility.sleep(50);
         } 
 
+
         System.out.println("done");
         
         synchronized(this){

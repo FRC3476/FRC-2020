@@ -31,8 +31,9 @@ public abstract class Subsystem implements Runnable {
 	public Subsystem(int period) {
 		this.period = period;
 		if (period != -1){
+			Thread thread = new Thread(this);
 			ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-			service.scheduleAtFixedRate(this,0, (long) (period), TimeUnit.MILLISECONDS);
+			service.scheduleAtFixedRate(thread ,0, (long) (period), TimeUnit.MILLISECONDS);
 		}
 			
 		try {
@@ -77,8 +78,6 @@ public abstract class Subsystem implements Runnable {
 			if(signal == ThreadSignal.ALIVE) update();
 
 			double executionTimeMS = (Timer.getFPGATimestamp()-startTime)*1000;
-        	
-			
 			
 		}
 	}

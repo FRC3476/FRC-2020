@@ -97,7 +97,7 @@ public class Drive extends Subsystem {
 
 	// TODO: Change
 	public DifferentialDriveKinematics diffDriveKinematics = new DifferentialDriveKinematics(Units.inchesToMeters(25));
-	RamseteController ramseteController = new RamseteController(1, 0.7);
+	RamseteController ramseteController = new RamseteController(2.5, 0.7);
 
 	double prevPositionL = 0;
 	double prevPositionR = 0;
@@ -121,7 +121,7 @@ public class Drive extends Subsystem {
 
 	private Drive() {
 		super(Constants.DrivePeriod);
-		ramseteController.setTolerance(new Pose2d(new Translation2D(5,5).getScaledWPITranslation2d(), Rotation2d.fromDegrees(10)));
+		ramseteController.setTolerance(new Pose2d(new Translation2D(5,5).getScaledWPITranslation2d(), Rotation2d.fromDegrees(30)));
 
 		leftSpark = new LazyCANSparkMax(Constants.DriveLeftMasterId, MotorType.kBrushless);
 		leftSparkSlave = new LazyCANSparkMax(Constants.DriveLeftSlave1Id, MotorType.kBrushless);
@@ -204,7 +204,7 @@ public class Drive extends Subsystem {
 		setWheelVelocity(new DriveSignal(40, 0));
 	}
 
-	private void configBrake() {
+	public void configBrake() {
 		leftSpark.setIdleMode(IdleMode.kBrake);
 		rightSpark.setIdleMode(IdleMode.kBrake);
 		leftSparkSlave.setIdleMode(IdleMode.kBrake);
@@ -507,14 +507,14 @@ public class Drive extends Subsystem {
 	public void swerveDrive(double x1, double x2, double y1) {
 
 		swerveDrive(
-				new ChassisSpeeds((Constants.DriveHighSpeed / 100) * x1, (Constants.DriveHighSpeed / 100) * x2, y1));
+			new ChassisSpeeds((Constants.DriveHighSpeed / 100) * x1, (Constants.DriveHighSpeed / 100) * x2, y1));
 
 	}
 
 	public void swerveDriveFeildRelitive(double x1, double x2, double y1) {
 
 		swerveDrive(ChassisSpeeds.fromFieldRelativeSpeeds((Constants.DriveHighSpeed / 100) * x1,
-				(Constants.DriveHighSpeed / 100) * x2, y1, Rotation2d.fromDegrees(getAngle())));
+			(Constants.DriveHighSpeed / 100) * x2, y1, Rotation2d.fromDegrees(getAngle())));
 
 	}
 
