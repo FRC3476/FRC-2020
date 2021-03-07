@@ -122,6 +122,9 @@ public class Robot extends TimedRobot {
 		goodBad.addOption("mInDbUiSnEsS", "mInDbUiSnEsS");
 		SmartDashboard.putData("Good or Bad? To be or Not to Be?", goodBad);
 
+		AutonavBarralRacingPath.calcTrajectories();
+		AutonavSlalomPath.calcTrajectories();
+
 		shooter.homeHood();
 		
 
@@ -218,7 +221,7 @@ public class Robot extends TimedRobot {
 		else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
 
 		
-		option = new AutonavBarralRacingPath();
+		option = new AutonavSlalomPath();
 		auto = new Thread(option);
 	
 		auto.start();

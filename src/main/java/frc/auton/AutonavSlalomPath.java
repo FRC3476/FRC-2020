@@ -1,6 +1,16 @@
 package frc.auton;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.constraint.CentripetalAccelerationConstraint;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.utility.math.*;
@@ -24,6 +34,7 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 	
 	boolean killSwitch = false;
 
+    static Trajectory trajectory;
 
 	public AutonavSlalomPath() {
 		//RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
@@ -55,7 +66,7 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
         p1.addPoint(new Translation2D(80, 85), speed);
         p1.addPoint(new Translation2D(42, 90), speed);
 
-        drive.setAutoPath(p1, false);
+        drive.setAutoPath(trajectory);
 
         while(!drive.isFinished()) if(isDead()) return;
 
@@ -63,6 +74,30 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
 			done = true;
 		}
 		
-	}
+    }
+    
+    public static void calcTrajectories(){
+        ArrayList<Pose2d> points = new ArrayList<>();
+        points.add(new Pose2d(new Translation2D(42, 30).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
+        points.add(new Pose2d(new Translation2D(52, 30).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
+        points.add(new Pose2d(new Translation2D(105, 80).getScaledWPITranslation2d(), Rotation2d.fromDegrees(15)));
+        points.add(new Pose2d(new Translation2D(250, 80).getScaledWPITranslation2d(), Rotation2d.fromDegrees(-15)));
+        points.add(new Pose2d(new Translation2D(280, 30).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
+        points.add(new Pose2d(new Translation2D(300, 30).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
+        points.add(new Pose2d(new Translation2D(325, 60).getScaledWPITranslation2d(), Rotation2d.fromDegrees(90)));
+        points.add(new Pose2d(new Translation2D(305, 85).getScaledWPITranslation2d(), Rotation2d.fromDegrees(-160)));
+        points.add(new Pose2d(new Translation2D(250, 40).getScaledWPITranslation2d(), Rotation2d.fromDegrees(-170)));
+        points.add(new Pose2d(new Translation2D(120, 45).getScaledWPITranslation2d(), Rotation2d.fromDegrees(170)));
+        points.add(new Pose2d(new Translation2D(52, 85).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180)));
+        points.add(new Pose2d(new Translation2D(37, 85).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180)));
+
+        TrajectoryConfig config = new TrajectoryConfig(Units.inchesToMeters(70), Units.inchesToMeters(150));
+        config.setReversed(false);
+        config.setEndVelocity(5);
+        config.addConstraint(
+                new DifferentialDriveKinematicsConstraint(Constants.RamseteDiffDriveKinematics, Units.inchesToMeters(90)));
+        config.addConstraint(new CentripetalAccelerationConstraint(6));
+        trajectory = TrajectoryGenerator.generateTrajectory(points, config);
+    }
 
 }

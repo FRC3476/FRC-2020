@@ -96,8 +96,8 @@ public class Drive extends Subsystem {
 	boolean rotateAuto = false;
 
 	// TODO: Change
-	public DifferentialDriveKinematics diffDriveKinematics = new DifferentialDriveKinematics(Units.inchesToMeters(25));
-	RamseteController ramseteController = new RamseteController(2.5, 0.7);
+	public DifferentialDriveKinematics ramseteDiffDriveKinematics = Constants.RamseteDiffDriveKinematics;
+	RamseteController ramseteController = new RamseteController(2.6, 0.7);
 
 	double prevPositionL = 0;
 	double prevPositionR = 0;
@@ -656,6 +656,7 @@ public class Drive extends Subsystem {
 	}
 
 	public synchronized void setAutoPath(Trajectory trajectory) {
+		autoStartTime = Timer.getFPGATimestamp();
 		driveState = DriveState.RAMSETE;
 		this.currentAutoTrajectory = trajectory;
 		autoStartTime = Timer.getFPGATimestamp();
@@ -802,7 +803,7 @@ public class Drive extends Subsystem {
 		RigidTransform2D transform = RobotTracker.getInstance().getOdometry();
 		ChassisSpeeds adjustedSpeeds = ramseteController.calculate(new Pose2d(transform.translationMat.getScaledWPITranslation2d(),
 			transform.rotationMat.getWPIRotation2d()), goal);
-		DifferentialDriveWheelSpeeds wheelspeeds = diffDriveKinematics.toWheelSpeeds(adjustedSpeeds);
+		DifferentialDriveWheelSpeeds wheelspeeds = ramseteDiffDriveKinematics.toWheelSpeeds(adjustedSpeeds);
 		setWheelVelocity(new DriveSignal(Units.metersToInches(wheelspeeds.leftMetersPerSecond), Units.metersToInches(wheelspeeds.rightMetersPerSecond)));
 		//System.out.println(ramseteController.atReference());
 		//System.out.println("target speed" + wheelspeeds + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
