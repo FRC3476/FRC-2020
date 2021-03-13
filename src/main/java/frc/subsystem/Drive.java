@@ -140,10 +140,11 @@ public class Drive extends Subsystem {
 		rightSparkEncoder = rightSpark.getEncoder();
 
 		// Swerve Drive Motors
-		leftFrontSpark = new LazyCANSparkMax(Constants.DriveLeftFrontId, MotorType.kBrushless);
-		leftBackSpark = new LazyCANSparkMax(Constants.DriveLeftBackId, MotorType.kBrushless);
-		rightFrontSpark = new LazyCANSparkMax(Constants.DriveRightFrontId, MotorType.kBrushless);
-		rightBackSpark = new LazyCANSparkMax(Constants.DriveRightBackId, MotorType.kBrushless);
+		//TODO: CHANGE
+		leftFrontSpark = new LazyCANSparkMax(Constants.DriveLeftFrontId+20, MotorType.kBrushless);
+		leftBackSpark = new LazyCANSparkMax(Constants.DriveLeftBackId+20, MotorType.kBrushless);
+		rightFrontSpark = new LazyCANSparkMax(Constants.DriveRightFrontId+20, MotorType.kBrushless);
+		rightBackSpark = new LazyCANSparkMax(Constants.DriveRightBackId+20, MotorType.kBrushless);
 
 		leftFrontSparkEncoder = leftFrontSpark.getEncoder();
 		leftBackSparkEncoder = leftBackSpark.getEncoder();
@@ -745,8 +746,7 @@ public class Drive extends Subsystem {
 		leftSparkPID.setReference(leftSetpoint, ControlType.kVelocity);
 		rightSparkPID.setReference(rightSetpoint, ControlType.kVelocity);
 
-		// System.out.println("desired left rpm: " + rightSetpoint + " desired right
-		// rpm: " + leftSetpoint);
+		//System.out.println("desired left rpm: " + setVelocity.leftVelocity + " desired right rpm: " + setVelocity.rightVelocity);
 		// System.out.println("actual left rpm: " + getLeftSpeed() + " actual right rpm:
 		// " + getRightSpeed());
 
@@ -782,16 +782,19 @@ public class Drive extends Subsystem {
 
 				break;
 			case PUREPURSUIT:
-				// System.out.println("bad!");
+				//System.out.println("bad!");
 				updatePurePursuit();
 				break;
 			case TURN:
+				//System.out.println("turning");
 				updateTurn();
 				break;
 			case RAMSETE:
 				updateRamsete();
+				break;
 			case HOLD:
 				hold();
+				//System.out.println("holding");
 				break;
 		}
 
@@ -804,9 +807,10 @@ public class Drive extends Subsystem {
 		ChassisSpeeds adjustedSpeeds = ramseteController.calculate(new Pose2d(transform.translationMat.getScaledWPITranslation2d(),
 			transform.rotationMat.getWPIRotation2d()), goal);
 		DifferentialDriveWheelSpeeds wheelspeeds = ramseteDiffDriveKinematics.toWheelSpeeds(adjustedSpeeds);
-		setWheelVelocity(new DriveSignal(Units.metersToInches(wheelspeeds.leftMetersPerSecond), Units.metersToInches(wheelspeeds.rightMetersPerSecond)));
+		setWheelVelocity(new DriveSignal(Units.metersToInches(wheelspeeds.leftMetersPerSecond), 
+			Units.metersToInches(wheelspeeds.rightMetersPerSecond)));
 		//System.out.println(ramseteController.atReference());
-		//System.out.println("target speed" + wheelspeeds + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
+		//System.out.println("target speed" + Units.metersToInches(wheelspeeds.leftMetersPerSecond) + " " + Units.metersToInches(wheelspeeds.rightMetersPerSecond) + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
 		//TODO: not working
 		if(ramseteController.atReference() && (Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
 			driveState = DriveState.DONE;
@@ -940,6 +944,7 @@ public class Drive extends Subsystem {
 		setWheelVelocity(new DriveSignal(0,0));
 
 		driveState = DriveState.TELEOP;
+		//System.out.println("not good");
 		resetMotionProfile();
 	}
 
