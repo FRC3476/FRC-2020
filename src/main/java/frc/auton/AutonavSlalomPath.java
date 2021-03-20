@@ -89,8 +89,8 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
         points.add(new Pose2d(new Translation2D(320, 60).getScaledWPITranslation2d(), Rotation2d.fromDegrees(90)));
         points.add(new Pose2d(new Translation2D(305, 85).getScaledWPITranslation2d(), Rotation2d.fromDegrees(-160)));
         points.add(new Pose2d(new Translation2D(250, 40).getScaledWPITranslation2d(), Rotation2d.fromDegrees(-170)));
-        points.add(new Pose2d(new Translation2D(130, 41).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180)));
-        points.add(new Pose2d(new Translation2D(120, 45).getScaledWPITranslation2d(), Rotation2d.fromDegrees(170)));
+        points.add(new Pose2d(new Translation2D(130, 40).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180)));
+        points.add(new Pose2d(new Translation2D(120, 40).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180)));
         points.add(new Pose2d(new Translation2D(83, 83).getScaledWPITranslation2d(), Rotation2d.fromDegrees(170)));
         points.add(new Pose2d(new Translation2D(49, 88).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180)));
 
