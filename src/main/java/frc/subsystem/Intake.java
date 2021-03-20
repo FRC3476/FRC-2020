@@ -5,6 +5,7 @@ import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 //import frc.utility.telemetry.TelemetryServer;
 import frc.utility.LazyTalonSRX;
+import frc.utility.OrangeUtility;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Intake extends Subsystem {
@@ -98,13 +99,11 @@ public synchronized double getCurrent() {
 
 @Override
 public void selfTest() {
-	
+	deploySolenoid = new Solenoid(Constants.IntakeSolenoidId);
+	deploySolenoid.set(true);
+	OrangeUtility.sleep(3000);
+	deploySolenoid.set(false);
 }
-
-
-
-
-
 
 @Override
 public void logData() {
