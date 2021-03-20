@@ -13,10 +13,12 @@ public class VisionLookUpTable{
 	}
 
 	private VisionLookUpTable(){
-		lookUpTable.add(new ShooterPreset(10, 2000, 10));
-		lookUpTable.add(new ShooterPreset(20, 3000, 20));
-		lookUpTable.add(new ShooterPreset(30, 4000, 30));
-		lookUpTable.add(new ShooterPreset(40, 5000, 40));
+		// lookUpTable.add(new ShooterPreset(42, 4000, 79));
+		// lookUpTable.add(new ShooterPreset(34, 5400, 150));
+		// lookUpTable.add(new ShooterPreset(42, 5700, 212));
+		lookUpTable.add(new ShooterPreset(70, 4000, 79));
+		lookUpTable.add(new ShooterPreset(30, 5400, 150));
+		lookUpTable.add(new ShooterPreset(60, 5700, 212));
 	
 
 		Collections.sort(lookUpTable);
@@ -35,10 +37,10 @@ public class VisionLookUpTable{
 			if(dist == distanceFromTarget){
 				return lookUpTable.get(i);
 
-			} else if(dist < distanceFromTarget){
-
-				double percentIn = (dist - lookUpTable.get(i-1).getDistance()) / ( lookUpTable.get(i).getDistance() - lookUpTable.get(i-1).getDistance());
+			} else if(dist > distanceFromTarget){
 				
+				double percentIn = (distanceFromTarget - lookUpTable.get(i-1).getDistance()) / ( lookUpTable.get(i).getDistance() - lookUpTable.get(i-1).getDistance());
+				System.out.println(percentIn + " " + (dist - lookUpTable.get(i-1).getDistance()) + " " + ( lookUpTable.get(i).getDistance() - lookUpTable.get(i-1).getDistance())+ " " + distanceFromTarget);
 				
 				return interpolateShooterPreset(lookUpTable.get(i-1), lookUpTable.get(i), percentIn);
 			}

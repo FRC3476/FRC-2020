@@ -162,7 +162,7 @@ public class Drive extends Subsystem {
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(3.5, 0, 0.0, 0); //P=1.0 OR 0.8
+		turnPID = new SynchronousPid(2, 0, 0, 0); //P=1.0 OR 0.8
 		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
 		turnPID.setSetpoint(0);
 		turnPIDAuto = new SynchronousPid(1, 0, 0, 0); //P=1.0 OR 0.8
@@ -808,7 +808,7 @@ public class Drive extends Subsystem {
 	}
 
 	private void updateTurn() {
-		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
+		double error = wantedHeading.rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
 		double deltaSpeed;
 
 		

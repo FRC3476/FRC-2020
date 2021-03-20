@@ -151,6 +151,7 @@ public class Shooter extends Subsystem{
 		switch(shooterState){
 			case SPINNING: 
 				shooterMaster.set(ControlMode.Velocity, targetShooterSpeed/Constants.ShooterRPMPerTicksPer100ms);
+				//System.out.println("shooter speed: " + targetShooterSpeed);
 				hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 
 				//check if motor has sped up
