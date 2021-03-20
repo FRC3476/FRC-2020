@@ -802,7 +802,7 @@ public class Drive extends Subsystem {
 
 	private void updateRamsete() {
 		Trajectory.State goal = currentAutoTrajectory.sample(Timer.getFPGATimestamp()-autoStartTime);
-		//System.out.println(goal);
+		System.out.println(goal);
 		RigidTransform2D transform = RobotTracker.getInstance().getOdometry();
 		ChassisSpeeds adjustedSpeeds = ramseteController.calculate(new Pose2d(transform.translationMat.getScaledWPITranslation2d(),
 			transform.rotationMat.getWPIRotation2d()), goal);

@@ -80,23 +80,26 @@ public class AutonavSlalomPath extends TemplateAuto implements Runnable  {
         ArrayList<Pose2d> points = new ArrayList<>();
         points.add(new Pose2d(new Translation2D(42, 30).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
         points.add(new Pose2d(new Translation2D(52, 30).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
-        points.add(new Pose2d(new Translation2D(105, 80).getScaledWPITranslation2d(), Rotation2d.fromDegrees(15)));
-        points.add(new Pose2d(new Translation2D(230, 80).getScaledWPITranslation2d(), Rotation2d.fromDegrees(-15)));
+        points.add(new Pose2d(new Translation2D(105, 80).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
+        points.add(new Pose2d(new Translation2D(110, 80).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
+        points.add(new Pose2d(new Translation2D(220, 80).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
+        points.add(new Pose2d(new Translation2D(230, 80).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
         points.add(new Pose2d(new Translation2D(275, 30).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
         points.add(new Pose2d(new Translation2D(300, 30).getScaledWPITranslation2d(), Rotation2d.fromDegrees(0)));
         points.add(new Pose2d(new Translation2D(320, 60).getScaledWPITranslation2d(), Rotation2d.fromDegrees(90)));
         points.add(new Pose2d(new Translation2D(305, 85).getScaledWPITranslation2d(), Rotation2d.fromDegrees(-160)));
         points.add(new Pose2d(new Translation2D(250, 40).getScaledWPITranslation2d(), Rotation2d.fromDegrees(-170)));
+        points.add(new Pose2d(new Translation2D(130, 41).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180)));
         points.add(new Pose2d(new Translation2D(120, 45).getScaledWPITranslation2d(), Rotation2d.fromDegrees(170)));
         points.add(new Pose2d(new Translation2D(83, 83).getScaledWPITranslation2d(), Rotation2d.fromDegrees(170)));
         points.add(new Pose2d(new Translation2D(49, 88).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180)));
 
-        TrajectoryConfig config = new TrajectoryConfig(Units.inchesToMeters(90), Units.inchesToMeters(100));
+        TrajectoryConfig config = new TrajectoryConfig(Units.inchesToMeters(80), Units.inchesToMeters(100));
         config.setReversed(false);
         config.setEndVelocity(5);
         config.addConstraint(
-                new DifferentialDriveKinematicsConstraint(Constants.RamseteDiffDriveKinematics, Units.inchesToMeters(90)));
-        config.addConstraint(new CentripetalAccelerationConstraint(5));
+                new DifferentialDriveKinematicsConstraint(Constants.RamseteDiffDriveKinematics, Units.inchesToMeters(80)));
+        config.addConstraint(new CentripetalAccelerationConstraint(6));
         trajectory = TrajectoryGenerator.generateTrajectory(points, config);
         System.out.println("finished cacluclating slalom trajec");
     }
