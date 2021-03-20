@@ -99,17 +99,12 @@ public synchronized double getCurrent() {
 
 @Override
 public void selfTest() {
-	setDeployState();
-	setDeployState.DEPLOY
-	deploySolenoid = new Solenoid(Constants.IntakeSolenoidId);
-	deploySolenoid.set(true);
+	setDeployState(DeployState.DEPLOY);
 	OrangeUtility.sleep(3000);
-	setIntakeState();
-	intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
+	setIntakeState(IntakeState.INTAKE);
 	OrangeUtility.sleep(3000);
-	intakeMotor.set(ControlMode.PercentOutput, 0.0);
-	deploySolenoid.set(false);
-	setDeployState.UNDEPLOY
+	setIntakeState(IntakeState.OFF);
+	setDeployState(DeployState.UNDEPLOY);
 }
 
 @Override
