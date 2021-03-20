@@ -100,7 +100,7 @@ public synchronized double getCurrent() {
 @Override
 public void selfTest() {
 	setDeployState(DeployState.DEPLOY);
-	OrangeUtility.sleep(3000);
+	OrangeUtility.sleep((int)(Constants.IntakeOpenTime * 1000));
 	setIntakeState(IntakeState.INTAKE);
 	OrangeUtility.sleep(3000);
 	setIntakeState(IntakeState.OFF);
