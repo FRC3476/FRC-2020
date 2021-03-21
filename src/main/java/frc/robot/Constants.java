@@ -18,8 +18,8 @@ public final class Constants {
 	public static final double VisionXOffset = 1.25;
 
 	//Vision (cm)
-	public static final double CamerTargetHeightOffset = 62.5892;
-	public static final double CameraYAngle = 27.7629;
+	public static final double CamerTargetHeightOffset = 79.1608;
+	public static final double CameraYAngle = 33.3679;
 
 
 
@@ -138,8 +138,8 @@ public final class Constants {
 	// Drive
 	public static final double kDriveInchesPerSecPerRPM = Math.PI* Constants.WheelDiameter/60d/10d;
 	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
-	public static final double maxTurnError = 1.5;
-	public static final double maxPIDStopSpeed = 8;
+	public static final double maxTurnError = 1;
+	public static final double maxPIDStopSpeed = 9;
 	public static final double DriveHighSpeed = 145;
 	
 	public static final double kDriveRightAutoP = 4*0.0005263 * kDriveInchesPerSecPerRPM; //0.00065
@@ -193,7 +193,7 @@ public final class Constants {
 
 	//COMP
 	public static final double cameraYOffset = 6.36;//5.310 + 1.25;//5.310 + 1.25;
-	public static final double cameraXOffset = -4.75;//-4.815 + 1.6 - 1.0;
+	public static final double cameraXOffset = -1.82;//-4.815 + 1.6 - 1.0;
 
 
 

@@ -51,7 +51,7 @@ public class VisionManager extends Subsystem {
 				if (limelight.isTargetVisiable()){
 					double distance = limelight.getDistance();
 					double delta_phi = limelight.getHorizontalOffset();
-					drive.setRotationTeleop(Rotation2D.fromDegrees(drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()));
+					drive.setRotationTeleop(Rotation2D.fromDegrees(drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()+Constants.cameraXOffset));
 					System.out.println("trying to aim, recieving data " +  delta_phi);
 					ShooterPreset d = VisionLookUpTable.getInstance().getShooterPreset(distance);
 					Shooter.getInstance().setHoodAngle(d.getHoodEjectAngle());
@@ -73,7 +73,7 @@ public class VisionManager extends Subsystem {
 			
 			case WIN:
 				if (limelight.isTargetVisiable()){            
-					drive.setRotationTeleop(Rotation2D.fromDegrees(drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()));
+					drive.setRotationTeleop(Rotation2D.fromDegrees(drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()+Constants.cameraXOffset));
 					
 				}
 
