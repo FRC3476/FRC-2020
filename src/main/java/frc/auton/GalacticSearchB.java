@@ -90,4 +90,5 @@ public class GalacticSearchB extends TemplateAuto {
 			done = true; 
 		}
     }
+
 }

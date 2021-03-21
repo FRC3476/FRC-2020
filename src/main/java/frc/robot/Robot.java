@@ -141,6 +141,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
+		//System.out.println("Distance: " + Limelight.getInstance().getDistance() + " tx: " + Limelight.getInstance().getHorizontalOffset());
 
 	}
 
@@ -216,8 +217,7 @@ public class Robot extends TimedRobot {
 
 		if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
 		else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
-
-	
+    
 		auto = new Thread(option);
 	
 		auto.start();
@@ -281,9 +281,9 @@ public class Robot extends TimedRobot {
 		shooterSpeed = 5000;
 		
 		System.out.println("teleop init!");
-		//drive.stopMovement();
+		drive.stopMovement();
 		firstTeleopRun = true;
-		//drive.setTeleop();
+		drive.setTeleop();
 		
 		
 		
