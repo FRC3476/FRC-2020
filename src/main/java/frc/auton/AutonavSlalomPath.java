@@ -1,5 +1,8 @@
 package frc.auton;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.subsystem.*;
