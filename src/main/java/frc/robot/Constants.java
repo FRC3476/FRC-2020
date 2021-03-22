@@ -163,7 +163,7 @@ public final class Constants {
 	public static final double kHoldP = 4;
 
 
-	public static final double DriveTeleopAccLimit = 120;
+	public static final double DriveTeleopAccLimit = 300;
 	public static final double DriveTeleopJerkLimit = 2000;
 	public static final double DriveExpectedCurrent = 1.5;
 	public static final double DriveExpectedRPM = 0;
