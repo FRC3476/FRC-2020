@@ -43,9 +43,10 @@ public class GalacticSearchB extends TemplateAuto {
         Path path;
         if(Limelight.getInstance().isTargetVisiable()) {
             System.out.println("Blue Path");
-            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 60));
+            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 30));
             path = new Path(here());
             //Blue Path Points
+            path.addPoint(new Translation2D(90,60), 90);
             path.addPoint(new Translation2D(180,60), 90);
             path.addPoint(new Translation2D(240,120), 90);
             path.addPoint(new Translation2D(290,60), 90);
@@ -54,9 +55,11 @@ public class GalacticSearchB extends TemplateAuto {
             drive.setAutoPath(path, true);
         } else {
             System.out.println("Red Path");
-            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120));
+            RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120-18));
             path = new Path(here());
             //Red Path Points
+            path.addPoint(new Translation2D(60,120), 80);
+            path.addPoint(new Translation2D(90,120), 80);
             path.addPoint(new Translation2D(90,120), 80);
             path.addPoint(new Translation2D(150,60), 80);
             path.addPoint(new Translation2D(210,120), 80);
