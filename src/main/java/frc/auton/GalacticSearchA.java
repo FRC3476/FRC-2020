@@ -57,7 +57,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-        int speed = pathIsBlue ? 90 : 75;
+        int speed = pathIsBlue ? 70 : 60;
 
         Path p1 = new Path(here());
         if(pathIsBlue) {
@@ -67,7 +67,7 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
             p1.addPoint(new Translation2D(314, 90), speed);
         }else {
             p1.addPoint(new Translation2D(90, 90), speed);
-            p1.addPoint(new Translation2D(140, 60), speed);
+            p1.addPoint(new Translation2D(150, 60), speed);
             p1.addPoint(new Translation2D(180, 150), speed);
             p1.addPoint(new Translation2D(314, 150), speed);
             
@@ -93,3 +93,4 @@ public class GalacticSearchA extends TemplateAuto implements Runnable  {
 	}
 
 }
+
