@@ -114,7 +114,13 @@ public class Hopper extends Subsystem {
 
 	@Override
 	public void selfTest() {
-		
+		setFrontMotorState(FrontMotorState.ACTIVE);
+		OrangeUtility.sleep((int)(Constants.IntakeOpenTime * 1000));
+		setFrontMotorState(FrontMotorState.INACTIVE);
+		Orangeutility.sleep(3000);
+		setSnailMotorState(SnailMotorState.ACTIVE);
+		OrangeUtility.sleep((int)(Constants.IntakeOpenTime * 1000));
+		setSnailMotorState(SnailMotorState.INACTIVE);
 	}
 
 	@Override
