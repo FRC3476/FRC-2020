@@ -359,7 +359,7 @@ public class Robot extends TimedRobot {
 			}
 
 			//Turn Shooter Flywheel On with distance detection
-			if (buttonPanel.getRawButton(6)){
+			if (xbox.getRawButton(6)){
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff ){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
@@ -408,10 +408,10 @@ public class Robot extends TimedRobot {
 					hopper.setFrontMotorState(FrontMotorState.ACTIVE);
 					hopper.setSnailMotorState(SnailMotorState.ACTIVE , true);
 
-				}else if (xbox.getRawButton(6)){
+				}else if (xbox.getRawButton(4)){
 					intake.setIntakeState(IntakeState.EJECT);
-					hopper.setFrontMotorState(FrontMotorState.INACTIVE);
-					hopper.setSnailMotorState(SnailMotorState.INACTIVE, false);
+					hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+					hopper.setSnailMotorState(SnailMotorState.ACTIVE, false);
 
 				} else if(xbox.getRawAxis(3)>0.5){
 					//intake on 

@@ -70,7 +70,7 @@ public final class Constants {
 	public static final int ShooterIntegralZone = (int)(200.0 / ShooterRPMPerTicksPer100ms);
 	public static final int HomeSwitchId = 0; 
 
-	public static final double ShooterMaxDeviation = 10000;
+	public static final double ShooterMaxDeviation = 100;
 	public static final double AutoShooterAccptableRange = 100;
 	public static final double ShooterVisionMinimumTargetArea = 0.00; //TODO: Set
 
@@ -193,7 +193,7 @@ public final class Constants {
 
 	//COMP
 	public static final double cameraYOffset = 6.36;//5.310 + 1.25;//5.310 + 1.25;
-	public static final double cameraXOffset = -1.82;//-4.815 + 1.6 - 1.0;
+	public static final double cameraXOffset = -1.22;//-4.815 + 1.6 - 1.0;
 
 
 
