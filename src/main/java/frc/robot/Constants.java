@@ -18,8 +18,8 @@ public final class Constants {
 	public static final double VisionXOffset = 1.25;
 
 	//Vision (cm)
-	public static final double CamerTargetHeightOffset = 1;
-	public static final double CameraYAngle = 0;
+	public static final double CamerTargetHeightOffset = 79.1608;
+	public static final double CameraYAngle = 33.3679;
 
 
 
@@ -70,9 +70,9 @@ public final class Constants {
 	public static final int ShooterIntegralZone = (int)(200.0 / ShooterRPMPerTicksPer100ms);
 	public static final int HomeSwitchId = 0; 
 
-	public static final double ShooterMaxDeviation = 10000;
+	public static final double ShooterMaxDeviation = 100;
 	public static final double AutoShooterAccptableRange = 100;
-	public static final double ShooterVisionMinimumTargetArea = 0.05; //TODO: Set
+	public static final double ShooterVisionMinimumTargetArea = 0.00; //TODO: Set
 
 	public static final double TakeBackHalfGain = 2.0e-6;
 
@@ -124,13 +124,13 @@ public final class Constants {
 	public static final double ExpectedPositionTolerance = 0;
 	
 	// Autonomous Driving
-	public static final double TrackRadius = -7.5; //-9;
+	public static final double TrackRadius = -7; //-7;
 	public static final double WheelDiameter = 6.0; //6.09; //expiermental
 	public static final double MinTurningRadius = 40;
 	public static final double MinPathSpeed = 20; 
 	public static final double MaxPathSpeed = 140; //120
 	public static final double MinLookAheadDistance = 14;
-	public static final double MaxLookAheadDistance = 30;
+	public static final double MaxLookAheadDistance = 14;//30
 	
 	// Subsystems
 	public static final int TimeoutMs = 10;
@@ -138,8 +138,10 @@ public final class Constants {
 	// Drive
 	public static final double kDriveInchesPerSecPerRPM = Math.PI* Constants.WheelDiameter/60d/10d;
 	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
-	public static final double maxTurnError = 10;
-	public static final double maxPIDStopSpeed = 15;
+
+	public static final double maxTurnError = 1;
+	public static final double maxPIDStopSpeed = 9;
+  
 	public static final double DriveHighSpeed = 145;
 	
 	public static final double kDriveRightAutoP = 4*0.0005263 * kDriveInchesPerSecPerRPM; //0.00065
@@ -163,8 +165,8 @@ public final class Constants {
 	public static final double kHoldP = 4;
 
 
-	public static final double DriveTeleopAccLimit = 120;
-	public static final double DriveTeleopJerkLimit = 2000;
+	public static final double DriveTeleopAccLimit = 500;
+	public static final double DriveTeleopJerkLimit = 5000;
 	public static final double DriveExpectedCurrent = 1.5;
 	public static final double DriveExpectedRPM = 0;
 	public static final double DriveExpectedPosition = 0;
@@ -193,7 +195,7 @@ public final class Constants {
 
 	//COMP
 	public static final double cameraYOffset = 6.36;//5.310 + 1.25;//5.310 + 1.25;
-	public static final double cameraXOffset = -4.75;//-4.815 + 1.6 - 1.0;
+	public static final double cameraXOffset = -1.22;//-4.815 + 1.6 - 1.0;
 
 
 
