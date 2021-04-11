@@ -141,6 +141,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
+		//System.out.println("Distance: " + Limelight.getInstance().getDistance() + " tx: " + Limelight.getInstance().getHorizontalOffset());
 
 	}
 
@@ -217,7 +218,6 @@ public class Robot extends TimedRobot {
 		if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
 		else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
 
-		option = new AutoNavBarrelRacingPath();
 		auto = new Thread(option);
 	
 		auto.start();
@@ -281,9 +281,9 @@ public class Robot extends TimedRobot {
 		shooterSpeed = 5000;
 		
 		System.out.println("teleop init!");
-		//drive.stopMovement();
+		drive.stopMovement();
 		firstTeleopRun = true;
-		//drive.setTeleop();
+		drive.setTeleop();
 		
 		
 		
@@ -296,10 +296,12 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-
+			//System.out.println("angle to target " + (drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()));
+			System.out.println("distance: " + limelight.getDistance());
 			ArrayList<Double> times = new ArrayList<Double>();
 			
 			if(profileTeleop) times.add(Timer.getFPGATimestamp());
+
 
 			xbox.update();
 			stick.update();
@@ -357,22 +359,25 @@ public class Robot extends TimedRobot {
 			}
 
 			//Turn Shooter Flywheel On with distance detection
-			if (buttonPanel.getRawButton(6)){
+			if (xbox.getRawButton(6)){
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff ){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
+					System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
 					shooter.setSpeed(sp.getFlyWheelSpeed());
-					shooter.setHoodAngle(sp.getFlyWheelSpeed());
+					shooter.setHoodAngle(sp.getHoodEjectAngle());
 					targetFound = true;
 			
 				// use manuel selection if a target is not found
 				} else if(!targetFound){
+					System.out.println("using manuel contorls");
 					shooter.setSpeed(shooterSpeed); 
 					shooter.setHoodAngle(hoodPosition);
 				}
 
 			//Turn shooter on with manuel settings 
 			} else if(buttonPanel.getRawButton(5)){
+				System.out.println("using manuel contorls");
 				shooter.setSpeed(shooterSpeed); 
 				shooter.setHoodAngle(hoodPosition);
 				
@@ -403,10 +408,10 @@ public class Robot extends TimedRobot {
 					hopper.setFrontMotorState(FrontMotorState.ACTIVE);
 					hopper.setSnailMotorState(SnailMotorState.ACTIVE , true);
 
-				}else if (xbox.getRawButton(6)){
+				}else if (xbox.getRawButton(4)){
 					intake.setIntakeState(IntakeState.EJECT);
-					hopper.setFrontMotorState(FrontMotorState.INACTIVE);
-					hopper.setSnailMotorState(SnailMotorState.INACTIVE, false);
+					hopper.setFrontMotorState(FrontMotorState.ACTIVE);
+					hopper.setSnailMotorState(SnailMotorState.ACTIVE, false);
 
 				} else if(xbox.getRawAxis(3)>0.5){
 					//intake on 
