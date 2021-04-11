@@ -201,11 +201,10 @@ public class Drive extends Subsystem {
 	}
 
 	private void configCoast() {
-		//TODO: CHange back to coast
-		leftSpark.setIdleMode(IdleMode.kBrake);
-		rightSpark.setIdleMode(IdleMode.kBrake);
-		leftSparkSlave.setIdleMode(IdleMode.kBrake);
-		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
+		leftSpark.setIdleMode(IdleMode.kCoast);
+		rightSpark.setIdleMode(IdleMode.kCoast);
+		leftSparkSlave.setIdleMode(IdleMode.kCoast);
+		rightSparkSlave.setIdleMode(IdleMode.kCoast);  
 	}
 
 	private void configAuto() {
