@@ -1,5 +1,7 @@
 package frc.subsystem;
 
+import java.sql.Time;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -39,6 +41,7 @@ public class Shooter extends Subsystem{
 	private VisionLookUpTable visionLookUpTable; 
 	Limelight limelight;
 	//private SynchronousPid turnPID;
+	private double nextShootTime;
 	
 
 	
@@ -55,6 +58,7 @@ public class Shooter extends Subsystem{
 		homeSwitch = new DigitalInput(Constants.HomeSwitchId);
 		visionLookUpTable = VisionLookUpTable.getInstance();
 		limelight = Limelight.getInstance();
+		nextShootTime = Timer.getFPGATimestamp();
 		
 		
 		
@@ -146,24 +150,33 @@ public class Shooter extends Subsystem{
 	}
 
 	public synchronized void update(){
+		nextShootTime=0;
 		// System.out.println("Speed: " + shooterOutput + " Error: " + flywheelError );
 
 		switch(shooterState){
 			case SPINNING: 
 				shooterMaster.set(ControlMode.Velocity, targetShooterSpeed/Constants.ShooterRPMPerTicksPer100ms);
+				//System.out.println("shooter speed: " + targetShooterSpeed);
 				hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 
 				//check if motor has sped up
 				if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
 					double hoodError = targetHoodPosition - hoodEncoder.getPosition();
 
-					if(Math.abs(hoodError) < Constants.HoodMaxDeviation && firing){ // TODO: make hood do things
+					if(Math.abs(hoodError) < Constants.HoodMaxDeviation && firing && Timer.getFPGATimestamp() >=nextShootTime){// TODO: make hood do things
 						//Hood Ready
 						feederMotor.set(ControlMode.PercentOutput, Constants.FeederMotorSpeed);
+
+						if((Timer.getFPGATimestamp()-nextShootTime)> 0.1){
+							nextShootTime = Timer.getFPGATimestamp() +0.5;
+						}
 					} else{
 						feederMotor.set(ControlMode.PercentOutput, 0 );
 					}
 				
+				} else {
+					feederMotor.set(ControlMode.PercentOutput, 0 );
+					nextShootTime = Timer.getFPGATimestamp() + 0.5;
 				}
 				break;
 
