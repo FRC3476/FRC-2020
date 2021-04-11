@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 
 import java.util.concurrent.*;
-
+import java.text.DecimalFormat;
 import java.util.*;
 
 import frc.utility.Controller;
@@ -232,7 +232,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		//System.out.println("robot angle: " + robotTracker.getOdometry().rotationMat.getDegrees() + " drive state " + drive.driveState);
 		/*
 		buttonPanel.update();
 		if(!autoDone) {

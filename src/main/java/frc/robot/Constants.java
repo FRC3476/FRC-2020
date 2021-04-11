@@ -138,8 +138,10 @@ public final class Constants {
 	// Drive
 	public static final double kDriveInchesPerSecPerRPM = Math.PI* Constants.WheelDiameter/60d/10d;
 	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
+
 	public static final double maxTurnError = 1;
 	public static final double maxPIDStopSpeed = 9;
+  
 	public static final double DriveHighSpeed = 145;
 	
 	public static final double kDriveRightAutoP = 4*0.0005263 * kDriveInchesPerSecPerRPM; //0.00065
