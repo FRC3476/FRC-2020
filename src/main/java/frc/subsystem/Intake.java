@@ -13,6 +13,7 @@ public class Intake extends Subsystem {
     public enum DeployState {
 	    DEPLOY, UNDEPLOY
     }
+	
     public enum IntakeState {
 	    INTAKE, OFF, EJECT
     }
