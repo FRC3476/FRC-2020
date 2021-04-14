@@ -50,8 +50,6 @@ public final class Constants {
 	//Shooter constants
 	public final static int ShooterMasterId = 30;
 	public final static int ShooterSlaveId1 = 31;
-	public final static int ShooterSlaveId2 = 32;
-	public final static int ShooterSlaveId3 = 33;
 	
 
 	public static final int FeederMotorId = 34;
