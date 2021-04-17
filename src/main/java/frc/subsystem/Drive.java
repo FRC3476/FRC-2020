@@ -162,10 +162,10 @@ public class Drive extends Subsystem {
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(3.5, 0, 0.0, 0); //P=1.0 OR 0.8
+		turnPID = new SynchronousPid(2, 0, 0, 0); //P=1.0 OR 0.8
 		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
 		turnPID.setSetpoint(0);
-		turnPIDAuto = new SynchronousPid(1, 0, 0, 0); //P=1.0 OR 0.8
+		turnPIDAuto = new SynchronousPid(4, 0, 0, 0); //P=1.0 OR 0.8
 		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
 		turnPIDAuto.setSetpoint(0);
 		
@@ -204,7 +204,7 @@ public class Drive extends Subsystem {
 		leftSpark.setIdleMode(IdleMode.kCoast);
 		rightSpark.setIdleMode(IdleMode.kCoast);
 		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+		rightSparkSlave.setIdleMode(IdleMode.kCoast);  
 	}
 
 	private void configAuto() {
@@ -552,11 +552,11 @@ public class Drive extends Subsystem {
 	private void configMotors() {
 		leftSparkSlave.follow(leftSpark);
 		rightSparkSlave.follow(rightSpark);
-		
-		leftSpark.setIdleMode(IdleMode.kCoast);
-		rightSpark.setIdleMode(IdleMode.kCoast);
-		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+
+		leftSpark.setIdleMode(IdleMode.kBrake);
+		rightSpark.setIdleMode(IdleMode.kBrake);
+		leftSparkSlave.setIdleMode(IdleMode.kBrake);
+		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
 
 		// leftSparkEncoder.setInverted(true);
 		// rightSparkEncoder.setInverted(true);
@@ -808,7 +808,7 @@ public class Drive extends Subsystem {
 	}
 
 	private void updateTurn() {
-		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
+		double error = wantedHeading.rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
 		double deltaSpeed;
 
 		
@@ -824,7 +824,7 @@ public class Drive extends Subsystem {
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
 		} else {
 			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 4.5), deltaSpeed); //2.6
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 7.5), deltaSpeed); //2.6
 		}
 		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
 

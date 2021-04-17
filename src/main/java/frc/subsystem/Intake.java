@@ -5,6 +5,7 @@ import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 //import frc.utility.telemetry.TelemetryServer;
 import frc.utility.LazyTalonSRX;
+import frc.utility.OrangeUtility;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Intake extends Subsystem {
@@ -12,6 +13,7 @@ public class Intake extends Subsystem {
     public enum DeployState {
 	    DEPLOY, UNDEPLOY
     }
+	
     public enum IntakeState {
 	    INTAKE, OFF, EJECT
     }
@@ -98,13 +100,13 @@ public synchronized double getCurrent() {
 
 @Override
 public void selfTest() {
-	
+	setDeployState(DeployState.DEPLOY);
+	OrangeUtility.sleep((int)(Constants.IntakeOpenTime * 1000));
+	setIntakeState(IntakeState.INTAKE);
+	OrangeUtility.sleep(3000);
+	setIntakeState(IntakeState.OFF);
+	setDeployState(DeployState.UNDEPLOY);
 }
-
-
-
-
-
 
 @Override
 public void logData() {
