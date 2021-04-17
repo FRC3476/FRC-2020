@@ -162,10 +162,10 @@ public class Drive extends Subsystem {
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(3.5, 0, 0.0, 0); //P=1.0 OR 0.8
+		turnPID = new SynchronousPid(2, 0, 0, 0); //P=1.0 OR 0.8
 		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
 		turnPID.setSetpoint(0);
-		turnPIDAuto = new SynchronousPid(1, 0, 0, 0); //P=1.0 OR 0.8
+		turnPIDAuto = new SynchronousPid(4, 0, 0, 0); //P=1.0 OR 0.8
 		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
 		turnPIDAuto.setSetpoint(0);
 		
@@ -204,7 +204,7 @@ public class Drive extends Subsystem {
 		leftSpark.setIdleMode(IdleMode.kCoast);
 		rightSpark.setIdleMode(IdleMode.kCoast);
 		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+		rightSparkSlave.setIdleMode(IdleMode.kCoast);  
 	}
 
 	private void configAuto() {
@@ -532,46 +532,31 @@ public class Drive extends Subsystem {
 		SwerveModuleState rightFront = moduleStates[2];
 		SwerveModuleState rightBack = moduleStates[3];
 
-		double[] targetSpeeds = new double[4];
-		double[] currentAngle = new double[4];
-		currentAngle[0] = leftFrontSparkEncoderSwerve.getPosition();
-		currentAngle[1] = leftBackSparkEncoderSwerve.getPosition();
-		currentAngle[2] = rightFrontSparkEncoderSwerve.getPosition();
-		currentAngle[3] = rightBackSparkEncoderSwerve.getPosition();
-		Rotation2D[] targetRotation2ds = new Rotation2D[4];
-		Rotation2D[] currentRotation2ds = new Rotation2D[4];
-		Rotation2D[] diffRotation2ds = new Rotation2D[4];
-		for (int i = 0; i < 4; i++){
-			targetSpeeds[i] = moduleStates[i].speedMetersPerSecond*100;
-			targetRotation2ds[i] = Rotation2D.fromDegrees(moduleStates[i].angle.getDegrees());
-			currentRotation2ds[i] = Rotation2D.fromDegrees(currentAngle[i]);
-			diffRotation2ds[i] = targetRotation2ds[i].rotateBy(currentRotation2ds[i].inverse());
-			if (Math.abs(diffRotation2ds[i].getDegrees()) > 90) {
-				targetSpeeds[i] = -targetSpeeds[i];
-				diffRotation2ds[i] = targetRotation2ds[i].flip().rotateBy(currentRotation2ds[i].inverse());
-			}
+		double leftFrontSpeed = leftFront.speedMetersPerSecond*100;
+		double leftBackSpeed = leftBack.speedMetersPerSecond*100;
+		double rightFrontSpeed = rightFront.speedMetersPerSecond*100;
+		double rightBackSpeed = rightBack.speedMetersPerSecond*100;
+	
 
-		}
-		leftFrontSparkSwerve.set(currentAngle[0] + diffRotation2ds[0].getDegrees());
-		leftBackSparkSwerve.set(currentAngle[1] + diffRotation2ds[1].getDegrees());
-		rightFrontSparkSwerve.set(currentAngle[2] + diffRotation2ds[2].getDegrees());
-		rightBackSparkSwerve.set(currentAngle[3] + diffRotation2ds[3].getDegrees());
+		leftFrontSpark.set(leftFrontSpeed);
+		leftBackSpark.set(leftBackSpeed);
+		rightFrontSpark.set(rightFrontSpeed);
+		rightBackSpark.set(rightBackSpeed);
 
-		leftFrontSpark.set(targetSpeeds[0]);
-		leftBackSpark.set(targetSpeeds[1]);
-		rightFrontSpark.set(targetSpeeds[2]);
-		rightBackSpark.set(targetSpeeds[3]);
-
+		leftFrontSparkSwerve.set(leftFront.angle.getDegrees());
+		leftBackSparkSwerve.set(leftBack.angle.getDegrees());
+		rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
+		rightBackSparkSwerve.set(rightBack.angle.getDegrees());
 	}
 	
 	private void configMotors() {
 		leftSparkSlave.follow(leftSpark);
 		rightSparkSlave.follow(rightSpark);
-		
-		leftSpark.setIdleMode(IdleMode.kCoast);
-		rightSpark.setIdleMode(IdleMode.kCoast);
-		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast); 
+
+		leftSpark.setIdleMode(IdleMode.kBrake);
+		rightSpark.setIdleMode(IdleMode.kBrake);
+		leftSparkSlave.setIdleMode(IdleMode.kBrake);
+		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
 
 		// leftSparkEncoder.setInverted(true);
 		// rightSparkEncoder.setInverted(true);
@@ -823,7 +808,7 @@ public class Drive extends Subsystem {
 	}
 
 	private void updateTurn() {
-		double error = wantedHeading.inverse().rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
+		double error = wantedHeading.rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
 		double deltaSpeed;
 
 		
@@ -839,7 +824,7 @@ public class Drive extends Subsystem {
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
 		} else {
 			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 4.5), deltaSpeed); //2.6
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 7.5), deltaSpeed); //2.6
 		}
 		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
 
