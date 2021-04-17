@@ -8,7 +8,7 @@ import frc.utility.control.*;
 import frc.utility.math.*;
 
 @SuppressWarnings("unused")
-public abstract class TemplateAuto implements Runnable {
+public class TemplateAuto implements Runnable { 
 	Drive drive = Drive.getInstance();
 	RobotTracker robotTracker = RobotTracker.getInstance();
 	Intake intake = Intake.getInstance();
@@ -57,8 +57,9 @@ public abstract class TemplateAuto implements Runnable {
 	}
 
 	@Override
-	public abstract void run();
-	
+	public void run() {
+
+	}
 	public void turnOnIntakeTrack() {
 		intake.setDeployState(Intake.DeployState.DEPLOY);
 		intake.setSpeed(Constants.IntakeMotorPower);

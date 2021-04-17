@@ -48,8 +48,8 @@ public class GalacticSearchB extends TemplateAuto {
             //Blue Path Points
             path.addPoint(new Translation2D(180,60), 90);
             path.addPoint(new Translation2D(240,120), 90);
-            path.addPoint(new Translation2D(275,60), 90);
-            path.addPoint(new Translation2D(325,30), 90);
+            path.addPoint(new Translation2D(290,60), 90);
+            path.addPoint(new Translation2D(328,30), 90);
             isBlue = true;
             drive.setAutoPath(path, true);
         } else {
@@ -57,8 +57,6 @@ public class GalacticSearchB extends TemplateAuto {
             RobotTracker.getInstance().setInitialTranslation(new Translation2D(45, 120));
             path = new Path(here());
             //Red Path Points
-            path.addPoint(new Translation2D(60,120), 80);
-            //path.addPoint(new Translation2D(90,120), 80);
             path.addPoint(new Translation2D(90,120), 80);
             path.addPoint(new Translation2D(150,60), 80);
             path.addPoint(new Translation2D(210,120), 80);
@@ -92,5 +90,4 @@ public class GalacticSearchB extends TemplateAuto {
 			done = true; 
 		}
     }
-
 }

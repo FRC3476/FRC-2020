@@ -172,7 +172,7 @@ public class Limelight{
 	 */
 	public double getDistance(){
 		if(isTargetVisiable()){
-			return  (Constants.CamerTargetHeightOffset) / Math.tan(Math.toRadians(Constants.CameraYAngle + getVerticalOffset()));
+			return  (Constants.CamerTargetHeightOffset) / Math.tan(Constants.CameraYAngle + getVerticalOffset());
 		} else {
 			return 0;
 		}
