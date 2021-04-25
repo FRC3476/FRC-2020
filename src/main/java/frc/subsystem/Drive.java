@@ -532,13 +532,6 @@ public class Drive extends Subsystem {
 		SwerveModuleState rightFront = moduleStates[2];
 		SwerveModuleState rightBack = moduleStates[3];
 
-<<<<<<< Updated upstream
-		double leftFrontSpeed = leftFront.speedMetersPerSecond*100;
-		double leftBackSpeed = leftBack.speedMetersPerSecond*100;
-		double rightFrontSpeed = rightFront.speedMetersPerSecond*100;
-		double rightBackSpeed = rightBack.speedMetersPerSecond*100;
-	
-=======
 		double[] targetSpeeds = new double[4];
 		double[] currentAngle = new double[4];
 		currentAngle[0] = leftFrontSparkEncoderSwerve.getPosition();
@@ -568,18 +561,6 @@ public class Drive extends Subsystem {
 		leftBackSpark.set(targetSpeeds[1]);
 		rightFrontSpark.set(targetSpeeds[2]);
 		rightBackSpark.set(targetSpeeds[3]);
-
-		// leftFrontSpark.set(leftFrontSpeed);
-		// leftBackSpark.set(leftBackSpeed);
-		// rightFrontSpark.set(rightFrontSpeed);
-		// rightBackSpark.set(rightBackSpeed);
-
->>>>>>> Stashed changes
-
-		leftFrontSpark.set(leftFrontSpeed);
-		leftBackSpark.set(leftBackSpeed);
-		rightFrontSpark.set(rightFrontSpeed);
-		rightBackSpark.set(rightBackSpeed);
 
 		leftFrontSparkSwerve.set(leftFront.angle.getDegrees());
 		leftBackSparkSwerve.set(leftBack.angle.getDegrees());
