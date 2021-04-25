@@ -117,7 +117,7 @@ public class Hopper extends Subsystem {
 		setFrontMotorState(FrontMotorState.ACTIVE);
 		OrangeUtility.sleep((int)(Constants.IntakeOpenTime * 1000));
 		setFrontMotorState(FrontMotorState.INACTIVE);
-		Orangeutility.sleep(3000);
+		OrangeUtility.sleep(3000);
 		setSnailMotorState(SnailMotorState.ACTIVE);
 		OrangeUtility.sleep((int)(Constants.IntakeOpenTime * 1000));
 		setSnailMotorState(SnailMotorState.INACTIVE);
