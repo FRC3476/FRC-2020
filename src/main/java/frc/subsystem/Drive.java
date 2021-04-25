@@ -527,26 +527,36 @@ public class Drive extends Subsystem {
 		SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 		SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.DriveHighSpeed / 100);
 
-		SwerveModuleState leftFront = moduleStates[0];
-		SwerveModuleState leftBack = moduleStates[1];
-		SwerveModuleState rightFront = moduleStates[2];
-		SwerveModuleState rightBack = moduleStates[3];
+		double[] targetSpeeds = new double[4];
+		double[] currentAngle = new double[4];
+		currentAngle[0] = leftFrontSparkEncoderSwerve.getPosition();
+		currentAngle[1] = leftBackSparkEncoderSwerve.getPosition();
+		currentAngle[2] = rightFrontSparkEncoderSwerve.getPosition();
+		currentAngle[3] = rightBackSparkEncoderSwerve.getPosition();
+		Rotation2D[] targetRotation2ds = new Rotation2D[4];
+		Rotation2D[] currentRotation2ds = new Rotation2D[4];
+		Rotation2D[] diffRotation2ds = new Rotation2D[4];
+		
+		for (int i = 0; i < 4; i++){
+			targetSpeeds[i] = moduleStates[i].speedMetersPerSecond*100;
+			targetRotation2ds[i] = Rotation2D.fromDegrees(moduleStates[i].angle.getDegrees());
+			currentRotation2ds[i] = Rotation2D.fromDegrees(currentAngle[i]);
+			diffRotation2ds[i] = targetRotation2ds[i].rotateBy(currentRotation2ds[i].inverse());
+			if (Math.abs(diffRotation2ds[i].getDegrees()) > 90) {
+				targetSpeeds[i] = -targetSpeeds[i];
+				diffRotation2ds[i] = targetRotation2ds[i].flip().rotateBy(currentRotation2ds[i].inverse());
+			}
 
-		double leftFrontSpeed = leftFront.speedMetersPerSecond*100;
-		double leftBackSpeed = leftBack.speedMetersPerSecond*100;
-		double rightFrontSpeed = rightFront.speedMetersPerSecond*100;
-		double rightBackSpeed = rightBack.speedMetersPerSecond*100;
-	
+		}
+		leftFrontSparkSwerve.set(currentAngle[0] + diffRotation2ds[0].getDegrees());
+		leftBackSparkSwerve.set(currentAngle[1] + diffRotation2ds[1].getDegrees());
+		rightFrontSparkSwerve.set(currentAngle[2] + diffRotation2ds[2].getDegrees());
+		rightBackSparkSwerve.set(currentAngle[3] + diffRotation2ds[3].getDegrees());
 
-		leftFrontSpark.set(leftFrontSpeed);
-		leftBackSpark.set(leftBackSpeed);
-		rightFrontSpark.set(rightFrontSpeed);
-		rightBackSpark.set(rightBackSpeed);
-
-		leftFrontSparkSwerve.set(leftFront.angle.getDegrees());
-		leftBackSparkSwerve.set(leftBack.angle.getDegrees());
-		rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
-		rightBackSparkSwerve.set(rightBack.angle.getDegrees());
+		leftFrontSpark.set(targetSpeeds[0]);
+		leftBackSpark.set(targetSpeeds[1]);
+		rightFrontSpark.set(targetSpeeds[2]);
+		rightBackSpark.set(targetSpeeds[3]);
 	}
 	
 	private void configMotors() {
