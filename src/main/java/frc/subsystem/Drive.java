@@ -527,11 +527,6 @@ public class Drive extends Subsystem {
 		SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 		SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.DriveHighSpeed / 100);
 
-		SwerveModuleState leftFront = moduleStates[0];
-		SwerveModuleState leftBack = moduleStates[1];
-		SwerveModuleState rightFront = moduleStates[2];
-		SwerveModuleState rightBack = moduleStates[3];
-
 		double[] targetSpeeds = new double[4];
 		double[] currentAngle = new double[4];
 		currentAngle[0] = leftFrontSparkEncoderSwerve.getPosition();
@@ -541,6 +536,7 @@ public class Drive extends Subsystem {
 		Rotation2D[] targetRotation2ds = new Rotation2D[4];
 		Rotation2D[] currentRotation2ds = new Rotation2D[4];
 		Rotation2D[] diffRotation2ds = new Rotation2D[4];
+		
 		for (int i = 0; i < 4; i++){
 			targetSpeeds[i] = moduleStates[i].speedMetersPerSecond*100;
 			targetRotation2ds[i] = Rotation2D.fromDegrees(moduleStates[i].angle.getDegrees());
@@ -561,11 +557,6 @@ public class Drive extends Subsystem {
 		leftBackSpark.set(targetSpeeds[1]);
 		rightFrontSpark.set(targetSpeeds[2]);
 		rightBackSpark.set(targetSpeeds[3]);
-
-		leftFrontSparkSwerve.set(leftFront.angle.getDegrees());
-		leftBackSparkSwerve.set(leftBack.angle.getDegrees());
-		rightFrontSparkSwerve.set(rightFront.angle.getDegrees());
-		rightBackSparkSwerve.set(rightBack.angle.getDegrees());
 	}
 	
 	private void configMotors() {
