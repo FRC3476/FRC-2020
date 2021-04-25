@@ -122,9 +122,6 @@ public class Robot extends TimedRobot {
 		goodBad.addOption("mInDbUiSnEsS", "mInDbUiSnEsS");
 		SmartDashboard.putData("Good or Bad? To be or Not to Be?", goodBad);
 
-		AutonavBarralRacingPath.calcTrajectories();
-		AutonavSlalomPath.calcTrajectories();
-
 		shooter.homeHood();
 		
 
