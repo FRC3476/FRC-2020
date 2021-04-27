@@ -2,6 +2,9 @@
 
 package frc.utility.math;
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.util.Units;
+
 /**
  * Stores an x and y value. Rotates and Translates of objects returns a new
  * object.
@@ -10,6 +13,10 @@ public class Translation2D implements Interpolable<Translation2D> {
 
 	public static Translation2D fromAngleDistance(double distance, Rotation2D angle) {
 		return new Translation2D(angle.sin() * distance, angle.cos() * distance);
+	}
+
+	public static Translation2D fromWPITranslation2d(Translation2d wpiTranslation2d) {
+		return new Translation2D(wpiTranslation2d.getX(), wpiTranslation2d.getY());
 	}
 
 	private double x;
@@ -161,6 +168,19 @@ public class Translation2D implements Interpolable<Translation2D> {
 
 	public Translation2D scale(double d) {
 		return new Translation2D(this.getX()*d, this.getY()*d);
+	}
+
+	public Translation2d getWPITranslation2d(){
+		return new Translation2d(getX(), getY());
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Translation2d getScaledWPITranslation2d(){
+		Translation2D t = scale(Units.inchesToMeters(1));
+		return new Translation2d(t.getX(), t.getY());
 	}
 
 	@Override
