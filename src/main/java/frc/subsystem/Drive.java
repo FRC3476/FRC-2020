@@ -671,7 +671,7 @@ public class Drive extends Subsystem {
 	public double getVoltage() {
 		return 0;
 		//return (leftTalon.getMotorOutputVoltage() + rightTalon.getMotorOutputVoltage()
-		//		+ leftSlaveTalon.getMotorOutputVoltage() + rightSlaveTalon.getMotorOutputVoltage()
+		//		+ .getMotorOutputVoltage() + rightSlaveTalon.getMotorOutputVoltage()
 		//		+ rightSlave2Talon.getMotorOutputVoltage() + leftSlave2Talon.getMotorOutputVoltage()) / 6;
 	}
 

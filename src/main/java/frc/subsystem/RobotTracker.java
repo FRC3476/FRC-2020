@@ -2,6 +2,10 @@
 
 package frc.subsystem;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import frc.robot.Constants;
 import frc.utility.CircularQueue;
 import frc.utility.math.InterpolablePair;
@@ -12,43 +16,33 @@ import frc.utility.math.Translation2D;
 public class RobotTracker extends Subsystem {
 
 	private static final RobotTracker trackingInstance = new RobotTracker();
+	double startTime;
+
+	Drive drive = Drive.getInstance();
 
 	public static RobotTracker getInstance() {
 		return RobotTracker.trackingInstance;
 	}
 
-	private Drive driveBase;
-	private RigidTransform2D currentOdometry;
-	private CircularQueue<RigidTransform2D> vehicleHistory;
-	private CircularQueue<Rotation2D> gyroHistory;
-
-	private double currentDistance, oldDistance, deltaDistance;
-	private Rotation2D rotationOffset;
-	private Translation2D translationOffset;
+	private SwerveDriveOdometry swerveDriveOdometry;
 
 	private RobotTracker() {
 		super(Constants.RobotTrackerPeriod);
-		vehicleHistory = new CircularQueue<>(100);
-		gyroHistory = new CircularQueue<>(200);
-		driveBase = Drive.getInstance();
-		currentOdometry = new RigidTransform2D(new Translation2D(), driveBase.getGyroAngle());
-		rotationOffset = Rotation2D.fromDegrees(0);
-		translationOffset = new Translation2D();
+		swerveDriveOdometry = new SwerveDriveOdometry(drive.swerveKinematics, drive.getGyroAngle().getWPIRotation2d());
+		startTime = Timer.getFPGATimestamp();
 	}
 
 	synchronized public Rotation2D getGyroAngle(long time) {
-		return gyroHistory.getInterpolatedKey(time);
+		return null;
+		
 	}
 
 	synchronized public RigidTransform2D getOdometry() {
-		return currentOdometry;
+		return null;
 	}
 
 	synchronized public void resetOdometry() {
-		driveBase.resetGyro();
-		currentOdometry = new RigidTransform2D(new Translation2D().translateBy(translationOffset),
-				Rotation2D.fromDegrees(0).rotateBy(rotationOffset));
-		oldDistance = driveBase.getDistance();
+		
 	}
 
 	/**
@@ -57,50 +51,43 @@ public class RobotTracker extends Subsystem {
 	 */
 	@Override
 	public void update() {
-		double leftDist = driveBase.getLeftDistance();
-		double rightDist = driveBase.getRightDistance();
-
-		/*
-		 * Solve problem where Talon returns 0 for distance due to an error This
-		 * causes an abnormal deltaPosition
-		 */
-		if (leftDist != 0 && rightDist != 0) {
-			currentDistance = (leftDist + rightDist) / 2;
-		} else {
-			return;
-		}
-		deltaDistance = currentDistance - oldDistance;
-		Translation2D deltaPosition = new Translation2D(deltaDistance, 0);
-		Rotation2D deltaRotation = driveBase.getGyroAngle().inverse().rotateBy(rotationOffset);
-		synchronized (this) {
-			deltaRotation = currentOdometry.rotationMat.inverse().rotateBy(deltaRotation);
-			Rotation2D halfRotation = Rotation2D.fromRadians(deltaRotation.getRadians() / 2.0);
-			currentOdometry = currentOdometry
-					.transform(new RigidTransform2D(deltaPosition.rotateBy(halfRotation), deltaRotation));
-			vehicleHistory.add(new InterpolablePair<>(System.nanoTime(), currentOdometry));
-			gyroHistory.add(new InterpolablePair<>(System.nanoTime(), driveBase.getGyroAngle()));
-		}
-		oldDistance = currentDistance;
-		/*
-		 System.out.println("Position: " +
-		 currentOdometry.translationMat.getX() + " " +
-		 currentOdometry.translationMat.getY());
-		 System.out.println("Gyro: " +
-		 currentOdometry.rotationMat.getDegrees());
-		 */
+		
 	}
 
 	/**
-	 *
-	 * @param offset
+	 * You should not use this. Use {@link RobotTracker#resetPosition​} instead
+	 * @param offset 
 	 */
+	@Deprecated
 	synchronized public void setInitialRotation(Rotation2D offset) {
-		this.rotationOffset = offset;
+		
 	}
 
+	
+	/**
+	 * You should not use this. Use {@link RobotTracker#resetPosition​} instead
+	 * @param offset 
+	 */
+	@Deprecated
 	synchronized public void setInitialTranslation(Translation2D offset) {
-		this.translationOffset = offset;
+		
 		resetOdometry();
+	}
+
+	/**
+	 * Resets the robot's position on the field.
+	 * The gyroscope angle does not need to be reset here on the user's robot code. The library automatically takes care of offsetting the gyro angle.
+	 * 
+	 * @param pose The position on the field that your robot is at.
+	 * @param gyroAngle The position on the field that your robot is at.
+	 */
+	synchronized public void resetPosition​(Pose2d pose, Rotation2d gyroAngle){
+		swerveDriveOdometry.resetPosition(pose, gyroAngle);
+	}
+
+
+	synchronized public Pose2d getPoseMeters(){
+		return null;
 	}
 
 	@Override
