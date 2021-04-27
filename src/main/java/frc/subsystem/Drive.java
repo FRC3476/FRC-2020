@@ -22,6 +22,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.HolonomicDriveController;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
@@ -680,16 +684,12 @@ public class Drive extends Subsystem {
 	private void updateRamsete() {
 		Trajectory.State goal = currentAutoTrajectory.sample(Timer.getFPGATimestamp()-autoStartTime);
 		System.out.println(goal);
-		RigidTransform2D transform = RobotTracker.getInstance().getOdometry();
-		ChassisSpeeds adjustedSpeeds = ramseteController.calculate(new Pose2d(transform.translationMat.getScaledWPITranslation2d(),
-			transform.rotationMat.getWPIRotation2d()), goal);
-		DifferentialDriveWheelSpeeds wheelspeeds = ramseteDiffDriveKinematics.toWheelSpeeds(adjustedSpeeds);
-		setWheelVelocity(new DriveSignal(Units.metersToInches(wheelspeeds.leftMetersPerSecond), 
-			Units.metersToInches(wheelspeeds.rightMetersPerSecond)));
+		ChassisSpeeds adjustedSpeeds = controller.calculate(RobotTracker.getInstance().getPoseMeters(), goal, Rotation2d.fromDegrees(0));
+		swerveDrive(adjustedSpeeds);
 		//System.out.println(ramseteController.atReference());
 		//System.out.println("target speed" + Units.metersToInches(wheelspeeds.leftMetersPerSecond) + " " + Units.metersToInches(wheelspeeds.rightMetersPerSecond) + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
 		//TODO: not working
-		if(ramseteController.atReference() && (Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
+		if(controller.atReference() && (Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
 			driveState = DriveState.DONE;
 			stopMovement();
 		}
@@ -816,6 +816,12 @@ public class Drive extends Subsystem {
 			case HOLD:
 				hold();
 				break;
+			case DONE:
+				break;
+			case RAMSETE:
+				updateRamsete();
+				break;
+				
 		}
 		
 	}
