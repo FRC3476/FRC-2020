@@ -3,12 +3,14 @@
 package frc.subsystem;
 
 import frc.robot.Constants;
+import frc.utility.LazyCANSparkMax;
 import frc.utility.NavXMPX_Gyro;
 import frc.utility.OrangeUtility;
 import frc.utility.control.RateLimiter;
 import frc.utility.control.SynchronousPid;
 import frc.utility.control.motion.Path;
 import frc.utility.control.motion.PurePursuitController;
+import frc.utility.math.RigidTransform2D;
 import frc.utility.math.Rotation2D;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -19,12 +21,12 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import frc.utility.LazyCANSparkMax;
-
+import edu.wpi.first.wpilibj.trajectory.*;
 
 public class Drive extends Subsystem {
 
@@ -649,11 +651,38 @@ public class Drive extends Subsystem {
 		updatePurePursuit();
 	}
 
-	double autoStartTime
-	Trajectory currentAuteTrajectory;
+	double autoStartTime;
+	HolonomicDriveController controller = new HolonomicDriveController(
+  		new PIDController(1, 0, 0), new PIDController(1, 0, 0),
+  		new ProfiledPIDController(1, 0, 0,
+    	new TrapezoidProfile.Constraints(6.28, 3.14)));
+	Trajectory currentAutoTrajectory;
 
 	public synchronized void setAutoPath(Trajectory trajectory) {
+		driveState = DriveState.RAMSETE;
+		this.currentAutoTrajectory = trajectory;
+		autoStartTime = Timer.getFPGATimestamp();
+		configAuto();
+		configCoast();
+		updateRamsete();
+	}
 
+	private void updateRamsete() {
+		Trajectory.State goal = currentAutoTrajectory.sample(Timer.getFPGATimestamp()-autoStartTime);
+		System.out.println(goal);
+		RigidTransform2D transform = RobotTracker.getInstance().getOdometry();
+		ChassisSpeeds adjustedSpeeds = ramseteController.calculate(new Pose2d(transform.translationMat.getScaledWPITranslation2d(),
+			transform.rotationMat.getWPIRotation2d()), goal);
+		DifferentialDriveWheelSpeeds wheelspeeds = ramseteDiffDriveKinematics.toWheelSpeeds(adjustedSpeeds);
+		setWheelVelocity(new DriveSignal(Units.metersToInches(wheelspeeds.leftMetersPerSecond), 
+			Units.metersToInches(wheelspeeds.rightMetersPerSecond)));
+		//System.out.println(ramseteController.atReference());
+		//System.out.println("target speed" + Units.metersToInches(wheelspeeds.leftMetersPerSecond) + " " + Units.metersToInches(wheelspeeds.rightMetersPerSecond) + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
+		//TODO: not working
+		if(ramseteController.atReference() && (Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
+			driveState = DriveState.DONE;
+			stopMovement();
+		}
 	}
 
 	public void setBrakeState(NeutralMode mode) {
