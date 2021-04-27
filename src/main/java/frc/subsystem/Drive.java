@@ -29,7 +29,7 @@ import frc.utility.LazyCANSparkMax;
 public class Drive extends Subsystem {
 
 	public enum DriveState {
-		TELEOP, PUREPURSUIT, TURN, HOLD, DONE
+		TELEOP, PUREPURSUIT, TURN, HOLD, DONE, RAMSETE
 	}
 
 	public static class DriveSignal {
@@ -647,6 +647,13 @@ public class Drive extends Subsystem {
 		configAuto();
 		//System.out.println("even more bad");
 		updatePurePursuit();
+	}
+
+	double autoStartTime
+	Trajectory currentAuteTrajectory;
+
+	public synchronized void setAutoPath(Trajectory trajectory) {
+
 	}
 
 	public void setBrakeState(NeutralMode mode) {
