@@ -58,7 +58,7 @@ public class RobotTracker extends Subsystem {
 	@Override
 	public void update() {
 		double leftDist = driveBase.getLeftDistance();
-		double rightDist = driveBase.getLeftDistance();
+		double rightDist = driveBase.getRightDistance();
 
 		/*
 		 * Solve problem where Talon returns 0 for distance due to an error This
