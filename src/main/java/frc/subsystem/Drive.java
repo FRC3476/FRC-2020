@@ -401,9 +401,9 @@ public class Drive extends Subsystem {
 				rawValue);
 	}
 
-	public synchronized void setAutoPath(Path autoPath, boolean isReversed) {
+	public synchronized void setAutoPath(Path autoPath, boolean isReversed, Rotation2D targetHeading) {
 		driveState = DriveState.PUREPURSUIT;
-		autonomousDriver = new PurePursuitController(autoPath, isReversed);
+		autonomousDriver = new PurePursuitController(autoPath, isReversed, targetHeading);
 		autonomousDriver.resetTime();
 		configAuto();
 		//System.out.println("even more bad");
@@ -599,15 +599,15 @@ public class Drive extends Subsystem {
 
 	private void updatePurePursuit() {
 	//	System.out.println("updating pure presuit");
-		AutoDriveSignal signal = autonomousDriver.calculate(RobotTracker.getInstance().getOdometry());
-		if (signal.isDone) {
+		ChassisSpeeds signal = autonomousDriver.calculate(RobotTracker.getInstance().getOdometry());
+		if (autonomousDriver.isDone()) {
 			synchronized (this) {
 				driveState = DriveState.DONE;
 			}
 			configHigh();
 		}
 		//System.out.println("signal l:" + signal.command.leftVelocity + " signal R " + signal.command.rightVelocity);
-		setWheelVelocity(signal.command);
+		swerveDrive(signal);
 	}
 
 	public void resetGyro() {
