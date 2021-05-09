@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.Timer;
 
 import java.util.concurrent.*;
 
+import com.revrobotics.CANAnalog.AnalogMode;
+
 import java.util.*;
 
 import frc.utility.Controller;
@@ -129,6 +131,10 @@ public class Robot extends TimedRobot {
 
 		Thread.currentThread().setPriority(7);
 		blinkinLED.setColor(0.89);
+		for(int i =0; i<4; i++){
+			drive.angleOffsets[i] = -drive.swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
+		}
+		
 	}
 
 	/**
@@ -344,7 +350,7 @@ public class Robot extends TimedRobot {
 				
 				//normal drive fuction
 				visionManager.setState(VisionStatus.IDLE);
-				drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
+				drive.swerveDrive(xbox.getRawAxis(0), xbox.getRawAxis(1),  xbox.getRawAxis(4));
 
 				if (shooterMode == 1){
 					blinkinLED.setColor(-0.29);
