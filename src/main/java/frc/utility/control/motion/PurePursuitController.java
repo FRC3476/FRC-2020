@@ -20,6 +20,7 @@ public class PurePursuitController {
     private RateLimiter speedProfiler;
     PIDController turnPID = new PIDController(1,0,0,0);
     Rotation2D targetHeading;
+    private boolean done = false;
     public PurePursuitController(Path robotPath, boolean isReversed, Rotation2D targetHeading) {
         this.robotPath = robotPath;
         this.isReversed = isReversed;
@@ -89,7 +90,7 @@ public class PurePursuitController {
         double turnSpeed = turnPID.calculate(deltaRotation2D.getDegrees());
         return new ChassisSpeeds(robotToLookAhead.getX() * multiplyby, robotToLookAhead.getY() * multiplyby, turnSpeed );
     }
-    private boolean done = false;
+
     public boolean isDone() {
         return done;
     }
