@@ -1,7 +1,12 @@
 package frc.subsystem;
+
 import frc.robot.Constants;
+import frc.utility.LazyCANSparkMax;
 import frc.utility.LazyTalonSRX;
+import frc.utility.OrangeUtility;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Hopper extends Subsystem {
 	public enum  FrontMotorState {
@@ -17,7 +22,7 @@ public class Hopper extends Subsystem {
 	}
 
 	private final LazyTalonSRX FrontHopperMotor;
-	private final LazyTalonSRX SnailMotor;
+	private final LazyCANSparkMax SnailMotor;
 	private FrontMotorState frontMotorState = FrontMotorState.INACTIVE;
 	private SnailMotorState snailMotorState = SnailMotorState.INACTIVE;
 
@@ -29,11 +34,8 @@ public class Hopper extends Subsystem {
 		FrontHopperMotor.configPeakCurrentDuration(0);
 		FrontHopperMotor.enableCurrentLimit(true);
 		
-		SnailMotor = new LazyTalonSRX(Constants.SnailMotorId);
-		System.out.println("Current limit error " + SnailMotor.configContinuousCurrentLimit(25, 50));
-		SnailMotor.configPeakCurrentLimit(0);
-		SnailMotor.configPeakCurrentDuration(0);
-		SnailMotor.enableCurrentLimit(true);
+		SnailMotor = new LazyCANSparkMax(Constants.SnailMotorId,MotorType.kBrushless);
+		//TODO: Set Control Mode
 		//SnailMotor.enableCurrentLimit()
 	}    
 
@@ -46,7 +48,7 @@ public class Hopper extends Subsystem {
 	}
 
 	public double getCurrent() {
-		return SnailMotor.getSupplyCurrent();
+		return SnailMotor.getOutputCurrent();
 	}
 
 	public void setFrontSpeed(double Frontspeed) {
@@ -54,7 +56,7 @@ public class Hopper extends Subsystem {
 	}
 	
 	public void setSnailSpeed(double Snailspeed) {
-		SnailMotor.set(ControlMode.PercentOutput, Snailspeed);
+		SnailMotor.set(Snailspeed);
 	}
 	public void setFrontMotorState(final FrontMotorState frontMotorState) {
 		synchronized (this) {
@@ -114,7 +116,13 @@ public class Hopper extends Subsystem {
 
 	@Override
 	public void selfTest() {
-		
+		setFrontMotorState(FrontMotorState.ACTIVE);
+		OrangeUtility.sleep((int)(Constants.IntakeOpenTime * 1000));
+		setFrontMotorState(FrontMotorState.INACTIVE);
+		OrangeUtility.sleep(3000);
+		setSnailMotorState(SnailMotorState.ACTIVE, false);
+		OrangeUtility.sleep((int)(Constants.IntakeOpenTime * 1000));
+		setSnailMotorState(SnailMotorState.INACTIVE, false);
 	}
 
 	@Override

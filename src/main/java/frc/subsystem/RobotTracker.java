@@ -51,7 +51,7 @@ public class RobotTracker extends Subsystem {
 	 */
 	@Override
 	public void update() {
-		
+
 	}
 
 	/**
