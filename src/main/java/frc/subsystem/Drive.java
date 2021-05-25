@@ -2,7 +2,24 @@
 
 package frc.subsystem;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANAnalog.AnalogMode;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.ControlType;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
+import frc.utility.LazyCANSparkMax;
 import frc.utility.NavXMPX_Gyro;
 import frc.utility.OrangeUtility;
 import frc.utility.control.RateLimiter;
@@ -10,32 +27,6 @@ import frc.utility.control.SynchronousPid;
 import frc.utility.control.motion.Path;
 import frc.utility.control.motion.PurePursuitController;
 import frc.utility.math.Rotation2D;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.sound.midi.SysexMessage;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-
-import com.revrobotics.*;
-import com.revrobotics.CANAnalog.AnalogMode;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
-
-import org.opencv.core.Mat;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.util.Units;
-import frc.utility.LazyCANSparkMax;
 
 
 public class Drive extends Subsystem {
@@ -241,6 +232,16 @@ public class Drive extends Subsystem {
 		driveState = DriveState.TELEOP;
 	}
 
+	synchronized public SwerveModuleState[] getSwerveModuleStates(){
+		SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
+		for(int i = 0; i<4; i++){
+			//TODO finish
+			SwerveModuleState moduleState = new SwerveModuleState(1d, Rotation2d.fromDegrees(swerveEncoders[i].getPosition()));
+			swerveModuleState[i] = moduleState;
+		}
+		return swerveModuleState;
+	}
+
 	
 
 	
@@ -422,7 +423,7 @@ public class Drive extends Subsystem {
 	public double getVoltage() {
 		return 0;
 		//return (leftTalon.getMotorOutputVoltage() + rightTalon.getMotorOutputVoltage()
-		//		+ leftSlaveTalon.getMotorOutputVoltage() + rightSlaveTalon.getMotorOutputVoltage()
+		//		+ .getMotorOutputVoltage() + rightSlaveTalon.getMotorOutputVoltage()
 		//		+ rightSlave2Talon.getMotorOutputVoltage() + leftSlave2Talon.getMotorOutputVoltage()) / 6;
 	}
 
