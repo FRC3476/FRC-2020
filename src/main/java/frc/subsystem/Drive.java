@@ -20,17 +20,15 @@ import java.util.Arrays;
 import javax.sound.midi.SysexMessage;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
-import com.revrobotics.*;
 import com.revrobotics.CANAnalog.AnalogMode;
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
-
-import org.opencv.core.Mat;
+import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.HolonomicDriveController;
@@ -43,7 +41,15 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj.util.Units;
+import frc.robot.Constants;
 import frc.utility.LazyCANSparkMax;
+import frc.utility.NavXMPX_Gyro;
+import frc.utility.OrangeUtility;
+import frc.utility.control.RateLimiter;
+import frc.utility.control.SynchronousPid;
+import frc.utility.control.motion.Path;
+import frc.utility.control.motion.PurePursuitController;
+import frc.utility.math.Rotation2D;
 
 public class Drive extends Subsystem {
 
@@ -246,6 +252,16 @@ public class Drive extends Subsystem {
 
 	synchronized public void setTeleop() {
 		driveState = DriveState.TELEOP;
+	}
+
+	synchronized public SwerveModuleState[] getSwerveModuleStates(){
+		SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
+		for(int i = 0; i<4; i++){
+			//TODO finish
+			SwerveModuleState moduleState = new SwerveModuleState(1d, Rotation2d.fromDegrees(swerveEncoders[i].getPosition()));
+			swerveModuleState[i] = moduleState;
+		}
+		return swerveModuleState;
 	}
 
 	
