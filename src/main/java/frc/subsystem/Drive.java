@@ -235,7 +235,7 @@ public class Drive extends Subsystem {
 	synchronized public SwerveModuleState[] getSwerveModuleStates(){
 		SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
 		for(int i = 0; i<4; i++){
-			//TODO finish
+			//TODO finish (change 1d to use the actual motor velocity)
 			SwerveModuleState moduleState = new SwerveModuleState(1d, Rotation2d.fromDegrees(swerveEncoders[i].getPosition()));
 			swerveModuleState[i] = moduleState;
 		}
