@@ -235,8 +235,8 @@ public class Drive extends Subsystem {
 	synchronized public SwerveModuleState[] getSwerveModuleStates(){
 		SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
 		for(int i = 0; i<4; i++){
-			//TODO finish (change 1d to use the actual motor velocity)
-			SwerveModuleState moduleState = new SwerveModuleState(1d, Rotation2d.fromDegrees(swerveEncoders[i].getPosition()));
+			SwerveModuleState moduleState = new SwerveModuleState(swerveDriveMotors[i].getEncoder().getVelocity()*Constants.SwerveMeterPerRotation,
+					Rotation2d.fromDegrees(swerveEncoders[i].getPosition()));
 			swerveModuleState[i] = moduleState;
 		}
 		return swerveModuleState;
@@ -350,19 +350,7 @@ public class Drive extends Subsystem {
 			//System.out.println(i + ": " + tragetState.speedMetersPerSecond/Units.inchesToMeters(Constants.DriveHighSpeed)+ ", " + anglediff);
 		}
 
-
-
-		// leftFrontSparkSwerve.set(currentAngle[0] + diffRotation2ds[0].getDegrees());
-		// leftBackSparkSwerve.set(currentAngle[1] + diffRotation2ds[1].getDegrees());
-		// rightFrontSparkSwerve.set(currentAngle[2] + diffRotation2ds[2].getDegrees());
-		// rightBackSparkSwerve.set(currentAngle[3] + diffRotation2ds[3].getDegrees());
-		/*
-		leftFrontSpark.set(targetSpeeds[0]);
-		leftBackSpark.set(targetSpeeds[1]);
-		rightFrontSpark.set(targetSpeeds[2]);
-		rightBackSpark.set(targetSpeeds[3]);
-		*/
-
+		System.out.println(RobotTracker.getInstance().getPoseMeters());
 		
 	}
 	
