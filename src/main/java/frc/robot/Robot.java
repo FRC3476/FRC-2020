@@ -350,7 +350,7 @@ public class Robot extends TimedRobot {
 				
 				//normal drive fuction
 				visionManager.setState(VisionStatus.IDLE);
-				drive.swerveDrive(xbox.getRawAxis(0), xbox.getRawAxis(1),  xbox.getRawAxis(4));
+				drive.swerveDrive(-xbox.getRawAxis(0), xbox.getRawAxis(1),  xbox.getRawAxis(4));
 
 				if (shooterMode == 1){
 					blinkinLED.setColor(-0.29);

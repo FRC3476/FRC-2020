@@ -42,10 +42,10 @@ public final class Constants {
 	public static final int DriveRightBackSwerveId = 17;
 
 	// Locations for the swerve drive modules relative to the robot center.
-	public static final Translation2d LeftFrontLocation = new Translation2d(0.381, 0.381);
-	public static final Translation2d LeftBackLocation = new Translation2d(0.381, -0.381);
-	public static final Translation2d RightFrontLocation = new Translation2d(-0.381, 0.381);
-	public static final Translation2d RightBackLocation = new Translation2d(-0.381, -0.381);
+	public static final Translation2d LeftFrontLocation = new Translation2d(-0.381, 0.381);
+	public static final Translation2d LeftBackLocation = new Translation2d(-0.381, -0.381);
+	public static final Translation2d RightFrontLocation = new Translation2d(0.381, 0.381);
+	public static final Translation2d RightBackLocation = new Translation2d(0.381, -0.381);
 
 	//Shooter constants
 	public final static int ShooterMasterId = 30;

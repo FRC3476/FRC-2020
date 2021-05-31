@@ -278,7 +278,7 @@ public class Drive extends Subsystem {
 		if(Math.abs(x1)<0.25) x1 = 0;
 		if(Math.abs(x2)<0.25) x2 = 0;
 		if(Math.abs(y1)<0.25) y1 = 0;
-		swerveDrive(new ChassisSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*x1,Units.inchesToMeters(Constants.DriveHighSpeed)*x2, y1*8));
+		swerveDrive(new ChassisSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*x1,Units.inchesToMeters(Constants.DriveHighSpeed)*x2, y1*2));
 		//System.out.println(x1 + ", "  + x2 + ", " + y1);
 
 		
@@ -324,11 +324,13 @@ public class Drive extends Subsystem {
 		//SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, 0.1 ); //Units.inchesToMeters(Constants.DriveHighSpeed)
 
 		System.out.println(moduleStates);
+		boolean rotate = true;
 
+		if(chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0 && chassisSpeeds.omegaRadiansPerSecond == 0) rotate = false;
 
 		for (int i = 0; i < 4; i++){
-			//SwerveModuleState tragetState = SwerveModuleState.optimize(moduleStates[i], Rotation2d.fromDegrees(swerveEncoders[i].getPosition()));
-			SwerveModuleState tragetState = moduleStates[i];
+			SwerveModuleState tragetState = SwerveModuleState.optimize(moduleStates[i], Rotation2d.fromDegrees(swerveEncoders[i].getPosition()));
+			//SwerveModuleState tragetState = moduleStates[i];
 			double targetAngle = tragetState.angle.getDegrees();
 			double currentAngle = swerveEncoders[i].getPosition();
 
@@ -338,14 +340,14 @@ public class Drive extends Subsystem {
 
 			
 			
-			if(Math.abs(anglediff)<2){
+			if(Math.abs(anglediff)<1 || !rotate){
 				swerveMotors[i].set(0);
 			}else{
 				swervePID[i].setReference(swerveEncoders[i].getPosition() + anglediff, ControlType.kPosition);
 			}
-			swerveDriveMotors[i].set((tragetState.speedMetersPerSecond/Constants.DriveHighSpeed)*20);
+			swerveDriveMotors[i].set((tragetState.speedMetersPerSecond/Constants.DriveHighSpeed)*50*(Math.min(1, Math.max(0, 1-(Math.abs(anglediff)/20)))));
 
-			System.out.println(i + ": " + tragetState.speedMetersPerSecond/Units.inchesToMeters(Constants.DriveHighSpeed)+ ", " + anglediff);
+			//System.out.println(i + ": " + tragetState.speedMetersPerSecond/Units.inchesToMeters(Constants.DriveHighSpeed)+ ", " + anglediff);
 		}
 
 
@@ -425,33 +427,6 @@ public class Drive extends Subsystem {
 		//return (leftTalon.getMotorOutputVoltage() + rightTalon.getMotorOutputVoltage()
 		//		+ .getMotorOutputVoltage() + rightSlaveTalon.getMotorOutputVoltage()
 		//		+ rightSlave2Talon.getMotorOutputVoltage() + leftSlave2Talon.getMotorOutputVoltage()) / 6;
-	}
-
-	private void setWheelPower(DriveSignal setVelocity) {
-		//leftTalon.set(ControlMode.PercentOutput, setVelocity.rightVelocity);
-		//rightTalon.set(ControlMode.PercentOutput, setVelocity.leftVelocity);
-		//System.out.println(leftSpark.getLastError());
-		
-
-		//System.out.println(setVelocity.leftVelocity + ", " + setVelocity.rightVelocity);
-
-		
-		leftSpark.set(setVelocity.leftVelocity);
-		leftSparkSlave.set(setVelocity.leftVelocity); //tmp //TODO 
-
-		rightSpark.set(setVelocity.rightVelocity);
-		rightSparkSlave.set(setVelocity.rightVelocity); //tmp
-
-	/*	System.out.println(
-			"Left Spark: " + leftSpark.getOutputCurrent() + "\n" +
-			"Left Slave: " + leftSparkSlave.getOutputCurrent() + "\n" +
-			"Right Spark: " + rightSpark.getOutputCurrent() + "\n" +
-			"Right Slave: " + rightSparkSlave.getOutputCurrent() + "\n"
-		); */
-		//System.out.println("velo: " + setVelocity.leftVelocity);
-
-		//leftSparkPID.setReference(setVelocity.leftVelocity, ControlType.kDutyCycle);
-		//rightSparkPID.setReference(setVelocity.rightVelocity, ControlType.kDutyCycle);
 	}
 
 	public boolean hasStickyFaults()
