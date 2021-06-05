@@ -1,10 +1,12 @@
 package frc.auton;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.subsystem.VisionManager.VisionStatus;
 import frc.utility.control.*;
+import frc.utility.control.motion.Path;
 import frc.utility.math.*;
 
 @SuppressWarnings("unused")
@@ -108,5 +110,7 @@ public abstract class TemplateAuto implements Runnable {
 		vision.setState(VisionStatus.IDLE);
 
 	}
+
+
 
 }
