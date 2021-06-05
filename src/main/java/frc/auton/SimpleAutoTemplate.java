@@ -16,7 +16,7 @@ public class SimpleAutoTemplate extends SimpleAutonomous {
         For reference here are the methods that you can use. You should replace the stuff in brackets with a value of your own.
             1. moveForward([distanceInInches]);
             2. moveBackward([distanceInInches]);
-            3. turn([angleInDegrees]);
+            3. turn([angleInDegrees]); Note a negative angle means turn left and a positive angle means turn right.
         */
 
 
