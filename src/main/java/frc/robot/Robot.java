@@ -358,7 +358,7 @@ public class Robot extends TimedRobot {
 			}
 
 			//Turn Shooter Flywheel On with distance detection
-			if (xbox.getRawButton(6)){
+			if (buttonPanel.getRawButton(6)){
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff ){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
