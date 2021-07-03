@@ -22,6 +22,15 @@ public class SimpleAutoTemplate extends SimpleAutonomous {
 
 
 
+        moveBackward(13.5);
+
+        turn(90);
+
+
+        moveForward(10);turn(90);moveForward(10);
+
+
+
 
         //This needs to be the last line of code. Don't remove it or put anything below it.
         //This tells the robot the autonomous is done and that the robot can stop

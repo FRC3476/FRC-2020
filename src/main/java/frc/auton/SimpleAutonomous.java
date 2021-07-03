@@ -2,9 +2,7 @@ package frc.auton;
 
 import javax.annotation.Nonnegative;
 
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.utility.control.motion.Path;
-import frc.utility.math.RigidTransform2D;
 import frc.utility.math.Rotation2D;
 import frc.utility.math.Translation2D;
 
@@ -45,7 +43,6 @@ public abstract class SimpleAutonomous extends TemplateAuto {
     /**
      * This method will move the robot forward by the specified inches at the default speed.
      * @param inches How far the robot should move forward (Positive values only)
-     * @param speedInchesPerSecond The speed the robot should travel at (Positive values only)
      */
     public void moveForward(@Nonnegative double inches){
 
@@ -87,7 +84,6 @@ public abstract class SimpleAutonomous extends TemplateAuto {
     /**
      * This method will move the robot backwards by the specified inches at the default speed.
      * @param inches How far the robot should move backwards (Positive values only)
-     * @param speedInchesPerSecond The speed the robot should travel at (Positive values only)
      */
     public void moveBackward(@Nonnegative double inches){
         inches = -inches;
