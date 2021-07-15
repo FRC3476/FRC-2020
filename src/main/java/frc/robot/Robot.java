@@ -12,7 +12,6 @@ import frc.subsystem.Hopper.SnailMotorState;
 import frc.subsystem.Intake.DeployState;
 import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.VisionManager.VisionStatus;
-//import frc.robot.subsystem.Drive;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -218,10 +217,10 @@ public class Robot extends TimedRobot {
 		}
 
 		//option = new ShootAndMove(startX);
-		option = new EightBallOppTrench(275);//TenBall(275);
+		// option = new EightBallOppTrench(275);//TenBall(275);
 
-		if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
-		else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
+		// if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
+		// else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
 
 	
 		auto = new Thread(option);
