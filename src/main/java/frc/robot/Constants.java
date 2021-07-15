@@ -5,6 +5,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Units;
+
 import com.revrobotics.ColorMatch;
 
 public final class Constants {
@@ -40,6 +42,8 @@ public final class Constants {
 	public static final int DriveLeftBackSwerveId = 15;
 	public static final int DriveRightFrontSwerveId = 16;
 	public static final int DriveRightBackSwerveId = 17;
+	public static final double SwerveInchesPerRotation = 4.12507923d/6d;
+	public static final double SwerveMeterPerRotation = Units.inchesToMeters(SwerveInchesPerRotation);
 
 	// Locations for the swerve drive modules relative to the robot center.
 	public static final Translation2d LeftFrontLocation = new Translation2d(-0.381, 0.381);
@@ -231,6 +235,7 @@ public final class Constants {
 
 
 	public static final int BlinkinLEDPeriod = 50;
+	
 	
 	private Constants() {
 	}
