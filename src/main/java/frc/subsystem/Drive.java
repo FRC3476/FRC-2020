@@ -2,6 +2,23 @@
 
 package frc.subsystem;
 
+import frc.robot.Constants;
+import frc.utility.LazyCANSparkMax;
+import frc.utility.NavXMPX_Gyro;
+import frc.utility.OrangeUtility;
+import frc.utility.control.RateLimiter;
+import frc.utility.control.SynchronousPid;
+import frc.utility.control.motion.Path;
+import frc.utility.control.motion.PurePursuitController;
+import frc.utility.math.RigidTransform2D;
+import frc.utility.math.Rotation2D;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.sound.midi.SysexMessage;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANEncoder;
@@ -13,10 +30,16 @@ import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.HolonomicDriveController;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
 import frc.utility.LazyCANSparkMax;
@@ -28,11 +51,10 @@ import frc.utility.control.motion.Path;
 import frc.utility.control.motion.PurePursuitController;
 import frc.utility.math.Rotation2D;
 
-
 public class Drive extends Subsystem {
 
 	public enum DriveState {
-		TELEOP, PUREPURSUIT, TURN, HOLD, DONE
+		TELEOP, PUREPURSUIT, TURN, HOLD, DONE, RAMSETE
 	}
 
 	public static class DriveSignal {
@@ -401,6 +423,36 @@ public class Drive extends Subsystem {
 		updatePurePursuit();
 	}
 
+	double autoStartTime;
+	HolonomicDriveController controller = new HolonomicDriveController(
+  		new PIDController(1, 0, 0), new PIDController(1, 0, 0),
+  		new ProfiledPIDController(1, 0, 0,
+    	new TrapezoidProfile.Constraints(6.28, 3.14)));
+	Trajectory currentAutoTrajectory;
+
+	public synchronized void setAutoPath(Trajectory trajectory) {
+		driveState = DriveState.RAMSETE;
+		this.currentAutoTrajectory = trajectory;
+		autoStartTime = Timer.getFPGATimestamp();
+		configAuto();
+		configCoast();
+		updateRamsete();
+	}
+
+	private void updateRamsete() {
+		Trajectory.State goal = currentAutoTrajectory.sample(Timer.getFPGATimestamp()-autoStartTime);
+		System.out.println(goal);
+		ChassisSpeeds adjustedSpeeds = controller.calculate(RobotTracker.getInstance().getPoseMeters(), goal, Rotation2d.fromDegrees(0));
+		swerveDrive(adjustedSpeeds);
+		//System.out.println(ramseteController.atReference());
+		//System.out.println("target speed" + Units.metersToInches(wheelspeeds.leftMetersPerSecond) + " " + Units.metersToInches(wheelspeeds.rightMetersPerSecond) + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
+		//TODO: not working
+		if(controller.atReference() && (Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
+			driveState = DriveState.DONE;
+			stopMovement();
+		}
+	}
+
 	public void setBrakeState(NeutralMode mode) {
 		//leftTalon.setNeutralMode(mode);
 		//rightTalon.setNeutralMode(mode);
@@ -495,6 +547,12 @@ public class Drive extends Subsystem {
 			case HOLD:
 				hold();
 				break;
+			case DONE:
+				break;
+			case RAMSETE:
+				updateRamsete();
+				break;
+				
 		}
 		
 	}
