@@ -16,6 +16,9 @@ import frc.utility.math.Rotation2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.sound.midi.SysexMessage;
 
@@ -173,12 +176,12 @@ public class Drive extends Subsystem {
 		swerveDriveMotors[3] = rightBackSpark;
 
 
-
+		
 		for(int i = 0; i <4; i++){
 			swerveEncoders[i] = swerveMotors[i].getEncoder();
 			swerveEncoders[i].setPositionConversionFactor(8.1466);
 			swerveMotors[i].getAnalog(AnalogMode.kAbsolute).setPositionConversionFactor(105.88);
-			angleOffsets[i] = 0; // -swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
+			
 			swervePID[i] = swerveMotors[i].getPIDController();
 			swervePID[i].setP(kp);
 			swervePID[i].setD(kd);
@@ -190,12 +193,23 @@ public class Drive extends Subsystem {
 		
 		}
 
+
 		leftFrontSparkEncoderSwerve = leftFrontSparkSwerve.getEncoder();
 		leftBackSparkEncoderSwerve  = leftBackSparkSwerve.getEncoder();
 		rightFrontSparkEncoderSwerve = rightFrontSparkSwerve.getEncoder();
 		rightBackSparkEncoderSwerve = rightBackSparkSwerve.getEncoder();
-		
-		
+
+
+		ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
+		Runnable task = new Runnable() {
+			public void run() {
+				for(int i = 0; i <4; i++){
+					swerveEncoders[i].setPosition(-swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition());
+
+				}
+			}
+		  };
+		  worker.schedule(task, 1, TimeUnit.MILLISECONDS);
 
 		// Creating kinematics object using the module locations
 		swerveKinematics = new SwerveDriveKinematics(Constants.LeftFrontLocation, Constants.LeftBackLocation, Constants.RightFrontLocation,Constants.RightBackLocation);
@@ -297,10 +311,10 @@ public class Drive extends Subsystem {
 
 	public void swerveDrive(double x1, double x2, double y1){
 
-		if(Math.abs(x1)<0.25) x1 = 0;
-		if(Math.abs(x2)<0.25) x2 = 0;
-		if(Math.abs(y1)<0.25) y1 = 0;
-		swerveDrive(new ChassisSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*x1,Units.inchesToMeters(Constants.DriveHighSpeed)*x2, y1*2));
+		if(Math.abs(x1)<0.2) x1 = 0;
+		if(Math.abs(x2)<0.2) x2 = 0;
+		if(Math.abs(y1)<0.2) y1 = 0;
+		swerveDrive(new ChassisSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*scaleJoystickValues(x1, 1),Units.inchesToMeters(Constants.DriveHighSpeed)*scaleJoystickValues(x2, 1), scaleJoystickValues(y1, 1)*2));
 		//System.out.println(x1 + ", "  + x2 + ", " + y1);
 
 		
@@ -315,8 +329,6 @@ public class Drive extends Subsystem {
 	}
 
 	int temp = 1;
-
-	public double[] angleOffsets = new double[4];
 
 		
 	double doubleMod(double x, double y){
@@ -345,7 +357,7 @@ public class Drive extends Subsystem {
 		SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 		//SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, 0.1 ); //Units.inchesToMeters(Constants.DriveHighSpeed)
 
-		System.out.println(moduleStates);
+		//System.out.println(moduleStates);
 		boolean rotate = true;
 
 		if(chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0 && chassisSpeeds.omegaRadiansPerSecond == 0) rotate = false;
@@ -360,7 +372,7 @@ public class Drive extends Subsystem {
 
 			double anglediff = doubleMod((targetAngle - currentAngle)+180, 360)-180;
 
-			
+			//System.out.println(i + ": angle offset: " + "N/a" + ", curret angle: " + swerveEncoders[i].getPosition() + ", current anjusted angle: " + currentAngle + " set point: " + (swerveEncoders[i].getPosition() + anglediff));
 			
 			if(Math.abs(anglediff)<1 || !rotate){
 				swerveMotors[i].set(0);
@@ -370,9 +382,10 @@ public class Drive extends Subsystem {
 			swerveDriveMotors[i].set((tragetState.speedMetersPerSecond/Constants.DriveHighSpeed)*50*(Math.min(1, Math.max(0, 1-(Math.abs(anglediff)/20)))));
 
 			//System.out.println(i + ": " + tragetState.speedMetersPerSecond/Units.inchesToMeters(Constants.DriveHighSpeed)+ ", " + anglediff);
+			
 		}
-
-		System.out.println(RobotTracker.getInstance().getPoseMeters());
+		
+		//System.out.println(RobotTracker.getInstance().getPoseMeters());
 		
 	}
 	

@@ -130,9 +130,6 @@ public class Robot extends TimedRobot {
 
 		Thread.currentThread().setPriority(7);
 		blinkinLED.setColor(0.89);
-		for(int i =0; i<4; i++){
-			drive.angleOffsets[i] = -drive.swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
-		}
 		
 	}
 

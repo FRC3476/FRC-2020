@@ -68,7 +68,7 @@ public class RobotTracker extends Subsystem {
    	*/
 	@Override
 	public void update() {
-		swerveDriveOdometry.update(Rotation2d.fromDegrees(drive.getAngle()), drive.getSwerveModuleStates());
+		//swerveDriveOdometry.update(Rotation2d.fromDegrees(drive.getAngle()), drive.getSwerveModuleStates());
 	}
 
 	/**
