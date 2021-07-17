@@ -6,7 +6,7 @@ import frc.utility.math.Translation2D;
 public class SimpleAutoTemplate extends SimpleAutonomous {
 
     public SimpleAutoTemplate() {
-        super(new Translation2D(), Rotation2D.fromDegrees(0), 40);
+        super(new Translation2D(), Rotation2D.fromDegrees(180), 40);
     }
 
     @Override
@@ -18,17 +18,6 @@ public class SimpleAutoTemplate extends SimpleAutonomous {
             2. moveBackward([distanceInInches]);
             3. turn([angleInDegrees]); Note a negative angle means turn left and a positive angle means turn right.
         */
-
-
-
-
-        moveBackward(13.5);
-
-        turn(90);
-
-
-        moveForward(10);turn(90);moveForward(10);
-
 
 
 

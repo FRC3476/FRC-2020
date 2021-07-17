@@ -193,14 +193,14 @@ public class Drive extends Subsystem {
 	}
 
 
-	private void configBrake() {
+	public void configBrake() {
 		leftSpark.setIdleMode(IdleMode.kBrake);
 		rightSpark.setIdleMode(IdleMode.kBrake);
 		leftSparkSlave.setIdleMode(IdleMode.kBrake);
-		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
+		rightSparkSlave.setIdleMode(IdleMode.kBrake);  
 	}
 
-	private void configCoast() {
+	public void configCoast() {
 		leftSpark.setIdleMode(IdleMode.kCoast);
 		rightSpark.setIdleMode(IdleMode.kCoast);
 		leftSparkSlave.setIdleMode(IdleMode.kCoast);
@@ -553,10 +553,7 @@ public class Drive extends Subsystem {
 		leftSparkSlave.follow(leftSpark);
 		rightSparkSlave.follow(rightSpark);
 
-		leftSpark.setIdleMode(IdleMode.kBrake);
-		rightSpark.setIdleMode(IdleMode.kBrake);
-		leftSparkSlave.setIdleMode(IdleMode.kBrake);
-		rightSparkSlave.setIdleMode(IdleMode.kBrake); 
+		configBrake();
 
 		// leftSparkEncoder.setInverted(true);
 		// rightSparkEncoder.setInverted(true);
@@ -833,7 +830,8 @@ public class Drive extends Subsystem {
 		//deltaSpeed = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(deltaSpeed), 0, 180, 0, Constants.DriveHighSpeed), deltaSpeed);
 		//System.out.println("error " + error + " speed " + (getLeftSpeed()-getRightSpeed()));
 
-		if (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
+		//if (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
+		if (Math.abs(error) < 8 && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
 			setWheelVelocity(new DriveSignal(0, 0));
 			
 			isAiming = false;
@@ -859,6 +857,7 @@ public class Drive extends Subsystem {
 	//	System.out.println("updating pure presuit");
 		AutoDriveSignal signal = autonomousDriver.calculate(RobotTracker.getInstance().getOdometry());
 		if (signal.isDone) {
+			setWheelVelocity(signal.command);
 			synchronized (this) {
 				driveState = DriveState.DONE;
 			}

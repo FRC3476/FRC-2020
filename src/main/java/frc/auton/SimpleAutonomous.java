@@ -78,7 +78,7 @@ public abstract class SimpleAutonomous extends TemplateAuto {
         path.addPoint(lastTranslation2d, speedInchesPerSecond);
         drive.setAutoPath(path, true);
 
-        
+        while(!drive.isFinished()) if(isDead()) return;
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class SimpleAutonomous extends TemplateAuto {
         path.addPoint(lastTranslation2d, defaultSpeed);
         drive.setAutoPath(path, true);
 
-        
+        while(!drive.isFinished()) if(isDead()) return;
     }
 
     /**

@@ -470,8 +470,20 @@ public class Robot extends TimedRobot {
 
 		killAuto();
 		
+		//TODO: REMOVE FOLLOWING IF YOU HAVE ISSUES
+		drive.configBrake();
 
+		ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
+		Runnable task = new Runnable() {
+			public void run() {
+				for(int i = 0; i <4; i++){
+					drive.configCoast();
 
+				}
+			}
+		  };
+		worker.schedule(task, 2, TimeUnit.MILLISECONDS);
+		// --------UNTIL HERE-----------
 		
 		shooter.pause();
 		climber.pause();
