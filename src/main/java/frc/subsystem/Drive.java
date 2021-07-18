@@ -311,10 +311,29 @@ public class Drive extends Subsystem {
 
 	public void swerveDrive(double x1, double x2, double y1){
 
-		if(Math.abs(x1)<0.2) x1 = 0;
-		if(Math.abs(x2)<0.2) x2 = 0;
-		if(Math.abs(y1)<0.2) y1 = 0;
-		swerveDrive(new ChassisSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*scaleJoystickValues(x1, 1),Units.inchesToMeters(Constants.DriveHighSpeed)*scaleJoystickValues(x2, 1), scaleJoystickValues(y1, 1)*2));
+		if(Math.abs(x1)<0.05) x1 = 0;
+		if(Math.abs(x2)<0.05) x2 = 0;
+		if(Math.abs(y1)<0.1) y1 = 0;
+
+		double amplitude = Math.sqrt(x1*x1 + x2*x2);
+		if(amplitude<Constants.DriveStrafeDeadZone){
+			x1 = 0;
+			x2 = 0;
+		} else{
+
+			double angle = Math.atan2(x1, x2);
+			double minx1 = Math.sin(angle)*Constants.DriveStrafeDeadZone;
+			double minx2 = Math.cos(angle)*Constants.DriveStrafeDeadZone;
+
+			x1 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x1), Math.abs(minx1), 1, 0, 1), x1);
+
+			x2 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x2), Math.abs(minx2), 1, 0, 1), x2);
+		}
+
+		y1 = scaleJoystickValues(y1, 1);
+
+
+		swerveDrive(new ChassisSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*x1,Units.inchesToMeters(Constants.DriveHighSpeed)*x2, y1*2));
 		//System.out.println(x1 + ", "  + x2 + ", " + y1);
 
 		

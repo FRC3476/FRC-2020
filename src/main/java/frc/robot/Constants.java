@@ -112,7 +112,8 @@ public final class Constants {
 	
 	// Controller
 
-	public static final double[] MinControllerInput = {0.2, 0.2};
+	public static final double[] MinControllerInput = {0.15, 0.15};
+	public static final double DriveStrafeDeadZone = 0.15;
 	public static final double MaxControllerInput = 1;
 	public static final double MinControllerOutput = 0;
 	public static final double MaxControllerOutput = 1;
@@ -235,6 +236,7 @@ public final class Constants {
 
 
 	public static final int BlinkinLEDPeriod = 50;
+	
 	
 	
 	private Constants() {
