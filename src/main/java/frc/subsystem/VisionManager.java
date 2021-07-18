@@ -111,9 +111,9 @@ public class VisionManager extends Subsystem {
 	}
 
 	public synchronized void setState(VisionStatus state){
-		visionStatus = state;
-		if(state == VisionStatus.IDLE)
+		if(state == VisionStatus.IDLE && visionStatus != VisionStatus.IDLE)
 		{
+			//Turn everything off the first time we go into idle
 			drive.driveState = Drive.DriveState.DONE;
 			shoot = false;
 			shooter.setFiring(false);
@@ -122,6 +122,7 @@ public class VisionManager extends Subsystem {
 
 		}
 
+		visionStatus = state;
 
 
 	}

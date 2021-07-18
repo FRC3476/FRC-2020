@@ -330,24 +330,30 @@ public class Robot extends TimedRobot {
 
 			}
 			
-			//should we start shooting with aiming
-			if(xbox.getRawAxis(2) > 0.5 && !visionOff){
-				visionManager.setState(VisionStatus.WIN);
-			
-			} else{
-
-				//check if vision is off or if we are in manuel mode and should shoot without aiming
+			//do we want to shoot
+			if(xbox.getRawAxis(2)>0.5 || stick.getRawButton(1)){
+				//do we not want aiming want aiming
 				if(visionOff || stick.getRawButton(1)){
 					shooter.setFiring(true);
 					hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
 					hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 					blinkinLED.setColor(0.77);
+					visionManager.setState(VisionStatus.IDLE);
+
+				} else{
+					//We want to do auto aiming (This should shoot by itself if no target is visble)
+					visionManager.setState(VisionStatus.WIN);
 				}
-				
-				//normal drive fuction
+			} else{
+				visionManager.setState(VisionStatus.IDLE);
+			}
+
+
+			//do normal drive fuction if Vision is idle
+			if(visionManager.getState().equals(VisionStatus.IDLE)){
 				visionManager.setState(VisionStatus.IDLE);
 				drive.swerveDrive(-xbox.getRawAxis(0), xbox.getRawAxis(1),  xbox.getRawAxis(4));
-
+	
 				if (shooterMode == 1){
 					blinkinLED.setColor(-0.29);
 				} else if (shooterMode == 2){
@@ -355,12 +361,42 @@ public class Robot extends TimedRobot {
 				} else if (shooterMode == 3){
 					blinkinLED.setColor(-0.15);
 				}
-
 			}
+
+
+
+			// //should we start shooting with aiming
+			// if(xbox.getRawAxis(2) > 0.5 && !visionOff){
+			// 	visionManager.setState(VisionStatus.WIN);
+			
+			// } else{
+
+			// 	//check if vision is off or if we are in manuel mode and should shoot without aiming
+			// 	if((xbox.getRawAxis(2) > 0.5 && visionOff) || stick.getRawButton(1)){
+			// 		shooter.setFiring(true);
+			// 		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+			// 		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+			// 		blinkinLED.setColor(0.77);
+			// 	}
+				
+			// 	//normal drive fuction
+			// 	visionManager.setState(VisionStatus.IDLE);
+			// 	drive.swerveDrive(-xbox.getRawAxis(0), xbox.getRawAxis(1),  xbox.getRawAxis(4));
+
+			// 	if (shooterMode == 1){
+			// 		blinkinLED.setColor(-0.29);
+			// 	} else if (shooterMode == 2){
+			// 		blinkinLED.setColor(-0.23);
+			// 	} else if (shooterMode == 3){
+			// 		blinkinLED.setColor(-0.15);
+			// 	}
+
+			// }
+
 
 			//Turn Shooter Flywheel On with distance detection
 			if (buttonPanel.getRawButton(6)){
-				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings
+				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff ){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
 					shooter.setSpeed(sp.getFlyWheelSpeed());
@@ -369,17 +405,18 @@ public class Robot extends TimedRobot {
 			
 				// use manuel selection if a target is not found
 				} else if(!targetFound){
+					//the !targetFound means we should not go into manuel mode if we previously found our target
 					shooter.setSpeed(shooterSpeed); 
 					shooter.setHoodAngle(hoodPosition);
 				}
 
-			//Turn shooter on with manuel settings 
+			//Turn shooter flywheel on with manuel settings 
 			} else if(buttonPanel.getRawButton(5)){
 				shooter.setSpeed(shooterSpeed); 
 				shooter.setHoodAngle(hoodPosition);
 				
 			} else {
-				shooter.setSpeed(0); //Turns off shooter
+				shooter.setSpeed(0); //Turns off shooter flywheel
 				targetFound = false;
 			}
 			
@@ -391,9 +428,8 @@ public class Robot extends TimedRobot {
 
 			}
 
-			
-			DeployState intakeDeployState = intake.getDeployState();
-			if(visionManager.getState() == VisionManager.VisionStatus.IDLE && (true || DeployState.DEPLOY == intakeDeployState)) {
+			if(!(xbox.getRawAxis(2)>0.5 || stick.getRawButton(1))) {
+				//We're not shooting so use normal intake/hopper controlls
 				if (buttonPanel.getRawButton(10)){
 					//eject all
 					intake.setIntakeState(IntakeState.EJECT);
@@ -423,6 +459,7 @@ public class Robot extends TimedRobot {
 				}
 			}
 
+			//Climber controlls
 			if (stick.getRawButton(9) && stick.getRawButton(10)){
 				climber.up();
 			} else if (stick.getRawButton(12)) {
