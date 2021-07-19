@@ -211,11 +211,11 @@ public final class Constants {
 
 	public static final int wheelSpinnerId = 58; 
 	public static final double wheelSpinnerLevelTwoSpeed = 1.0;
-	public static final double wheelSpinnerLevelThreeSpeed = 0.5; 
+	public static final double wheelSpinnerLevelThreeSpeed = 0.1; 
 	public static final double colorConfirmCycles = 10;
 
 	public static final int spinnerWheelReduction = 1/160;
-	public static final int spinnerSolenoidID = 3; 
+	public static final int spinnerSolenoidID = 0; 
 	
 
 	public static final int LevelThreeColorOffset = 2;

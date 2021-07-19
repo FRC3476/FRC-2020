@@ -298,7 +298,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 			//System.out.println("angle to target " + (drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()));
-			System.out.println("distance: " + limelight.getDistance());
+			//System.out.println("distance: " + limelight.getDistance());
 			ArrayList<Double> times = new ArrayList<Double>();
 			
 			if(profileTeleop) times.add(Timer.getFPGATimestamp());
@@ -472,9 +472,9 @@ public class Robot extends TimedRobot {
 
 			if(stick.getRawButton(7) && stick.getRawButton(8)) climber.release();
 
-
-			if(buttonPanel.getRisingEdge(8)){
+			if(buttonPanel.getRisingEdge(9)){
 				controlPanelDeployed = !controlPanelDeployed;
+				System.out.println("Control panel deploy: " + controlPanelDeployed);
 				if(controlPanelDeployed){
 					controlPanel.deploy();
 				} else{
@@ -482,20 +482,20 @@ public class Robot extends TimedRobot {
 				}
 			}
 
-			if(buttonPanel.getRisingEdge(10)){
-				controlPanel.doLevelTwoSpin();
-			}
-
 			if(buttonPanel.getRisingEdge(11)){
-				controlPanel.stopSpin()
+				controlPanel.doLevelTwoSpin();
 			}
 
-			if(buttonPanel.getFallingEdge(10)){
-				controlPanel.doLevelTwoSpin();
+			if(buttonPanel.getRisingEdge(12)){
+				controlPanel.doLevelThreeSpin();;
 			}
 
 			if(buttonPanel.getFallingEdge(11)){
-				controlPanel.stopSpin()
+				controlPanel.stopSpin();;
+			}
+
+			if(buttonPanel.getFallingEdge(12)){
+				controlPanel.stopSpin();
 			}
 
 			

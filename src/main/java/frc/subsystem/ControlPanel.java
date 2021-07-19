@@ -1,5 +1,6 @@
 package frc.subsystem;
 
+import frc.auton.TurnTest;
 import frc.robot.Constants;
 import frc.utility.LazyCANSparkMax;
 
@@ -89,7 +90,7 @@ public class ControlPanel extends Subsystem {
 //-------------------------------------------------------------
 
 	//TODO: make not null 
-	private static final ControlPanel instance = null;//new ControlPanel(); 
+	private static final ControlPanel instance = new ControlPanel(); 
 	public static ControlPanel getInstance() {
 		return instance;
 	}
@@ -136,6 +137,9 @@ public class ControlPanel extends Subsystem {
 
 	}
 
+	char startColor = 'E';
+	boolean leftStartColor = false;
+	boolean foundStartColorAgain = false;
 	public synchronized void doLevelThreeSpin() {
 		feildColorData = getFeildColorData();
 
@@ -153,6 +157,10 @@ public class ControlPanel extends Subsystem {
 
 			System.out.println("Feild Color Data: " + feildColorData);
 			System.out.println("Using Color: " + usablefeildColorData);
+			startColor = getColorSensorData();
+			leftStartColor = false;
+			foundStartColorAgain = false;
+
 			spinnerState = SpinnerState.FINDINGCOLOR;
 
 		} else {
@@ -206,11 +214,30 @@ public class ControlPanel extends Subsystem {
 
 		case FINDINGCOLOR:
 			colorString = getColorSensorData();
-
-			if (colorString != usablefeildColorData) {
+			if(colorString != 'U'){
+				if(!leftStartColor){
+					spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
+	
+					if(colorString != startColor){
+						leftStartColor = true;
+					}
+	
+				} else if (!foundStartColorAgain){
+					spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
+	
+					if(colorString == startColor){
+						foundStartColorAgain = true;
+					}
+				} 
+			}
+			
+			System.out.println("start: " +leftStartColor + " again: " + foundStartColorAgain);
+			
+			if ((colorString != usablefeildColorData)) {
 				spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
 
-			} else {
+			} else if(foundStartColorAgain && leftStartColor) {
+
 				colorConfirmCycle = 0;
 				spinnerState = SpinnerState.CONFIRMINGCOLOR;
 
