@@ -121,11 +121,11 @@ public class ControlPanel extends Subsystem {
 	}
 
 	public synchronized void deploy() {
-		spinnerSolenoid.set(false);
+		spinnerSolenoid.set(true);
 	}
 
 	public synchronized void unDeploy() {
-		spinnerSolenoid.set(true);
+		spinnerSolenoid.set(false);
 
 	}
 

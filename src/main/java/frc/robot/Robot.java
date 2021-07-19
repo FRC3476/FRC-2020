@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import java.util.concurrent.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.ResourceBundle.Control;
 
 import frc.utility.Controller;
 import frc.utility.Limelight;
@@ -70,6 +71,7 @@ public class Robot extends TimedRobot {
 
 	boolean firstTeleopRun = true;
 	boolean visionOff = false;
+	boolean controlPanelDeployed = false;
 
 	private boolean shooterSetOn = false;
 	private boolean intakeSetDeployed = true;
@@ -169,7 +171,7 @@ public class Robot extends TimedRobot {
 		shooter.start();
 		shooter.setSpeed(0);
 		climber.start();
-		// controlPanel.start();
+		controlPanel.start();
 		hopper.start();
 		intake.start();
 		// blinkinLED.start()
@@ -469,7 +471,35 @@ public class Robot extends TimedRobot {
 			}
 
 			if(stick.getRawButton(7) && stick.getRawButton(8)) climber.release();
+
+
+			if(buttonPanel.getRisingEdge(8)){
+				controlPanelDeployed = !controlPanelDeployed;
+				if(controlPanelDeployed){
+					controlPanel.deploy();
+				} else{
+					controlPanel.unDeploy();
+				}
+			}
+
+			if(buttonPanel.getRisingEdge(10)){
+				controlPanel.doLevelTwoSpin();
+			}
+
+			if(buttonPanel.getRisingEdge(11)){
+				controlPanel.stopSpin()
+			}
+
+			if(buttonPanel.getFallingEdge(10)){
+				controlPanel.doLevelTwoSpin();
+			}
+
+			if(buttonPanel.getFallingEdge(11)){
+				controlPanel.stopSpin()
+			}
+
 			
+
 		}
 
 	@Override
@@ -519,7 +549,7 @@ public class Robot extends TimedRobot {
 		
 		shooter.pause();
 		climber.pause();
-		//controlPanel.pause();
+		controlPanel.pause();
 		hopper.pause();
 		intake.pause();
 	}

@@ -162,7 +162,7 @@ public class Drive extends Subsystem {
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(2, 0, 0, 0); //P=1.0 OR 0.8
+		turnPID = new SynchronousPid(2, 0, 16, 0); //P=1.0 OR 0.8
 		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
 		turnPID.setSetpoint(0);
 		turnPIDAuto = new SynchronousPid(4, 0, 0, 0); //P=1.0 OR 0.8
@@ -821,7 +821,7 @@ public class Drive extends Subsystem {
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
 		} else {
 			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 7.5), deltaSpeed); //2.6
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed); //2.6
 		}
 		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
 
@@ -831,7 +831,7 @@ public class Drive extends Subsystem {
 		//System.out.println("error " + error + " speed " + (getLeftSpeed()-getRightSpeed()));
 
 		//if (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
-		if (Math.abs(error) < 8 && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
+		if (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
 			setWheelVelocity(new DriveSignal(0, 0));
 			
 			isAiming = false;

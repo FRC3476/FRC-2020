@@ -195,7 +195,7 @@ public final class Constants {
 
 	//COMP
 	public static final double cameraYOffset = 6.36;//5.310 + 1.25;//5.310 + 1.25;
-	public static final double cameraXOffset = -1.22;//-4.815 + 1.6 - 1.0;
+	public static final double cameraXOffset = 0;//-1.22;//-4.815 + 1.6 - 1.0;
 
 
 
