@@ -204,7 +204,10 @@ public class Drive extends Subsystem {
 		Runnable task = new Runnable() {
 			public void run() {
 				for(int i = 0; i <4; i++){
-					swerveEncoders[i].setPosition(-swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition());
+					double offset = -swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
+					System.out.println(i + ": " + offset);
+					System.out.println(swerveEncoders[i].setPosition(offset));
+					
 
 				}
 			}
@@ -308,9 +311,65 @@ public class Drive extends Subsystem {
 	}
 
 
-
+	int testi = 0;
 	public void swerveDrive(double x1, double x2, double y1){
 
+		// if(Math.abs(x1)<0.2) x1 = 0;
+		// if(Math.abs(x2)<0.2) x2 = 0;
+		if(Math.abs(y1)<0.2) y1 = 0;
+
+		double amplitude = Math.sqrt(x1*x1 + x2*x2);
+		if(amplitude<Constants.DriveStrafeDeadZone){
+			x1 = 0;
+			x2 = 0;
+
+		} else{
+
+			double angle = Math.atan2(x1, x2);
+			double minx1 = Math.sin(angle)*Constants.DriveStrafeDeadZone;
+			double minx2 = Math.cos(angle)*Constants.DriveStrafeDeadZone;
+
+			System.out.println("min controller: x: " + minx1 + " y: " +  minx2);
+
+			x1 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x1), Math.abs(minx1), 1, 0, 1), x1);
+
+			x2 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x2), Math.abs(minx2), 1, 0, 1), x2);
+
+			x1 = Math.copySign(x1*x1, x1);
+			x2 = Math.copySign(x2*x2, x2);
+
+		}
+
+		y1 = scaleJoystickValues(y1, 1);
+
+		ChassisSpeeds chassisSpeeds = new ChassisSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*x1,Units.inchesToMeters(Constants.DriveHighSpeed)*x2, y1*2);
+
+		testi++;
+
+		if(testi == 100){
+			testi= 0;
+
+			// for(int i = 0; i <4; i++){
+			// 	double offset = -swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
+			// 	System.out.println(i + ": " + offset);
+			// 	System.out.println(swerveEncoders[i].setPosition(offset));
+				
+
+			// }
+		}
+
+	
+
+		swerveDrive(chassisSpeeds);
+		//System.out.println(x1 + ", "  + x2 + ", " + y1);
+
+		
+
+	}
+
+	public void swerveDriveFeildRelitive(double x1, double x2, double y1){
+
+		
 		if(Math.abs(x1)<0.05) x1 = 0;
 		if(Math.abs(x2)<0.05) x2 = 0;
 		if(Math.abs(y1)<0.1) y1 = 0;
@@ -325,26 +384,20 @@ public class Drive extends Subsystem {
 			double minx1 = Math.sin(angle)*Constants.DriveStrafeDeadZone;
 			double minx2 = Math.cos(angle)*Constants.DriveStrafeDeadZone;
 
+			System.out.println("min controller: x: " + minx1 + " y: " +  minx2);
+
 			x1 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x1), Math.abs(minx1), 1, 0, 1), x1);
 
 			x2 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x2), Math.abs(minx2), 1, 0, 1), x2);
+
+			x1 = Math.copySign(x1*x1, x1);
+			x2 = Math.copySign(x2*x2, x2);
 		}
 
 		y1 = scaleJoystickValues(y1, 1);
 
 
-		swerveDrive(new ChassisSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*x1,Units.inchesToMeters(Constants.DriveHighSpeed)*x2, y1*2));
-		//System.out.println(x1 + ", "  + x2 + ", " + y1);
-
-		
-
-	}
-
-	public void swerveDriveFeildRelitive(double x1, double x2, double y1){
-
-
-		swerveDrive(ChassisSpeeds.fromFieldRelativeSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*x1,Units.inchesToMeters(Constants.DriveHighSpeed)*x2, y1*8, Rotation2d.fromDegrees(getAngle())));
-
+		swerveDrive(ChassisSpeeds.fromFieldRelativeSpeeds(x1, x2, y1, getGyroAngle().getWPIRotation2d()));
 	}
 
 	int temp = 1;
@@ -398,8 +451,8 @@ public class Drive extends Subsystem {
 			}else{
 				swervePID[i].setReference(swerveEncoders[i].getPosition() + anglediff, ControlType.kPosition);
 			}
-			swerveDriveMotors[i].set((tragetState.speedMetersPerSecond/Constants.DriveHighSpeed)*50*(Math.min(1, Math.max(0, 1-(Math.abs(anglediff)/20)))));
-
+			//swerveDriveMotors[i].set((tragetState.speedMetersPerSecond/Constants.DriveHighSpeed)*50*(Math.min(1, Math.max(0, 1-(Math.abs(anglediff)/20)))));
+			swerveDriveMotors[i].set((tragetState.speedMetersPerSecond/Constants.DriveHighSpeed)*50);
 			//System.out.println(i + ": " + tragetState.speedMetersPerSecond/Units.inchesToMeters(Constants.DriveHighSpeed)+ ", " + anglediff);
 			
 		}
