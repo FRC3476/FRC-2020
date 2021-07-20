@@ -351,6 +351,9 @@ public class Robot extends TimedRobot {
 
 			//do normal drive fuction if Vision is idle
 			if(visionManager.getState().equals(VisionStatus.IDLE)){
+				if(controlPanelDeployed){	
+					drive.cheesyDrive(-xbox.getRawAxis(1)/3,  xbox.getRawAxis(4)/3 ,true);
+				}
 				drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
 	
 				if (shooterMode == 1){
