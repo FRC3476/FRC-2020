@@ -133,7 +133,7 @@ public class Drive extends Subsystem {
 
 	public LazyCANSparkMax[] swerveMotors = new LazyCANSparkMax[4];
 	public LazyCANSparkMax[] swerveDriveMotors = new LazyCANSparkMax[4]; 
-	CANEncoder[] swerveEncoders = new CANEncoder[4];
+	public CANEncoder[] swerveEncoders = new CANEncoder[4];
 	  
 	double kp = 0.01;
 	double kd = 0;

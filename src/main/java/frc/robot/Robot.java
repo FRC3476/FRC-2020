@@ -286,7 +286,13 @@ public class Robot extends TimedRobot {
 		//drive.stopMovement();
 		firstTeleopRun = true;
 		//drive.setTeleop();
-		
+		for(int i = 0; i <4; i++){
+			double offset = -drive.swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
+			System.out.println(i + ": " + offset);
+			System.out.println(drive.swerveEncoders[i].setPosition(offset));
+			
+
+		}
 		
 		
 	}
@@ -352,7 +358,7 @@ public class Robot extends TimedRobot {
 			//do normal drive fuction if Vision is idle
 			if(visionManager.getState().equals(VisionStatus.IDLE)){
 				visionManager.setState(VisionStatus.IDLE);
-				drive.swerveDriveFeildRelitive(-xbox.getRawAxis(0), xbox.getRawAxis(1),  xbox.getRawAxis(4));
+				drive.swerveDriveFeildRelitive(xbox.getRawAxis(0), -xbox.getRawAxis(1),  xbox.getRawAxis(4));
 	
 				if (shooterMode == 1){
 					blinkinLED.setColor(-0.29);
