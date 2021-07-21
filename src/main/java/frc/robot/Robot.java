@@ -426,7 +426,7 @@ public class Robot extends TimedRobot {
 			
 
 			//Toggle Intake in and out
-			if (xbox.getRisingEdge(2)){
+			if (xbox.getRisingEdge(2) || buttonPanel.getRisingEdge(7)){
 				intakeSetDeployed = !intakeSetDeployed;
 				intake.setDeployState(intakeSetDeployed ? DeployState.DEPLOY:DeployState.UNDEPLOY);
 
