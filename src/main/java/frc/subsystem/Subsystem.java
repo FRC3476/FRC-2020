@@ -74,7 +74,7 @@ public abstract class Subsystem implements Runnable {
 			try { 
 				Thread.sleep((long) (period-executionTimeMS));
 			} catch(Exception e) {
-				System.out.println("Thread sleep failing");
+				System.out.println("Thread sleep failing " + this.getClass().getName());
 			}
 			
 		}

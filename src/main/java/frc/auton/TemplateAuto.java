@@ -88,20 +88,20 @@ public abstract class TemplateAuto implements Runnable {
 		drive.setRotation(pointAtTarget);
   
 		//while(!drive.isFinished()) if(isDead()) return;
-		//System.out.println("finsihed drive");
+		System.out.println("finsihed drive");
 
 		vision.setState(VisionStatus.AIMING);
 		while (!shooter.isShooterSpeedOKAuto()) if(isDead()) return;
-		//System.out.println("shooter speed ok");
+		System.out.println("shooter speed ok");
 		vision.setState(VisionStatus.IDLE);
-
+		System.out.println("trying to shoot");
 		vision.setState(VisionStatus.WIN);
 		while(!vision.isFinished()) if(isDead()) return;
-		//System.out.println("vision finished");
+		System.out.println("vision finished");
 		//shooter.setFiring(true);
 
 		double TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*3;
-
+		
 		while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
 
 		shooter.setSpeed(0);

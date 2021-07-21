@@ -298,7 +298,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 			//System.out.println("angle to target " + (drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()));
-			//System.out.println("distance: " + limelight.getDistance());
+			System.out.println("distance: " + limelight.getDistance());
 			ArrayList<Double> times = new ArrayList<Double>();
 			
 			if(profileTeleop) times.add(Timer.getFPGATimestamp());
@@ -353,8 +353,7 @@ public class Robot extends TimedRobot {
 			if(visionManager.getState().equals(VisionStatus.IDLE)){
 				if(controlPanelDeployed){	
 					drive.cheesyDrive(-xbox.getRawAxis(1)/3,  xbox.getRawAxis(4)/3 ,true);
-				}
-				drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
+				} else drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
 	
 				if (shooterMode == 1){
 					blinkinLED.setColor(-0.29);

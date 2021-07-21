@@ -13,14 +13,14 @@ public class VisionLookUpTable{
 	}
 
 	private VisionLookUpTable(){
-		lookUpTable.add(new ShooterPreset(50, 4000, 56));
-		lookUpTable.add(new ShooterPreset(42, 4000, 79));
+		lookUpTable.add(new ShooterPreset(44, 4000, 58));
+		lookUpTable.add(new ShooterPreset(41, 4000, 73));
 		lookUpTable.add(new ShooterPreset(42, 4000, 111));
-		lookUpTable.add(new ShooterPreset(40, 4000, 124));
-		lookUpTable.add(new ShooterPreset(32, 5400, 150));
-		lookUpTable.add(new ShooterPreset(33, 5600, 196));
-		lookUpTable.add(new ShooterPreset(38, 5700, 212));
-		lookUpTable.add(new ShooterPreset(38.5, 5700, 223));
+		lookUpTable.add(new ShooterPreset(41, 4000, 124));
+		lookUpTable.add(new ShooterPreset(30.5, 5400, 150));
+		lookUpTable.add(new ShooterPreset(33, 5600, 173));
+		lookUpTable.add(new ShooterPreset(33, 5700, 212));
+		//lookUpTable.add(new ShooterPreset(38.5, 5700, 223));
 
 	
 

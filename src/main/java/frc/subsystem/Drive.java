@@ -165,7 +165,7 @@ public class Drive extends Subsystem {
 		turnPID = new SynchronousPid(2, 0, 16, 0); //P=1.0 OR 0.8
 		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
 		turnPID.setSetpoint(0);
-		turnPIDAuto = new SynchronousPid(4, 0, 0, 0); //P=1.0 OR 0.8
+		turnPIDAuto = new SynchronousPid(2, 0, 16, 0); //P=1.0 OR 0.8
 		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
 		turnPIDAuto.setSetpoint(0);
 		

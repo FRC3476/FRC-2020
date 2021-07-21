@@ -48,16 +48,10 @@ public class VisionManager extends Subsystem {
 		switch(visionStatus){
 			case AIMING:
 				
-				if (limelight.isTargetVisiable()){
-					double distance = limelight.getDistance();
-					double delta_phi = limelight.getHorizontalOffset();
-					drive.setRotationTeleop(Rotation2D.fromDegrees(drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()+Constants.cameraXOffset));
-					System.out.println("trying to aim, recieving data " +  delta_phi);
-					ShooterPreset d = VisionLookUpTable.getInstance().getShooterPreset(distance);
-					Shooter.getInstance().setHoodAngle(d.getHoodEjectAngle());
-					Shooter.getInstance().setSpeed(d.getFlyWheelSpeed());
-
-				} 
+			if (limelight.isTargetVisiable()){            
+				drive.setRotationTeleop(Rotation2D.fromDegrees((-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees())+limelight.getHorizontalOffset()+Constants.cameraXOffset));
+				
+			}
 				shoot = shoot || !drive.isAiming();
 				
 				if (shoot){
@@ -73,12 +67,12 @@ public class VisionManager extends Subsystem {
 			
 			case WIN:
 				if (limelight.isTargetVisiable()){            
-					drive.setRotationTeleop(Rotation2D.fromDegrees(drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()+Constants.cameraXOffset));
+					drive.setRotationTeleop(Rotation2D.fromDegrees((-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees())+limelight.getHorizontalOffset()+Constants.cameraXOffset));
 					
 				}
 
 				shoot = shoot || !drive.isAiming();
-				//System.out.println("current angle: " + drive.getAngle());
+				System.out.println("current angle: " + (-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()) + " wanted angle: " + (limelight.getHorizontalOffset()));
 
 				if(shoot) {
 
