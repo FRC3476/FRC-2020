@@ -28,7 +28,7 @@ public class ControlPanel extends Subsystem {
 
 
 	char fieldColorData = 'E';
-	char usablefieldColorData;
+	char usableFieldColorData;
 
 	private Solenoid spinnerSolenoid;
 
@@ -39,7 +39,7 @@ public class ControlPanel extends Subsystem {
 	public SpinnerState spinnerState;
 
 	// getting color data from field
-	private char getfieldColorData() {
+	private char getFieldColorData() {
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.length() > 0) {
@@ -137,7 +137,7 @@ public class ControlPanel extends Subsystem {
 	}
 
 	public synchronized void doLevelThreeSpin() {
-		fieldColorData = getfieldColorData();
+		fieldColorData = getFieldColorData();
 
 		if (fieldColorData != 'E') {
 			
@@ -149,10 +149,10 @@ public class ControlPanel extends Subsystem {
 				}
 			}
 
-			usablefieldColorData = Constants.colorWheelOrder[pos+Constants.LevelThreeColorOffset];
+			usableFieldColorData = Constants.colorWheelOrder[pos+Constants.LevelThreeColorOffset];
 
-			System.out.println("field Color Data: " + fieldColorData);
-			System.out.println("Using Color: " + usablefieldColorData);
+			System.out.println("Field Color Data: " + fieldColorData);
+			System.out.println("Using Color: " + usableFieldColorData);
 			spinnerState = SpinnerState.FINDINGCOLOR;
 
 		} else {
@@ -207,7 +207,7 @@ public class ControlPanel extends Subsystem {
 		case FINDINGCOLOR:
 			colorString = getColorSensorData();
 
-			if (colorString != usablefieldColorData) {
+			if (colorString != usableFieldColorData) {
 				spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
 
 			} else {
@@ -224,7 +224,7 @@ public class ControlPanel extends Subsystem {
 			colorConfirmCycle++;
 
 			colorString = getColorSensorData();
-			if (colorString != usablefieldColorData) {
+			if (colorString != usableFieldColorData) {
 				spinnerState = SpinnerState.FINDINGCOLOR;
 
 			}
