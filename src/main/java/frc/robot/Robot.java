@@ -371,36 +371,6 @@ public class Robot extends TimedRobot {
 			}
 
 
-
-			// //should we start shooting with aiming
-			// if(xbox.getRawAxis(2) > 0.5 && !visionOff){
-			// 	visionManager.setState(VisionStatus.WIN);
-			
-			// } else{
-
-			// 	//check if vision is off or if we are in manuel mode and should shoot without aiming
-			// 	if((xbox.getRawAxis(2) > 0.5 && visionOff) || stick.getRawButton(1)){
-			// 		shooter.setFiring(true);
-			// 		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
-			// 		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-			// 		blinkinLED.setColor(0.77);
-			// 	}
-				
-			// 	//normal drive fuction
-			// 	visionManager.setState(VisionStatus.IDLE);
-			// 	drive.swerveDrive(-xbox.getRawAxis(0), xbox.getRawAxis(1),  xbox.getRawAxis(4));
-
-			// 	if (shooterMode == 1){
-			// 		blinkinLED.setColor(-0.29);
-			// 	} else if (shooterMode == 2){
-			// 		blinkinLED.setColor(-0.23);
-			// 	} else if (shooterMode == 3){
-			// 		blinkinLED.setColor(-0.15);
-			// 	}
-
-			// }
-
-
 			//Turn Shooter Flywheel On with distance detection
 			if (buttonPanel.getRawButton(6)){
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance

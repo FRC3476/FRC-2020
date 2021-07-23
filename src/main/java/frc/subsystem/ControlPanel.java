@@ -28,8 +28,8 @@ public class ControlPanel extends Subsystem {
 	private static LazyCANSparkMax spinner;
 
 
-	char feildColorData = 'E';
-	char usablefeildColorData;
+	char fieldColorData = 'E';
+	char usablefieldColorData;
 
 	private Solenoid spinnerSolenoid;
 
@@ -39,8 +39,8 @@ public class ControlPanel extends Subsystem {
 
 	public SpinnerState spinnerState;
 
-	// getting color data from feild
-	private char getFeildColorData() {
+	// getting color data from field
+	private char getfieldColorData() {
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.length() > 0) {
@@ -141,22 +141,22 @@ public class ControlPanel extends Subsystem {
 	boolean leftStartColor = false;
 	boolean foundStartColorAgain = false;
 	public synchronized void doLevelThreeSpin() {
-		feildColorData = getFeildColorData();
+		fieldColorData = getfieldColorData();
 
-		if (feildColorData != 'E') {
+		if (fieldColorData != 'E') {
 			
 			int pos = -1;
 			for(int i = 0; i < Constants.colorWheelOrder.length; i++) {
-				if(Constants.colorWheelOrder[i] == feildColorData) {
+				if(Constants.colorWheelOrder[i] == fieldColorData) {
 					pos = i;
 					break;
 				}
 			}
 
-			usablefeildColorData = Constants.colorWheelOrder[pos+Constants.LevelThreeColorOffset];
+			usablefieldColorData = Constants.colorWheelOrder[pos+Constants.LevelThreeColorOffset];
 
-			System.out.println("Feild Color Data: " + feildColorData);
-			System.out.println("Using Color: " + usablefeildColorData);
+			System.out.println("field Color Data: " + fieldColorData);
+			System.out.println("Using Color: " + usablefieldColorData);
 			startColor = getColorSensorData();
 			leftStartColor = false;
 			foundStartColorAgain = false;
@@ -233,7 +233,7 @@ public class ControlPanel extends Subsystem {
 			
 			System.out.println("start: " +leftStartColor + " again: " + foundStartColorAgain);
 			
-			if ((colorString != usablefeildColorData)) {
+			if ((colorString != usablefieldColorData)) {
 				spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
 
 			} else if(foundStartColorAgain && leftStartColor) {
@@ -251,7 +251,7 @@ public class ControlPanel extends Subsystem {
 			colorConfirmCycle++;
 
 			colorString = getColorSensorData();
-			if (colorString != usablefeildColorData) {
+			if (colorString != usablefieldColorData) {
 				spinnerState = SpinnerState.FINDINGCOLOR;
 
 			}
