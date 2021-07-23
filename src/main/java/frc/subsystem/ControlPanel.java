@@ -29,7 +29,7 @@ public class ControlPanel extends Subsystem {
 
 
 	char fieldColorData = 'E';
-	char usablefieldColorData;
+	char usableFieldColorData;
 
 	private Solenoid spinnerSolenoid;
 
@@ -153,10 +153,10 @@ public class ControlPanel extends Subsystem {
 				}
 			}
 
-			usablefieldColorData = Constants.colorWheelOrder[pos+Constants.LevelThreeColorOffset];
+			usableFieldColorData = Constants.colorWheelOrder[pos+Constants.LevelThreeColorOffset];
 
 			System.out.println("field Color Data: " + fieldColorData);
-			System.out.println("Using Color: " + usablefieldColorData);
+			System.out.println("Using Color: " + usableFieldColorData);
 			startColor = getColorSensorData();
 			leftStartColor = false;
 			foundStartColorAgain = false;
@@ -233,7 +233,7 @@ public class ControlPanel extends Subsystem {
 			
 			System.out.println("start: " +leftStartColor + " again: " + foundStartColorAgain);
 			
-			if ((colorString != usablefieldColorData)) {
+			if ((colorString != usableFieldColorData)) {
 				spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
 
 			} else if(foundStartColorAgain && leftStartColor) {
@@ -251,7 +251,7 @@ public class ControlPanel extends Subsystem {
 			colorConfirmCycle++;
 
 			colorString = getColorSensorData();
-			if (colorString != usablefieldColorData) {
+			if (colorString != usableFieldColorData) {
 				spinnerState = SpinnerState.FINDINGCOLOR;
 
 			}
