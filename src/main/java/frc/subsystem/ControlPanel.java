@@ -40,7 +40,7 @@ public class ControlPanel extends Subsystem {
 	public SpinnerState spinnerState;
 
 	// getting color data from field
-	private char getfieldColorData() {
+	private char getFieldColorData() {
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.length() > 0) {
@@ -141,7 +141,7 @@ public class ControlPanel extends Subsystem {
 	boolean leftStartColor = false;
 	boolean foundStartColorAgain = false;
 	public synchronized void doLevelThreeSpin() {
-		fieldColorData = getfieldColorData();
+		fieldColorData = getFieldColorData();
 
 		if (fieldColorData != 'E') {
 			

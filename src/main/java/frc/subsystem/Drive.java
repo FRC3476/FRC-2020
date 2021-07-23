@@ -503,7 +503,7 @@ public class Drive extends Subsystem {
 
 	}
 
-	public void swerveDrivefieldRelitive(double x1, double x2, double y1){
+	public void swerveDriveFieldRelitive(double x1, double x2, double y1){
 
 
 		swerveDrive(ChassisSpeeds.fromFieldRelativeSpeeds((Constants.DriveHighSpeed/100)*x1,(Constants.DriveHighSpeed/100)*x2, y1, Rotation2d.fromDegrees(getAngle())));
