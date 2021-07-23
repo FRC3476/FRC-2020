@@ -722,10 +722,13 @@ public class Drive extends Subsystem {
 		//leftTalon.set(ControlMode.Velocity, leftSetpoint);
 		//rightTalon.set(ControlMode.Velocity, rightSetpoint);
 
-
+		//Open Loop
+		leftSpark.set(setVelocity.leftVelocity/Constants.DriveHighSpeed);
+		rightSpark.set(setVelocity.rightVelocity/Constants.DriveHighSpeed);
 		
-		leftSparkPID.setReference(leftSetpoint, ControlType.kVelocity);
-		rightSparkPID.setReference(rightSetpoint, ControlType.kVelocity);
+		//Closed Loop
+		// leftSparkPID.setReference(leftSetpoint, ControlType.kVelocity);
+		// rightSparkPID.setReference(rightSetpoint, ControlType.kVelocity);
 
 		//System.out.println("desired left rpm: " + rightSetpoint + " desired right rpm: " + leftSetpoint);
 		//System.out.println("actual left rpm: " + getLeftSpeed() + " actual right rpm: " + getRightSpeed());
