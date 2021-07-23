@@ -358,7 +358,7 @@ public class Robot extends TimedRobot {
 			//do normal drive fuction if Vision is idle
 			if(visionManager.getState().equals(VisionStatus.IDLE)){
 				visionManager.setState(VisionStatus.IDLE);
-				drive.swerveDriveFeildRelitive(xbox.getRawAxis(0), -xbox.getRawAxis(1),  xbox.getRawAxis(4));
+				drive.swerveDrivefieldRelitive(xbox.getRawAxis(0), -xbox.getRawAxis(1),  xbox.getRawAxis(4));
 	
 				if (shooterMode == 1){
 					blinkinLED.setColor(-0.29);

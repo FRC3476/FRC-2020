@@ -48,7 +48,7 @@ public class RobotTracker extends Subsystem {
 	}
 
 	/**
-	 * Resets the position on the feild to 0,0 with a rotaion of 0 degrees
+	 * Resets the position on the field to 0,0 with a rotaion of 0 degrees
 	 */
 	synchronized public void resetOdometry() {
 		swerveDriveOdometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(drive.getAngle()));
