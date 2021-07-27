@@ -824,7 +824,7 @@ public class Drive extends Subsystem {
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
 		} else {
 			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed); //2.6
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3 /* <-- change this */), deltaSpeed); //Johnathan increase that if the robot stays still when turning and decrease that if you get issues. 
 		}
 		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
 
