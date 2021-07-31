@@ -27,8 +27,8 @@ public class ControlPanel extends Subsystem {
 	private static LazyCANSparkMax spinner;
 
 
-	char feildColorData = 'E';
-	char usablefeildColorData;
+	char fieldColorData = 'E';
+	char usableFieldColorData;
 
 	private Solenoid spinnerSolenoid;
 
@@ -38,8 +38,8 @@ public class ControlPanel extends Subsystem {
 
 	public SpinnerState spinnerState;
 
-	// getting color data from feild
-	private char getFeildColorData() {
+	// getting color data from field
+	private char getFieldColorData() {
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.length() > 0) {
@@ -137,22 +137,22 @@ public class ControlPanel extends Subsystem {
 	}
 
 	public synchronized void doLevelThreeSpin() {
-		feildColorData = getFeildColorData();
+		fieldColorData = getFieldColorData();
 
-		if (feildColorData != 'E') {
+		if (fieldColorData != 'E') {
 			
 			int pos = -1;
 			for(int i = 0; i < Constants.colorWheelOrder.length; i++) {
-				if(Constants.colorWheelOrder[i] == feildColorData) {
+				if(Constants.colorWheelOrder[i] == fieldColorData) {
 					pos = i;
 					break;
 				}
 			}
 
-			usablefeildColorData = Constants.colorWheelOrder[pos+Constants.LevelThreeColorOffset];
+			usableFieldColorData = Constants.colorWheelOrder[pos+Constants.LevelThreeColorOffset];
 
-			System.out.println("Feild Color Data: " + feildColorData);
-			System.out.println("Using Color: " + usablefeildColorData);
+			System.out.println("Field Color Data: " + fieldColorData);
+			System.out.println("Using Color: " + usableFieldColorData);
 			spinnerState = SpinnerState.FINDINGCOLOR;
 
 		} else {
@@ -207,7 +207,7 @@ public class ControlPanel extends Subsystem {
 		case FINDINGCOLOR:
 			colorString = getColorSensorData();
 
-			if (colorString != usablefeildColorData) {
+			if (colorString != usableFieldColorData) {
 				spinner.set(Constants.wheelSpinnerLevelThreeSpeed);
 
 			} else {
@@ -224,7 +224,7 @@ public class ControlPanel extends Subsystem {
 			colorConfirmCycle++;
 
 			colorString = getColorSensorData();
-			if (colorString != usablefeildColorData) {
+			if (colorString != usableFieldColorData) {
 				spinnerState = SpinnerState.FINDINGCOLOR;
 
 			}

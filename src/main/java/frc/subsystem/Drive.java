@@ -367,7 +367,7 @@ public class Drive extends Subsystem {
 
 	}
 
-	public void swerveDriveFeildRelitive(double x1, double x2, double y1){
+	public void swerveDriveFieldRelitive(double x1, double x2, double y1){
 
 		
 		if(Math.abs(x1)<0.05) x1 = 0;
