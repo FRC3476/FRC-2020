@@ -471,7 +471,7 @@ public class Robot extends TimedRobot {
 
 			}
 
-			if(!(xbox.getRawAxis(2)>0.5 || stick.getRawButton(1))) {
+			if(!(xbox.getRawAxis(2)>0.5 || buttonPanel.getRawButton(8))) {
 				//We're not shooting so use normal intake/hopper controlls
 				if (buttonPanel.getRawButton(10)){
 					//eject all
