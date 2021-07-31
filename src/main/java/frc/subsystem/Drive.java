@@ -179,8 +179,8 @@ public class Drive extends Subsystem {
 		
 		for(int i = 0; i <4; i++){
 			swerveEncoders[i] = swerveMotors[i].getEncoder();
-			swerveEncoders[i].setPositionConversionFactor(8.1466);
-			swerveMotors[i].getAnalog(AnalogMode.kAbsolute).setPositionConversionFactor(105.88);
+			swerveEncoders[i].setPositionConversionFactor(8.1503);//8.1466);
+			swerveMotors[i].getAnalog(AnalogMode.kAbsolute).setPositionConversionFactor(360/3.3);//105.88);
 			
 			swervePID[i] = swerveMotors[i].getPIDController();
 			swervePID[i].setP(kp);
