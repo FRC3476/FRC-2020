@@ -156,11 +156,22 @@ public class Shooter extends Subsystem{
 		switch(shooterState){
 			case SPINNING: 
 				shooterMaster.set(ControlMode.Velocity, targetShooterSpeed/Constants.ShooterRPMPerTicksPer100ms);
-				//System.out.println("shooter speed: " + targetShooterSpeed);
+
+				double flywheelError = getRPM() - targetShooterSpeed;
+
+				System.out.println("target shooter speed: " + targetShooterSpeed + " error: " + flywheelError);
 				hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 
-				//check if motor has sped up
 				if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
+					BlinkinLED.getInstance().setColor(0.77);
+				} else if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
+					BlinkinLED.getInstance().setColor(-0.05);
+				} else {
+					BlinkinLED.getInstance().setColor(-0.11);
+				}
+
+				//check if motor has sped up
+				if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation || true){
 					double hoodError = targetHoodPosition - hoodEncoder.getPosition();
 
 					if(Math.abs(hoodError) < Constants.HoodMaxDeviation && firing && Timer.getFPGATimestamp() >=nextShootTime){// TODO: make hood do things

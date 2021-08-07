@@ -11,6 +11,10 @@ import frc.utility.control.motion.Path;
 import frc.utility.control.motion.PurePursuitController;
 import frc.utility.math.Rotation2D;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import com.revrobotics.*;
@@ -24,7 +28,6 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import frc.utility.LazyCANSparkMax;
-
 
 public class Drive extends Subsystem {
 
@@ -74,7 +77,8 @@ public class Drive extends Subsystem {
 	private boolean drivePercentVbus;
 
 	private NavXMPX_Gyro gyroSensor;// = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
-	//private LazyTalonSRX leftTalon, rightTalon, leftSlaveTalon, leftSlave2Talon, rightSlaveTalon, rightSlave2Talon;
+	// private LazyTalonSRX leftTalon, rightTalon, leftSlaveTalon, leftSlave2Talon,
+	// rightSlaveTalon, rightSlave2Talon;
 	private PurePursuitController autonomousDriver;
 	private SynchronousPid turnPID;
 	private SynchronousPid turnPIDAuto;
@@ -82,27 +86,26 @@ public class Drive extends Subsystem {
 	private RateLimiter moveProfiler;
 	private Rotation2D wantedHeading;
 	private volatile double driveMultiplier;
-	boolean rotateAuto = false; 
-
+	boolean rotateAuto = false;
 
 	double prevPositionL = 0;
 	double prevPositionR = 0;
 
-	public boolean isAiming = false; 
+	public boolean isAiming = false;
 
 	double prevTime;
 
 	public LazyCANSparkMax leftSpark, rightSpark, leftSparkSlave, rightSparkSlave, leftSparkSlave2, rightSparkSlave2;
-  	private CANPIDController leftSparkPID, rightSparkPID;
+	private CANPIDController leftSparkPID, rightSparkPID;
 	private CANEncoder leftSparkEncoder, rightSparkEncoder;
 
 	public LazyCANSparkMax leftFrontSpark, leftBackSpark, rightFrontSpark, rightBackSpark;
 	private CANEncoder leftFrontSparkEncoder, leftBackSparkEncoder, rightFrontSparkEncoder, rightBackSparkEncoder;
 
 	public LazyCANSparkMax leftFrontSparkSwerve, leftBackSparkSwerve, rightFrontSparkSwerve, rightBackSparkSwerve;
-	private CANEncoder leftFrontSparkEncoderSwerve, leftBackSparkEncoderSwerve, rightFrontSparkEncoderSwerve, rightBackSparkEncoderSwerve;
+	private CANEncoder leftFrontSparkEncoderSwerve, leftBackSparkEncoderSwerve, rightFrontSparkEncoderSwerve,
+			rightBackSparkEncoderSwerve;
 	SwerveDriveKinematics swerveKinematics;
-	  
 
 	private Drive() {
 		super(Constants.DrivePeriod);
@@ -112,8 +115,8 @@ public class Drive extends Subsystem {
 		leftSparkSlave = new LazyCANSparkMax(Constants.DriveLeftSlave1Id, MotorType.kBrushless);
 		rightSpark = new LazyCANSparkMax(Constants.DriveRightMasterId, MotorType.kBrushless);
 		rightSparkSlave = new LazyCANSparkMax(Constants.DriveRightSlave1Id, MotorType.kBrushless);
-		//rightSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
-		//leftSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
+		// rightSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
+		// leftSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
 		leftSpark.setInverted(true);
 		rightSpark.setInverted(false);
 		leftSparkSlave.setInverted(true);
@@ -124,14 +127,14 @@ public class Drive extends Subsystem {
 		leftSparkEncoder = leftSpark.getEncoder();
 		rightSparkEncoder = rightSpark.getEncoder();
 
-		//Swerve Drive Motors
+		// Swerve Drive Motors
 		leftFrontSpark = new LazyCANSparkMax(Constants.DriveLeftFrontId, MotorType.kBrushless);
 		leftBackSpark = new LazyCANSparkMax(Constants.DriveLeftBackId, MotorType.kBrushless);
 		rightFrontSpark = new LazyCANSparkMax(Constants.DriveRightFrontId, MotorType.kBrushless);
 		rightBackSpark = new LazyCANSparkMax(Constants.DriveRightBackId, MotorType.kBrushless);
 
 		leftFrontSparkEncoder = leftFrontSpark.getEncoder();
-		leftBackSparkEncoder  = leftBackSpark.getEncoder();
+		leftBackSparkEncoder = leftBackSpark.getEncoder();
 		rightFrontSparkEncoder = rightFrontSpark.getEncoder();
 		rightBackSparkEncoder = rightBackSpark.getEncoder();
 
@@ -141,34 +144,31 @@ public class Drive extends Subsystem {
 		rightBackSparkSwerve = new LazyCANSparkMax(Constants.DriveRightBackSwerveId, MotorType.kBrushless);
 
 		leftFrontSparkEncoderSwerve = leftFrontSparkSwerve.getEncoder();
-		leftBackSparkEncoderSwerve  = leftBackSparkSwerve.getEncoder();
+		leftBackSparkEncoderSwerve = leftBackSparkSwerve.getEncoder();
 		rightFrontSparkEncoderSwerve = rightFrontSparkSwerve.getEncoder();
 		rightBackSparkEncoderSwerve = rightBackSparkSwerve.getEncoder();
-		
-		
 
 		// Creating kinematics object using the module locations
-		swerveKinematics = new SwerveDriveKinematics(Constants.LeftFrontLocation, Constants.LeftBackLocation, Constants.RightFrontLocation,Constants.RightBackLocation);
-	
+		swerveKinematics = new SwerveDriveKinematics(Constants.LeftFrontLocation, Constants.LeftBackLocation,
+				Constants.RightFrontLocation, Constants.RightBackLocation);
 
-		//leftSparkPID.
-		
-		//rightSparkSlave.follow(rightSpark);
-		//leftSparkSlave.follow(leftSpark);
-		//leftSparkSlave2.follow(leftSpark);
-		//rightSparkSlave2.follow(rightSpark);
+		// leftSparkPID.
+
+		// rightSparkSlave.follow(rightSpark);
+		// leftSparkSlave.follow(leftSpark);
+		// leftSparkSlave2.follow(leftSpark);
+		// rightSparkSlave2.follow(rightSpark);
 		configMotors();
 
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(2, 0, 16, 0); //P=1.0 OR 0.8
-		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
+		turnPID = new SynchronousPid(2, 0, 16, 0); // P=1.0 OR 0.8
+		turnPID.setOutputRange(Constants.DriveHighSpeed / 5, -Constants.DriveHighSpeed / 5);
 		turnPID.setSetpoint(0);
-		turnPIDAuto = new SynchronousPid(2, 0, 16, 0); //P=1.0 OR 0.8
-		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
+		turnPIDAuto = new SynchronousPid(2, 0, 16, 0); // P=1.0 OR 0.8
+		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed / 8, -Constants.DriveHighSpeed / 8);
 		turnPIDAuto.setSetpoint(0);
-		
 
 		moveProfiler = new RateLimiter(Constants.DriveTeleopAccLimit);
 
@@ -177,14 +177,14 @@ public class Drive extends Subsystem {
 	}
 
 	public void debug() {
-		System.out.println("L enc: " + getLeftDistance()+ " velo " + getLeftSpeed()); 
-		System.out.println("R enc: " + getRightDistance() + " velo " + getRightSpeed()); 
-		System.out.println("Gyro: " + getAngle()/*getGyroAngle().getDegrees()*/);
+		System.out.println("L enc: " + getLeftDistance() + " velo " + getLeftSpeed());
+		System.out.println("R enc: " + getRightDistance() + " velo " + getRightSpeed());
+		System.out.println("Gyro: " + getAngle()/* getGyroAngle().getDegrees() */);
 	}
 
 	public void debugSpeed() {
-		System.out.println("L speed " +  " actual " + getLeftSpeed());
-		System.out.println("R speed " +   " actual " + getRightSpeed());
+		System.out.println("L speed " + " actual " + getLeftSpeed());
+		System.out.println("R speed " + " actual " + getRightSpeed());
 
 	}
 
@@ -192,19 +192,36 @@ public class Drive extends Subsystem {
 		setWheelVelocity(new DriveSignal(40, 0));
 	}
 
-
 	public void configBrake() {
-		System.out.println(leftSpark.setIdleMode(IdleMode.kBrake));
-		System.out.println(rightSpark.setIdleMode(IdleMode.kBrake));
-		System.out.println(leftSparkSlave.setIdleMode(IdleMode.kBrake));
-		System.out.println(rightSparkSlave.setIdleMode(IdleMode.kBrake));  
+		configMotorsCoastBrake(IdleMode.kBrake);
 	}
 
-	public void configCoast() {
-		System.out.println(leftSpark.setIdleMode(IdleMode.kCoast));
-		System.out.println(rightSpark.setIdleMode(IdleMode.kCoast));
-		System.out.println(leftSparkSlave.setIdleMode(IdleMode.kCoast));
-		System.out.println(rightSparkSlave.setIdleMode(IdleMode.kCoast));  
+	public void configCoast(){
+		configMotorsCoastBrake(IdleMode.kCoast);
+	}
+
+	IdleMode setIdleMode;
+	boolean fixIdleMode = false;
+
+	public void configMotorsCoastBrake(IdleMode mode) {
+		boolean error = false;
+		if (CANError.kOk != leftSpark.setIdleMode(mode) || error)
+			error = true;
+		if (CANError.kOk != rightSpark.setIdleMode(mode) || error)
+			error = true;
+		if (CANError.kOk != leftSparkSlave.setIdleMode(mode) || error)
+			error = true;
+		if (CANError.kOk != rightSparkSlave.setIdleMode(mode) || error)
+			error = true;
+		if(error){
+			System.out.println("failed to enable " + mode.toString() + " mode");
+			setIdleMode = mode;
+			fixIdleMode = true;
+		}
+		
+
+
+
 	}
 
 	private void configAuto() {
@@ -770,6 +787,23 @@ public class Drive extends Subsystem {
 			case HOLD:
 				hold();
 				break;
+		}
+
+		if(fixIdleMode){
+			boolean error = false;
+			if (CANError.kOk != leftSpark.setIdleMode(setIdleMode) || error)
+				error = true;
+			if (CANError.kOk != rightSpark.setIdleMode(setIdleMode) || error)
+				error = true;
+			if (CANError.kOk != leftSparkSlave.setIdleMode(setIdleMode) || error)
+				error = true;
+			if (CANError.kOk != rightSparkSlave.setIdleMode(setIdleMode) || error)
+				error = true;
+			if(error){
+				System.out.println("failed to enable " + setIdleMode.toString() + " mode");
+			} else {
+				fixIdleMode = false;
+			}
 		}
 		
 	}

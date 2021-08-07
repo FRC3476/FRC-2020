@@ -523,7 +523,7 @@ public class Robot extends TimedRobot {
 				drive.configBrake();
 			}
 		  };
-		worker.schedule(task, 2, TimeUnit.MILLISECONDS);
+		worker.schedule(task, 2, TimeUnit.SECONDS);
 		// --------UNTIL HERE-----------
 		
 		shooter.pause();
