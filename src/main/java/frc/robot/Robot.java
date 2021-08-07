@@ -298,7 +298,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 			//System.out.println("angle to target " + (drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()));
-			System.out.println("distance: " + limelight.getDistance());
+			//System.out.println("distance: " + limelight.getDistance());
 			ArrayList<Double> times = new ArrayList<Double>();
 			
 			if(profileTeleop) times.add(Timer.getFPGATimestamp());
@@ -519,7 +519,8 @@ public class Robot extends TimedRobot {
 		ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
 		Runnable task = new Runnable() {
 			public void run() {
-				drive.configCoast();
+				//drive.configCoast();
+				drive.configBrake();
 			}
 		  };
 		worker.schedule(task, 2, TimeUnit.MILLISECONDS);

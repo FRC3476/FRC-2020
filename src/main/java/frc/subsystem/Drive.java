@@ -194,17 +194,17 @@ public class Drive extends Subsystem {
 
 
 	public void configBrake() {
-		leftSpark.setIdleMode(IdleMode.kBrake);
-		rightSpark.setIdleMode(IdleMode.kBrake);
-		leftSparkSlave.setIdleMode(IdleMode.kBrake);
-		rightSparkSlave.setIdleMode(IdleMode.kBrake);  
+		System.out.println(leftSpark.setIdleMode(IdleMode.kBrake));
+		System.out.println(rightSpark.setIdleMode(IdleMode.kBrake));
+		System.out.println(leftSparkSlave.setIdleMode(IdleMode.kBrake));
+		System.out.println(rightSparkSlave.setIdleMode(IdleMode.kBrake));  
 	}
 
 	public void configCoast() {
-		leftSpark.setIdleMode(IdleMode.kCoast);
-		rightSpark.setIdleMode(IdleMode.kCoast);
-		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast);  
+		System.out.println(leftSpark.setIdleMode(IdleMode.kCoast));
+		System.out.println(rightSpark.setIdleMode(IdleMode.kCoast));
+		System.out.println(leftSparkSlave.setIdleMode(IdleMode.kCoast));
+		System.out.println(rightSparkSlave.setIdleMode(IdleMode.kCoast));  
 	}
 
 	private void configAuto() {
@@ -824,7 +824,7 @@ public class Drive extends Subsystem {
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
 		} else {
 			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3 /* <-- change this */), deltaSpeed); //Johnathan increase that if the robot stays still when turning and decrease that if you get issues. 
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 5 /* <-- change this */), deltaSpeed); //Johnathan increase that if the robot stays still when turning and decrease that if you get issues. 
 		}
 		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
 
@@ -842,6 +842,7 @@ public class Drive extends Subsystem {
 			if( rotateAuto )
 			{
 				synchronized (this) {
+					configBrake();
 					driveState = DriveState.DONE;
 				}
 			}
