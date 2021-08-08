@@ -200,8 +200,9 @@ public class Drive extends Subsystem {
 		configMotorsCoastBrake(IdleMode.kCoast);
 	}
 
-	IdleMode setIdleMode;
+	IdleMode setIdleMode = IdleMode.kBrake;
 	boolean fixIdleMode = false;
+	int delay;
 
 	public void configMotorsCoastBrake(IdleMode mode) {
 		boolean error = false;
@@ -217,6 +218,7 @@ public class Drive extends Subsystem {
 			System.out.println("failed to enable " + mode.toString() + " mode");
 			setIdleMode = mode;
 			fixIdleMode = true;
+			delay = 4;
 		}
 		
 
@@ -789,22 +791,20 @@ public class Drive extends Subsystem {
 				break;
 		}
 
-		if(fixIdleMode){
-			boolean error = false;
-			if (CANError.kOk != leftSpark.setIdleMode(setIdleMode) || error)
-				error = true;
-			if (CANError.kOk != rightSpark.setIdleMode(setIdleMode) || error)
-				error = true;
-			if (CANError.kOk != leftSparkSlave.setIdleMode(setIdleMode) || error)
-				error = true;
-			if (CANError.kOk != rightSparkSlave.setIdleMode(setIdleMode) || error)
-				error = true;
-			if(error){
-				System.out.println("failed to enable " + setIdleMode.toString() + " mode");
-			} else {
-				fixIdleMode = false;
-			}
-		}
+		//CAUSES CONSTANT THREAD SLEEP FAIL
+		// boolean error = false;
+		// if (CANError.kOk != leftSpark.setIdleMode(setIdleMode) || error)
+		// 	error = true;
+		// if (CANError.kOk != rightSpark.setIdleMode(setIdleMode) || error)
+		// 	error = true;
+		// if (CANError.kOk != leftSparkSlave.setIdleMode(setIdleMode) || error)
+		// 	error = true;
+		// if (CANError.kOk != rightSparkSlave.setIdleMode(setIdleMode) || error)
+		// 	error = true;
+		// if(error){
+		// 	System.out.println("failed to enable " + setIdleMode.toString() + " mode");
+		// }
+		
 		
 	}
 	synchronized public boolean isAiming() {
@@ -872,7 +872,7 @@ public class Drive extends Subsystem {
 			setWheelVelocity(new DriveSignal(0, 0));
 			
 			isAiming = false;
-			configCoast();
+			//configBrake();
 			if( rotateAuto )
 			{
 				synchronized (this) {
