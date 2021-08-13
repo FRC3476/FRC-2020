@@ -44,6 +44,10 @@ public final class Constants {
 	public static final int DriveRightBackSwerveId = 17;
 	public static final double SwerveInchesPerRotation = 4.12507923d/6d;
 	public static final double SwerveMeterPerRotation = Units.inchesToMeters(SwerveInchesPerRotation);
+	public static final double SwerveDrivekP = 0.01;
+	public static final double SwerveDrivekd = 0.00;
+	public static final double SwerveDrivekI = 0.00;
+	public static final double SwerveDrivekf = 0.00;
 
 	// Locations for the swerve drive modules relative to the robot center.
 	public static final Translation2d LeftFrontLocation = new Translation2d(-0.381, 0.381);

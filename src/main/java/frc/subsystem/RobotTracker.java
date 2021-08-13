@@ -26,7 +26,7 @@ public class RobotTracker extends Subsystem {
 
 	private RobotTracker() {
 		super(Constants.RobotTrackerPeriod);
-		swerveDriveOdometry = new SwerveDriveOdometry(drive.swerveKinematics, drive.getGyroAngle().getWPIRotation2d());
+		swerveDriveOdometry = new SwerveDriveOdometry(drive.getSwerveDriveKinematics(), drive.getGyroAngle().getWPIRotation2d());
 		startTime = Timer.getFPGATimestamp();
 	}
 

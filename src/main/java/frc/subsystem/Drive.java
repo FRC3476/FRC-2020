@@ -2,47 +2,30 @@
 
 package frc.subsystem;
 
-import frc.robot.Constants;
-import frc.utility.LazyCANSparkMax;
-import frc.utility.NavXMPX_Gyro;
-import frc.utility.OrangeUtility;
-import frc.utility.control.RateLimiter;
-import frc.utility.control.SynchronousPid;
-import frc.utility.control.motion.Path;
-import frc.utility.control.motion.PurePursuitController;
-import frc.utility.math.RigidTransform2D;
-import frc.utility.math.Rotation2D;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import javax.sound.midi.SysexMessage;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.ControlType;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.HolonomicDriveController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.trajectory.*;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
 import frc.utility.LazyCANSparkMax;
@@ -97,16 +80,14 @@ public class Drive extends Subsystem {
 		return instance;
 	}
 
-	private double quickStopAccumulator;
-
 	private boolean drivePercentVbus;
 
 	private NavXMPX_Gyro gyroSensor;// = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
 	//private LazyTalonSRX leftTalon, rightTalon, leftSlaveTalon, leftSlave2Talon, rightSlaveTalon, rightSlave2Talon;
 	private PurePursuitController autonomousDriver;
-	private SynchronousPid turnPID;
-	private SynchronousPid turnPIDAuto;
-	public DriveState driveState;
+	private final SynchronousPid turnPID;
+	private final SynchronousPid turnPIDAuto;
+	private DriveState driveState;
 	private RateLimiter moveProfiler;
 	private Rotation2D wantedHeading;
 	private volatile double driveMultiplier;
@@ -116,28 +97,21 @@ public class Drive extends Subsystem {
 	double prevPositionL = 0;
 	double prevPositionR = 0;
 
-	public boolean isAiming = false; 
+	private boolean isAiming = false; 
 
 	double prevTime;
 
-	public LazyCANSparkMax leftSpark, rightSpark, leftSparkSlave, rightSparkSlave, leftSparkSlave2, rightSparkSlave2;
-  	private CANPIDController leftSparkPID, rightSparkPID;
-	private CANEncoder leftSparkEncoder, rightSparkEncoder;
+	private final LazyCANSparkMax leftFrontSpark, leftBackSpark, rightFrontSpark, rightBackSpark;
 
-	public LazyCANSparkMax leftFrontSpark, leftBackSpark, rightFrontSpark, rightBackSpark;
-	private CANEncoder leftFrontSparkEncoder, leftBackSparkEncoder, rightFrontSparkEncoder, rightBackSparkEncoder;
+	private final LazyCANSparkMax leftFrontSparkSwerve, leftBackSparkSwerve, rightFrontSparkSwerve, rightBackSparkSwerve;
+	private final SwerveDriveKinematics swerveKinematics;
 
-	public LazyCANSparkMax leftFrontSparkSwerve, leftBackSparkSwerve, rightFrontSparkSwerve, rightBackSparkSwerve;
-	private CANEncoder leftFrontSparkEncoderSwerve, leftBackSparkEncoderSwerve, rightFrontSparkEncoderSwerve, rightBackSparkEncoderSwerve;
-	SwerveDriveKinematics swerveKinematics;
+	private final LazyCANSparkMax[] swerveMotors = new LazyCANSparkMax[4];
+	private final LazyCANSparkMax[] swerveDriveMotors = new LazyCANSparkMax[4]; 
+	private final CANEncoder[] swerveEncoders = new CANEncoder[4];
 
-	public LazyCANSparkMax[] swerveMotors = new LazyCANSparkMax[4];
-	public LazyCANSparkMax[] swerveDriveMotors = new LazyCANSparkMax[4]; 
-	public CANEncoder[] swerveEncoders = new CANEncoder[4];
-	  
-	double kp = 0.01;
-	double kd = 0;
-	double kf = 0.000000;
+	private final PWM leftFrontSparkPwmEncoder, leftBackSparkPwmEncoder, rightFrontSparkPwmEncoder, rightBackSparkPwmEncoder;
+	private final PWM[] swerveEncodersPWM = new PWM[4];
 
 	CANPIDController[] swervePID = new CANPIDController[4];
 
@@ -152,19 +126,16 @@ public class Drive extends Subsystem {
 		rightFrontSpark = new LazyCANSparkMax(Constants.DriveRightFrontId, MotorType.kBrushless);
 		rightBackSpark = new LazyCANSparkMax(Constants.DriveRightBackId, MotorType.kBrushless);
 
-		leftFrontSparkEncoder = leftFrontSpark.getEncoder();
-		leftBackSparkEncoder  = leftBackSpark.getEncoder();
-		rightFrontSparkEncoder = rightFrontSpark.getEncoder();
-		rightBackSparkEncoder = rightBackSpark.getEncoder();
-
 		leftFrontSparkSwerve = new LazyCANSparkMax(Constants.DriveLeftFrontSwerveId, MotorType.kBrushless);
 		leftBackSparkSwerve = new LazyCANSparkMax(Constants.DriveLeftBackSwerveId, MotorType.kBrushless);
 		rightFrontSparkSwerve = new LazyCANSparkMax(Constants.DriveRightFrontSwerveId, MotorType.kBrushless);
 		rightBackSparkSwerve = new LazyCANSparkMax(Constants.DriveRightBackSwerveId, MotorType.kBrushless);
 
-		
+		leftFrontSparkPwmEncoder = new PWM(0);
+		leftBackSparkPwmEncoder = new PWM(1);
+		rightFrontSparkPwmEncoder = new PWM(2);
+		rightBackSparkPwmEncoder = new PWM(3);
 
-		
 		swerveMotors[0] = leftFrontSparkSwerve;
 		swerveMotors[1] = leftBackSparkSwerve;
 		swerveMotors[2] = rightFrontSparkSwerve;
@@ -175,7 +146,10 @@ public class Drive extends Subsystem {
 		swerveDriveMotors[2] = rightFrontSpark;
 		swerveDriveMotors[3] = rightBackSpark;
 
-
+		swerveEncodersPWM[0] = leftFrontSparkPwmEncoder;
+		swerveEncodersPWM[1] = leftBackSparkPwmEncoder;
+		swerveEncodersPWM[2] = rightFrontSparkPwmEncoder;
+		swerveEncodersPWM[3] = rightBackSparkPwmEncoder;
 		
 		for(int i = 0; i <4; i++){
 			swerveEncoders[i] = swerveMotors[i].getEncoder();
@@ -183,47 +157,21 @@ public class Drive extends Subsystem {
 			swerveMotors[i].getAnalog(AnalogMode.kAbsolute).setPositionConversionFactor(360/3.3);//105.88);
 			
 			swervePID[i] = swerveMotors[i].getPIDController();
-			swervePID[i].setP(kp);
-			swervePID[i].setD(kd);
-			swervePID[i].setI(0);
-			swervePID[i].setFF(kf);
+			swervePID[i].setP(Constants.SwerveDrivekP);
+			swervePID[i].setD(Constants.SwerveDrivekd);
+			swervePID[i].setI(Constants.SwerveDrivekI);
+			swervePID[i].setFF(Constants.SwerveDrivekf);
 
 			swerveMotors[i].setPeriodicFramePeriod(PeriodicFrame.kStatus2, 5);
+
+			swerveEncodersPWM[i].setBounds(2000, 0, 1500, 0, 1000); 
 			
-		
 		}
 
+		calculateOffsets();
 
-		leftFrontSparkEncoderSwerve = leftFrontSparkSwerve.getEncoder();
-		leftBackSparkEncoderSwerve  = leftBackSparkSwerve.getEncoder();
-		rightFrontSparkEncoderSwerve = rightFrontSparkSwerve.getEncoder();
-		rightBackSparkEncoderSwerve = rightBackSparkSwerve.getEncoder();
-
-
-		ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
-		Runnable task = new Runnable() {
-			public void run() {
-				for(int i = 0; i <4; i++){
-					double offset = -swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
-					System.out.println(i + ": " + offset);
-					System.out.println(swerveEncoders[i].setPosition(offset));
-					
-
-				}
-			}
-		  };
-		  worker.schedule(task, 1, TimeUnit.MILLISECONDS);
-
-		// Creating kinematics object using the module locations
 		swerveKinematics = new SwerveDriveKinematics(Constants.LeftFrontLocation, Constants.LeftBackLocation, Constants.RightFrontLocation,Constants.RightBackLocation);
 	
-
-		//leftSparkPID.b
-		
-		//rightSparkSlave.follow(rightSpark);
-		//leftSparkSlave.follow(leftSpark);
-		//leftSparkSlave2.follow(leftSpark);
-		//rightSparkSlave2.follow(rightSpark);
 		configMotors();
 
 		drivePercentVbus = true;
@@ -244,6 +192,23 @@ public class Drive extends Subsystem {
 	}
 
 
+	public void calculateOffsets(){
+		for(int i = 0; i <4; i++){
+			// double offset = -swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
+			double offset = swerveEncodersPWM[i].getPosition() * 360; // Asume we're getting a value between 0 and 1
+			System.out.println(i + ": " + offset);
+			System.out.println(swerveEncoders[i].setPosition(offset));
+		
+		}
+	}
+
+	public SwerveDriveKinematics getSwerveDriveKinematics(){
+		return swerveKinematics;
+	}
+
+	public void setDriveState(DriveState driveState){
+		this.driveState = driveState;
+	}
 
 	private void configBrake() {
 		//TODO
@@ -552,49 +517,6 @@ public class Drive extends Subsystem {
 		//return (leftTalon.getMotorOutputVoltage() + rightTalon.getMotorOutputVoltage()
 		//		+ .getMotorOutputVoltage() + rightSlaveTalon.getMotorOutputVoltage()
 		//		+ rightSlave2Talon.getMotorOutputVoltage() + leftSlave2Talon.getMotorOutputVoltage()) / 6;
-	}
-
-	public boolean hasStickyFaults()
-	{
-		short kCANRXmask = (short)(1 << CANSparkMax.FaultID.kCANRX.ordinal());
-		short kCANTXmask = (short)(1 << CANSparkMax.FaultID.kCANTX.ordinal());
-		short kHasResetmask = (short)(1 << CANSparkMax.FaultID.kHasReset.ordinal());
-		short leftFaults = leftSpark.getStickyFaults();
-		short rightFaults = rightSpark.getStickyFaults();
-		//System.out.println("left: " + leftFaults + " right: " + rightFaults);
-
-
-		boolean leftSticky = (leftFaults & kCANRXmask) != 0 || (leftFaults & kCANTXmask) != 0 || (leftFaults & kHasResetmask) != 0;
-		boolean rightSticky = (rightFaults & kCANRXmask) != 0 || (rightFaults & kCANTXmask) != 0 || (rightFaults & kHasResetmask) != 0;
-		return leftSticky || rightSticky;
-	}
-
-	private void setWheelVelocity(DriveSignal setVelocity) {
-		if (Math.abs(setVelocity.rightVelocity) > Constants.DriveHighSpeed
-				|| Math.abs(setVelocity.leftVelocity) > Constants.DriveHighSpeed) {
-			DriverStation.getInstance();
-			DriverStation.reportError("Velocity set over " + Constants.DriveHighSpeed + " !", false);
-			return;
-		}
-		 //System.out.println("Left: " + setVelocity.leftVelocity);
-		 //+ getLeftSpeed());
-		// inches per sec to rotations per min
-		double leftSetpoint = (setVelocity.leftVelocity)/Constants.kDriveInchesPerSecPerRPM;
-		double rightSetpoint = (setVelocity.rightVelocity)/Constants.kDriveInchesPerSecPerRPM;
-
-
-
-		//leftTalon.set(ControlMode.Velocity, leftSetpoint);
-		//rightTalon.set(ControlMode.Velocity, rightSetpoint);
-
-
-		
-		leftSparkPID.setReference(leftSetpoint, ControlType.kVelocity);
-		rightSparkPID.setReference(rightSetpoint, ControlType.kVelocity);
-
-		//System.out.println("desired left rpm: " + rightSetpoint + " desired right rpm: " + leftSetpoint);
-		//System.out.println("actual left rpm: " + getLeftSpeed() + " actual right rpm: " + getRightSpeed());
-
 	}
 
 	public synchronized void setSimpleDrive(boolean setting) {

@@ -286,13 +286,7 @@ public class Robot extends TimedRobot {
 		//drive.stopMovement();
 		firstTeleopRun = true;
 		//drive.setTeleop();
-		for(int i = 0; i <4; i++){
-			double offset = -drive.swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
-			System.out.println(i + ": " + offset);
-			System.out.println(drive.swerveEncoders[i].setPosition(offset));
-			
-
-		}
+		drive.calculateOffsets();
 		
 		
 	}

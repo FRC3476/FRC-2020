@@ -114,7 +114,7 @@ public class VisionManager extends Subsystem {
 		if(state == VisionStatus.IDLE && visionStatus != VisionStatus.IDLE)
 		{
 			//Turn everything off the first time we go into idle
-			drive.driveState = Drive.DriveState.DONE;
+			drive.setDriveState(Drive.DriveState.DONE);
 			shoot = false;
 			shooter.setFiring(false);
 			hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
