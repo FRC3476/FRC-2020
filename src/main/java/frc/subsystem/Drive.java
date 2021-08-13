@@ -2,9 +2,6 @@
 
 package frc.subsystem;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANAnalog.AnalogMode;
@@ -26,8 +23,8 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
+import frc.utility.ControllerDriveInputs;
 import frc.utility.LazyCANSparkMax;
 import frc.utility.NavXMPX_Gyro;
 import frc.utility.OrangeUtility;
@@ -170,7 +167,8 @@ public class Drive extends Subsystem {
 
 		calculateOffsets();
 
-		swerveKinematics = new SwerveDriveKinematics(Constants.LeftFrontLocation, Constants.LeftBackLocation, Constants.RightFrontLocation,Constants.RightBackLocation);
+		swerveKinematics = new SwerveDriveKinematics(Constants.LeftFrontLocation, Constants.LeftBackLocation, 
+			Constants.RightFrontLocation,Constants.RightBackLocation);
 	
 		configMotors();
 
@@ -178,10 +176,10 @@ public class Drive extends Subsystem {
 		driveState = DriveState.TELEOP;
 
 		turnPID = new SynchronousPid(3.5, 0, 0.0, 0); //P=1.0 OR 0.8
-		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
+		turnPID.setOutputRange(Constants.DriveHighSpeedIn/5, -Constants.DriveHighSpeedIn/5);
 		turnPID.setSetpoint(0);
 		turnPIDAuto = new SynchronousPid(1, 0, 0, 0); //P=1.0 OR 0.8
-		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
+		turnPIDAuto.setOutputRange(Constants.DriveHighSpeedIn/8, -Constants.DriveHighSpeedIn/8);
 		turnPIDAuto.setSetpoint(0);
 		
 
@@ -226,7 +224,7 @@ public class Drive extends Subsystem {
 
 	private void configHigh() {
 
-		driveMultiplier = Constants.DriveHighSpeed;
+		driveMultiplier = Constants.DriveHighSpeedIn;
 	}
 
 
@@ -275,94 +273,15 @@ public class Drive extends Subsystem {
 		
 	}
 
-
-	int testi = 0;
-	public void swerveDrive(double x1, double x2, double y1){
-
-		// if(Math.abs(x1)<0.2) x1 = 0;
-		// if(Math.abs(x2)<0.2) x2 = 0;
-		if(Math.abs(y1)<0.2) y1 = 0;
-
-		double amplitude = Math.sqrt(x1*x1 + x2*x2);
-		if(amplitude<Constants.DriveStrafeDeadZone){
-			x1 = 0;
-			x2 = 0;
-
-		} else{
-
-			double angle = Math.atan2(x1, x2);
-			double minx1 = Math.sin(angle)*Constants.DriveStrafeDeadZone;
-			double minx2 = Math.cos(angle)*Constants.DriveStrafeDeadZone;
-
-			System.out.println("min controller: x: " + minx1 + " y: " +  minx2);
-
-			x1 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x1), Math.abs(minx1), 1, 0, 1), x1);
-
-			x2 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x2), Math.abs(minx2), 1, 0, 1), x2);
-
-			x1 = Math.copySign(x1*x1, x1);
-			x2 = Math.copySign(x2*x2, x2);
-
-		}
-
-		y1 = scaleJoystickValues(y1, 1);
-
-		ChassisSpeeds chassisSpeeds = new ChassisSpeeds(Units.inchesToMeters(Constants.DriveHighSpeed)*x1,Units.inchesToMeters(Constants.DriveHighSpeed)*x2, y1*2);
-
-		testi++;
-
-		if(testi == 100){
-			testi= 0;
-
-			// for(int i = 0; i <4; i++){
-			// 	double offset = -swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
-			// 	System.out.println(i + ": " + offset);
-			// 	System.out.println(swerveEncoders[i].setPosition(offset));
-				
-
-			// }
-		}
-
-	
-
+	public void swerveDrive(ControllerDriveInputs inputs){
+		inputs.applyDeadZone(0.05, 0.05, 0.2, Constants.DriveStrafeDeadZone).squareInputs();
+		ChassisSpeeds chassisSpeeds = new ChassisSpeeds(Constants.DriveHighSpeedM*inputs.getX(),Constants.DriveHighSpeedM*inputs.getY(), inputs.getRotation()*2);
 		swerveDrive(chassisSpeeds);
-		//System.out.println(x1 + ", "  + x2 + ", " + y1);
-
-		
-
 	}
 
-	public void swerveDriveFieldRelitive(double x1, double x2, double y1){
-
-		
-		if(Math.abs(x1)<0.05) x1 = 0;
-		if(Math.abs(x2)<0.05) x2 = 0;
-		if(Math.abs(y1)<0.1) y1 = 0;
-
-		double amplitude = Math.sqrt(x1*x1 + x2*x2);
-		if(amplitude<Constants.DriveStrafeDeadZone){
-			x1 = 0;
-			x2 = 0;
-		} else{
-
-			double angle = Math.atan2(x1, x2);
-			double minx1 = Math.sin(angle)*Constants.DriveStrafeDeadZone;
-			double minx2 = Math.cos(angle)*Constants.DriveStrafeDeadZone;
-
-			System.out.println("min controller: x: " + minx1 + " y: " +  minx2);
-
-			x1 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x1), Math.abs(minx1), 1, 0, 1), x1);
-
-			x2 = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(x2), Math.abs(minx2), 1, 0, 1), x2);
-
-			x1 = Math.copySign(x1*x1, x1);
-			x2 = Math.copySign(x2*x2, x2);
-		}
-
-		y1 = scaleJoystickValues(y1, 1);
-
-
-		swerveDrive(ChassisSpeeds.fromFieldRelativeSpeeds(x1, x2, y1, getGyroAngle().getWPIRotation2d()));
+	public void swerveDriveFieldRelitive(ControllerDriveInputs inputs){
+		inputs.applyDeadZone(0.05, 0.05, 0.2, Constants.DriveStrafeDeadZone).squareInputs();
+		swerveDrive(ChassisSpeeds.fromFieldRelativeSpeeds(Constants.DriveHighSpeedM*inputs.getX(), Constants.DriveHighSpeedM*inputs.getY(), inputs.getRotation()*2, getGyroAngle().getWPIRotation2d()));
 	}
 
 	int temp = 1;
@@ -417,7 +336,7 @@ public class Drive extends Subsystem {
 				swervePID[i].setReference(swerveEncoders[i].getPosition() + anglediff, ControlType.kPosition);
 			}
 			//swerveDriveMotors[i].set((tragetState.speedMetersPerSecond/Constants.DriveHighSpeed)*50*(Math.min(1, Math.max(0, 1-(Math.abs(anglediff)/20)))));
-			swerveDriveMotors[i].set((tragetState.speedMetersPerSecond/Constants.DriveHighSpeed)*50);
+			swerveDriveMotors[i].set(tragetState.speedMetersPerSecond/Constants.DriveHighSpeedM);
 			//System.out.println(i + ": " + tragetState.speedMetersPerSecond/Units.inchesToMeters(Constants.DriveHighSpeed)+ ", " + anglediff);
 			
 		}
