@@ -398,10 +398,12 @@ public class Robot extends TimedRobot {
 					hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 					blinkinLED.setColor(0.77);
 					visionManager.setState(VisionStatus.IDLE);
+					System.out.println("no aim");
 				} else{
 					//We want to do auto aiming (This should shoot by itself if no target is visble)
 					limelight.setLedMode(LedMode.ON);
 					visionManager.setState(VisionStatus.WIN);
+					System.out.println("winning");
 				}
 
 			} else {
@@ -580,7 +582,7 @@ public class Robot extends TimedRobot {
 		ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
 		Runnable task = new Runnable() {
 			public void run() {
-				drive.configCoast();
+				drive.configBrake();
 			}
 		  };
 		worker.schedule(task, 2, TimeUnit.MILLISECONDS);

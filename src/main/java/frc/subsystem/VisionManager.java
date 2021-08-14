@@ -115,6 +115,8 @@ public class VisionManager extends Subsystem {
 			hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
 			hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 
+			System.out.println("stopping");
+
 		}
 
 		visionStatus = state;

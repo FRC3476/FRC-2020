@@ -180,11 +180,11 @@ public class Drive extends Subsystem {
 		drivePercentVbus = true;
 		driveState = DriveState.TELEOP;
 
-		turnPID = new SynchronousPid(2, 0, 16, 0); //P=1.0 OR 0.8
-		turnPID.setOutputRange(Constants.DriveHighSpeed/5, -Constants.DriveHighSpeed/5);
+		turnPID = new SynchronousPid(2, 0, 16, 0); // P=1.0 OR 0.8
+		turnPID.setOutputRange(Constants.DriveHighSpeed / 5, -Constants.DriveHighSpeed / 5);
 		turnPID.setSetpoint(0);
-		turnPIDAuto = new SynchronousPid(2, 0, 16, 0); //P=1.0 OR 0.8
-		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed/8, -Constants.DriveHighSpeed/8);
+		turnPIDAuto = new SynchronousPid(2, 0, 16, 0); // P=1.0 OR 0.8
+		turnPIDAuto.setOutputRange(Constants.DriveHighSpeed / 8, -Constants.DriveHighSpeed / 8);
 		turnPIDAuto.setSetpoint(0);
 		
 
@@ -215,7 +215,7 @@ public class Drive extends Subsystem {
 	}
 
 	public void configCoast(){
-		configMotorsCoastBrake(IdleMode.kCoast);
+		configMotorsCoastBrake(IdleMode.kBrake);
 	}
 
 	IdleMode setIdleMode;
@@ -900,7 +900,7 @@ public class Drive extends Subsystem {
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
 		} else {
 			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3 /* <-- change this */), deltaSpeed); //Johnathan increase that if the robot stays still when turning and decrease that if you get issues. 
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 5 /* <-- change this */), deltaSpeed); //Johnathan increase that if the robot stays still when turning and decrease that if you get issues. 
 		}
 		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
 
@@ -914,7 +914,7 @@ public class Drive extends Subsystem {
 			setWheelVelocity(new DriveSignal(0, 0));
 			
 			isAiming = false;
-			configCoast();
+			configBrake();
 			if( rotateAuto )
 			{
 				synchronized (this) {
