@@ -212,7 +212,7 @@ public class Shooter extends Subsystem {
 				shooterMaster.set(ControlMode.PercentOutput, 0);
 
 				hoodMotor.set(Constants.HoodHomingSpeed);
-				if (getHomeSwitch()) {
+				if (getHomeSwitch() || hoodMotor.getOutputCurrent()>20){
 					hoodEncoder.setPosition(0);
 					shooterState = ShooterState.OFF;
 					hoodPID.setReference(0, ControlType.kPosition);
