@@ -357,9 +357,6 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 			//System.out.println("angle to target " + (drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()));
 			//System.out.println("distance: " + limelight.getDistance());
-
-			
-
 			ArrayList<Double> times = new ArrayList<Double>();
 			
 			if(profileTeleop) times.add(Timer.getFPGATimestamp());

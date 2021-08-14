@@ -21,8 +21,8 @@ public final class Constants {
 	public static final double VisionXOffset = 1.25;
 
 	//Vision (cm)
-	public static final double CamerTargetHeightOffset = 79.1608;
-	public static final double CameraYAngle = 33.3679;
+	public static final double CamerTargetHeightOffset = 77.5567;
+	public static final double CameraYAngle = 41.0246;
 
 
 
