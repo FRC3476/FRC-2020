@@ -580,11 +580,10 @@ public class Robot extends TimedRobot {
 		ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
 		Runnable task = new Runnable() {
 			public void run() {
-				//drive.configCoast();
-				drive.configBrake();
+				drive.configCoast();
 			}
 		  };
-		worker.schedule(task, 2, TimeUnit.SECONDS);
+		worker.schedule(task, 2, TimeUnit.MILLISECONDS);
 		// --------UNTIL HERE-----------
 		
 		shooter.pause();
