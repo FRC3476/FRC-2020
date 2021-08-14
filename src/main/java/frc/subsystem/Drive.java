@@ -210,19 +210,33 @@ public class Drive extends Subsystem {
 		setWheelVelocity(new DriveSignal(40, 0));
 	}
 
-
 	public void configBrake() {
-		leftSpark.setIdleMode(IdleMode.kBrake);
-		rightSpark.setIdleMode(IdleMode.kBrake);
-		leftSparkSlave.setIdleMode(IdleMode.kBrake);
-		rightSparkSlave.setIdleMode(IdleMode.kBrake);  
+		configMotorsCoastBrake(IdleMode.kBrake);
 	}
 
-	public void configCoast() {
-		leftSpark.setIdleMode(IdleMode.kCoast);
-		rightSpark.setIdleMode(IdleMode.kCoast);
-		leftSparkSlave.setIdleMode(IdleMode.kCoast);
-		rightSparkSlave.setIdleMode(IdleMode.kCoast);  
+	public void configCoast(){
+		configMotorsCoastBrake(IdleMode.kCoast);
+	}
+
+	IdleMode setIdleMode;
+	boolean fixIdleMode = false;
+
+	public void configMotorsCoastBrake(IdleMode mode) {
+		boolean error = false;
+		if (CANError.kOk != leftSpark.setIdleMode(mode) || error)
+			error = true;
+		if (CANError.kOk != rightSpark.setIdleMode(mode) || error)
+			error = true;
+		if (CANError.kOk != leftSparkSlave.setIdleMode(mode) || error)
+			error = true;
+		if (CANError.kOk != rightSparkSlave.setIdleMode(mode) || error)
+			error = true;
+		if(error){
+			System.out.println("failed to enable " + mode.toString() + " mode");
+			setIdleMode = mode;
+			fixIdleMode = true;
+		}
+	
 	}
 
 	private void configAuto() {
