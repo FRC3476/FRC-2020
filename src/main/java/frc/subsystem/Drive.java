@@ -2,6 +2,11 @@
 
 package frc.subsystem;
 
+import java.util.Arrays;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANAnalog.AnalogMode;
@@ -11,6 +16,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.ControlType;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,6 +31,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.utility.ControllerDriveInputs;
 import frc.utility.LazyCANSparkMax;
 import frc.utility.NavXMPX_Gyro;
@@ -107,8 +115,8 @@ public class Drive extends Subsystem {
 	private final LazyCANSparkMax[] swerveDriveMotors = new LazyCANSparkMax[4]; 
 	private final CANEncoder[] swerveEncoders = new CANEncoder[4];
 
-	private final PWM leftFrontSparkPwmEncoder, leftBackSparkPwmEncoder, rightFrontSparkPwmEncoder, rightBackSparkPwmEncoder;
-	private final PWM[] swerveEncodersPWM = new PWM[4];
+	private final DutyCycleEncoder leftFrontSparkPwmEncoder, leftBackSparkPwmEncoder, rightFrontSparkPwmEncoder, rightBackSparkPwmEncoder;
+	private final DutyCycleEncoder[] swerveEncodersDIO = new DutyCycleEncoder[4];
 
 	CANPIDController[] swervePID = new CANPIDController[4];
 
@@ -128,10 +136,10 @@ public class Drive extends Subsystem {
 		rightFrontSparkSwerve = new LazyCANSparkMax(Constants.DriveRightFrontSwerveId, MotorType.kBrushless);
 		rightBackSparkSwerve = new LazyCANSparkMax(Constants.DriveRightBackSwerveId, MotorType.kBrushless);
 
-		leftFrontSparkPwmEncoder = new PWM(0);
-		leftBackSparkPwmEncoder = new PWM(1);
-		rightFrontSparkPwmEncoder = new PWM(2);
-		rightBackSparkPwmEncoder = new PWM(3);
+		leftFrontSparkPwmEncoder = new DutyCycleEncoder(0);
+		leftBackSparkPwmEncoder = new DutyCycleEncoder(1);
+		rightFrontSparkPwmEncoder = new DutyCycleEncoder(2);
+		rightBackSparkPwmEncoder = new DutyCycleEncoder(3);
 
 		swerveMotors[0] = leftFrontSparkSwerve;
 		swerveMotors[1] = leftBackSparkSwerve;
@@ -143,10 +151,10 @@ public class Drive extends Subsystem {
 		swerveDriveMotors[2] = rightFrontSpark;
 		swerveDriveMotors[3] = rightBackSpark;
 
-		swerveEncodersPWM[0] = leftFrontSparkPwmEncoder;
-		swerveEncodersPWM[1] = leftBackSparkPwmEncoder;
-		swerveEncodersPWM[2] = rightFrontSparkPwmEncoder;
-		swerveEncodersPWM[3] = rightBackSparkPwmEncoder;
+		swerveEncodersDIO[0] = leftFrontSparkPwmEncoder;
+		swerveEncodersDIO[1] = leftBackSparkPwmEncoder;
+		swerveEncodersDIO[2] = rightFrontSparkPwmEncoder;
+		swerveEncodersDIO[3] = rightBackSparkPwmEncoder;
 		
 		for(int i = 0; i <4; i++){
 			swerveEncoders[i] = swerveMotors[i].getEncoder();
@@ -160,8 +168,6 @@ public class Drive extends Subsystem {
 			swervePID[i].setFF(Constants.SwerveDrivekf);
 
 			swerveMotors[i].setPeriodicFramePeriod(PeriodicFrame.kStatus2, 5);
-
-			swerveEncodersPWM[i].setBounds(2000, 0, 1500, 0, 1000); 
 			
 		}
 
@@ -189,15 +195,46 @@ public class Drive extends Subsystem {
 		configAuto();
 	}
 
+	double[][] tempOffsets = new double[4][10];
+	int offsetsI = 0;
 
 	public void calculateOffsets(){
-		for(int i = 0; i <4; i++){
-			// double offset = -swerveMotors[i].getAnalog(AnalogMode.kAbsolute).getPosition();
-			double offset = swerveEncodersPWM[i].getPosition() * 360; // Asume we're getting a value between 0 and 1
-			System.out.println(i + ": " + offset);
-			System.out.println(swerveEncoders[i].setPosition(offset));
+		offsetsI = 0;
+
+		System.out.println("Calculating Offsets");
+
+		ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+		scheduledExecutorService.scheduleAtFixedRate(new Runnable(){
+			@Override
+			public void run() {		
+				for(int i = 0; i<4; i++){
+				double offset = (swerveEncodersDIO[i].get()-0.05)*7200;
+				tempOffsets[i][offsetsI] = Math.round(offset);
+				//System.out.println(i + ": " + offset);
+				}
+	
+				offsetsI++;
+	
+				if(offsetsI == 10){
+					for(int i = 0; i<4; i++){
+						Arrays.sort(tempOffsets[i]);
+						double median;
+						if (tempOffsets[i].length % 2 == 0){
+							median = ((double)tempOffsets[i][tempOffsets[i].length/2] + (double)tempOffsets[i][tempOffsets[i].length/2 - 1])/2;
+						} else{
+							median = (double) tempOffsets[i][tempOffsets[i].length/2];
+						}
+						swerveEncoders[i].setPosition(median);
+						System.out.println("Setting Offset: "  + median);
+					}
+					scheduledExecutorService.shutdown();;
+				}
+			}
+		}, 0, 50, TimeUnit.MILLISECONDS);
+
+
+
 		
-		}
 	}
 
 	public SwerveDriveKinematics getSwerveDriveKinematics(){
@@ -293,6 +330,8 @@ public class Drive extends Subsystem {
 	}	
 
 
+
+	int testi = 0;
 	private void swerveDrive(ChassisSpeeds chassisSpeeds){
 
 		/*Things to cahnge before using
@@ -338,10 +377,15 @@ public class Drive extends Subsystem {
 			//swerveDriveMotors[i].set((tragetState.speedMetersPerSecond/Constants.DriveHighSpeed)*50*(Math.min(1, Math.max(0, 1-(Math.abs(anglediff)/20)))));
 			swerveDriveMotors[i].set(tragetState.speedMetersPerSecond/Constants.DriveHighSpeedM);
 			//System.out.println(i + ": " + tragetState.speedMetersPerSecond/Units.inchesToMeters(Constants.DriveHighSpeed)+ ", " + anglediff);
-			
+
+			if(testi == 0) System.out.print(", " + i + ": " + (((swerveEncodersDIO[i].get()-0.05)*7200) - (swerveEncoders[i].getPosition()%360)));
 		}
 		
-		//System.out.println(RobotTracker.getInstance().getPoseMeters());
+
+		if(testi == 0) System.out.print("\n");
+		testi++;
+		if(testi>10) testi = 0;
+		
 		
 	}
 	

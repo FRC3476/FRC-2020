@@ -76,7 +76,7 @@ public final class Constants {
 	public static final double kShooterF = (0.5*1023.0) * ShooterRPMPerTicksPer100ms / 3270d;
 	public static final double ShooterGain = 1;
 	public static final int ShooterIntegralZone = (int)(200.0 / ShooterRPMPerTicksPer100ms);
-	public static final int HomeSwitchId = 0; 
+	public static final int HomeSwitchId = 4; 
 
 	public static final double ShooterMaxDeviation = 10000;
 	public static final double AutoShooterAccptableRange = 100;

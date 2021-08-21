@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
 	Limelight limelight = Limelight.getInstance();
 	VisionLookUpTable visionLookUpTable = VisionLookUpTable.getInstance();
 
-	ExecutorService executor = Executors.newFixedThreadPool(4);
+	public static ExecutorService executor = Executors.newFixedThreadPool(4);
 	Thread auto;
 	TemplateAuto option;
 	AutoPosition autoPosition = AutoPosition.MIDDLE;

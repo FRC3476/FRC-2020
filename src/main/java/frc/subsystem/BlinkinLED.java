@@ -18,7 +18,7 @@ public class BlinkinLED extends Subsystem {
 	}
 
 
-	Spark spark = new Spark(0);
+	//Spark spark = new Spark(0);
 
 	private BlinkinLED() {
 		super(Constants.BlinkinLEDPeriod);
@@ -26,7 +26,7 @@ public class BlinkinLED extends Subsystem {
 	}
 	
 	public void setColor(double color){
-		spark.set(color);
+		//spark.set(color);
 		
 	}
 
