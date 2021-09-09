@@ -40,8 +40,8 @@ public class ControllerDriveInputs {
         if(Math.abs(y)<snapingDeadZoneY) y = 0;
         if(Math.abs(rotation)<rotationDeadZone) rotation = 0;
 
-		double amplitude = Math.sqrt(x*x + y*y);
-		if(amplitude<circularDeadZone){
+		double amplitudeSquared = x*x + y*y;
+		if(amplitudeSquared<circularDeadZone*circularDeadZone){
 			x = 0;
 			y = 0;
 		} else{
