@@ -376,14 +376,14 @@ public class Robot extends TimedRobot {
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff ){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
-					System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
+					//System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
 					shooter.setSpeed(sp.getFlyWheelSpeed());
 					shooter.setHoodAngle(sp.getHoodEjectAngle());
 					targetFound = true;
 			
 				// use manuel selection if a target is not found
 				} else if(!targetFound){
-					System.out.println("using manuel contorls");
+					//System.out.println("using manuel contorls");
 					//the !targetFound means we should not go into manuel mode if we previously found our target
 					shooter.setSpeed(shooterSpeed); 
 					shooter.setHoodAngle(hoodPosition);
@@ -391,7 +391,7 @@ public class Robot extends TimedRobot {
 
 			//Turn shooter flywheel on with manuel settings 
 			} else if(buttonPanel.getRawButton(5)){
-				System.out.println("using manuel contorls");
+				//System.out.println("using manuel contorls");
 				shooter.setSpeed(shooterSpeed); 
 				shooter.setHoodAngle(hoodPosition);
 				
@@ -452,7 +452,7 @@ public class Robot extends TimedRobot {
 
 			if(buttonPanel.getRisingEdge(9)){
 				controlPanelDeployed = !controlPanelDeployed;
-				System.out.println("Control panel deploy: " + controlPanelDeployed);
+				//System.out.println("Control panel deploy: " + controlPanelDeployed);
 				if(controlPanelDeployed){
 					controlPanel.deploy();
 				} else{

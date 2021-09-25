@@ -43,7 +43,7 @@ public class VisionLookUpTable{
 			} else if(dist > distanceFromTarget){
 				
 				double percentIn = (distanceFromTarget - lookUpTable.get(i-1).getDistance()) / ( lookUpTable.get(i).getDistance() - lookUpTable.get(i-1).getDistance());
-				System.out.println(percentIn + " " + (dist - lookUpTable.get(i-1).getDistance()) + " " + ( lookUpTable.get(i).getDistance() - lookUpTable.get(i-1).getDistance())+ " " + distanceFromTarget);
+				//System.out.println(percentIn + " " + (dist - lookUpTable.get(i-1).getDistance()) + " " + ( lookUpTable.get(i).getDistance() - lookUpTable.get(i-1).getDistance())+ " " + distanceFromTarget);
 				
 				return interpolateShooterPreset(lookUpTable.get(i-1), lookUpTable.get(i), percentIn);
 			}

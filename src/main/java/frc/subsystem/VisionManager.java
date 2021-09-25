@@ -72,7 +72,7 @@ public class VisionManager extends Subsystem {
 				}
 
 				shoot = shoot || !drive.isAiming();
-				System.out.println("current angle: " + (-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()) + " wanted angle: " + (limelight.getHorizontalOffset()));
+				//System.out.println("current angle: " + (-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()) + " wanted angle: " + (limelight.getHorizontalOffset()));
 
 				if(shoot) {
 
