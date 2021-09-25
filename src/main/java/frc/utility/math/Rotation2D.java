@@ -2,6 +2,8 @@
 
 package frc.utility.math;
 
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
 /**
  * Stores a cos and sin that is used like a rotation matrix
  */
@@ -27,6 +29,17 @@ public class Rotation2D implements Interpolable<Rotation2D> {
 	 */
 	public static Rotation2D fromRadians(double radians) {
 		return new Rotation2D(Math.cos(radians), Math.sin(radians));
+	}
+
+	/**
+	 * Gets a Rotation2Dmatrix from a specified radian
+	 *
+	 * @param radians
+	 *            Radian to turn into a rotation matrix
+	 * @return Rotation2D from specified radian in argument
+	 */
+	public static Rotation2D fromWPIRotation2d(Rotation2d wpiRotation2d) {
+		return new Rotation2D(wpiRotation2d.getCos(),wpiRotation2d.getSin());
 	}
 
 	private double cos;
@@ -138,5 +151,9 @@ public class Rotation2D implements Interpolable<Rotation2D> {
 
 	public String toString() {
 		return ""+ getDegrees();
+	}
+
+	public Rotation2d getWPIRotation2d(){
+		return new Rotation2d(cos, sin);
 	}
 }

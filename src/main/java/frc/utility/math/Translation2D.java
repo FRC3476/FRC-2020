@@ -15,6 +15,10 @@ public class Translation2D implements Interpolable<Translation2D> {
 		return new Translation2D(angle.sin() * distance, angle.cos() * distance);
 	}
 
+	public static Translation2D fromWPITranslation2d(Translation2d wpiTranslation2d) {
+		return new Translation2D(wpiTranslation2d.getX(), wpiTranslation2d.getY());
+	}
+
 	private double x;
 	private double y;
 
@@ -164,6 +168,10 @@ public class Translation2D implements Interpolable<Translation2D> {
 
 	public Translation2D scale(double d) {
 		return new Translation2D(this.getX()*d, this.getY()*d);
+	}
+
+	public Translation2d getWPITranslation2d(){
+		return new Translation2d(getX(), getY());
 	}
 
 	@Override

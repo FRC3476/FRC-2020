@@ -187,7 +187,7 @@ public class Robot extends TimedRobot {
 		startAll();
 		shooter.setSpeed(0);
 
-		robotTracker.resetOdometry();
+		//robotTracker.resetOdometry();
 
 		autoDone = false;
 
@@ -284,14 +284,14 @@ public class Robot extends TimedRobot {
 		System.out.println("teleop init!");
 		drive.stopMovement();
 		firstTeleopRun = true;
-		drive.setTeleop();
+		//drive.setTeleop();
+		robotTracker.resetOdometry();
 		
 		
 		
 	}
 	
 
- 
 	/**
 	 * This function is called periodically during operator control.
 	 */
@@ -512,6 +512,7 @@ public class Robot extends TimedRobot {
 		//light.setRaw(0);
 
 		killAuto();
+		drive.configBrake();
 		
 		//TODO: REMOVE FOLLOWING IF YOU HAVE ISSUES
 		drive.configBrake();

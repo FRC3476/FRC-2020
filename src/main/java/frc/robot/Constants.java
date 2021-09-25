@@ -4,7 +4,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Units;
+
 import com.revrobotics.ColorMatch;
 
 public final class Constants {
@@ -122,6 +125,7 @@ public final class Constants {
 	public static final double ExpectedCurrentTolerance = 0;
 	public static final double ExpectedRPMTolerance = 0;
 	public static final double ExpectedPositionTolerance = 0;
+	public static final double InchesPerMeter = 39.3700787;
 	
 	// Autonomous Driving
 	public static final double TrackRadius = -7; //-7;
@@ -130,7 +134,9 @@ public final class Constants {
 	public static final double MinPathSpeed = 20; 
 	public static final double MaxPathSpeed = 140; //120
 	public static final double MinLookAheadDistance = 14;
-	public static final double MaxLookAheadDistance = 14;//30
+	public static final double MaxLookAheadDistance = 30;
+
+	public static final DifferentialDriveKinematics RamseteDiffDriveKinematics = new DifferentialDriveKinematics(Units.inchesToMeters(25));
 	
 	// Subsystems
 	public static final int TimeoutMs = 10;
@@ -224,7 +230,7 @@ public final class Constants {
 	public static final int intakePeriod = 50;
 	public static final int controlPanelPeriod = 50;
 	public static final int hopperPeriod = 50;
-	public static final int DrivePeriod = 5;
+	public static final int DrivePeriod = 10;
 	public static final int JetsonUdpPeriod = 5;
 	public static final int RobotTrackerPeriod = 5;
 	public static final int VisionManagerPeriod = 12;
