@@ -170,10 +170,6 @@ public class Translation2D implements Interpolable<Translation2D> {
 		return new Translation2D(this.getX()*d, this.getY()*d);
 	}
 
-	public Translation2d getWPITranslation2d(){
-		return new Translation2d(getX(), getY());
-	}
-
 	@Override
 	public String toString() {
 		return ("<"+this.getX() + ", " + this.getY()+">");
