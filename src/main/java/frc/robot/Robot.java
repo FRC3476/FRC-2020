@@ -147,11 +147,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic() {
 		//System.out.println("Distance: " + Limelight.getInstance().getDistance() + " tx: " + Limelight.getInstance().getHorizontalOffset());
+		//System.out.println("Odometry: " + robotTracker.getOdometry().translationMat + " rotation: " +  robotTracker.getOdometry().rotationMat);
 
 	}
 
 	/**
-	 * This autonomous (along with the chooser code above) shows how to select
+	 * This autonomous (along with the chooser cod
+	 * e above) shows how to select
 	 * between different autonomous modes using the dashboard. The sendable
 	 * chooser code works with the Java SmartDashboard. If you prefer the
 	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
@@ -304,6 +306,9 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 			//System.out.println("angle to target " + (drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()));
 			//System.out.println("distance: " + limelight.getDistance());
+
+			
+
 			ArrayList<Double> times = new ArrayList<Double>();
 			
 			if(profileTeleop) times.add(Timer.getFPGATimestamp());

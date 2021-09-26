@@ -844,15 +844,17 @@ public class Drive extends Subsystem {
 
 	private void updateRamsete() {
 		Trajectory.State goal = currentAutoTrajectory.sample(Timer.getFPGATimestamp()-autoStartTime);
-		System.out.println(goal);
+		//System.out.println(goal);
 		RigidTransform2D transform = RobotTracker.getInstance().getOdometry();
-		ChassisSpeeds adjustedSpeeds = ramseteController.calculate(new Pose2d(transform.translationMat.getScaledWPITranslation2d(),
-			transform.rotationMat.getWPIRotation2d()), goal);
+		Pose2d currentRobotPose = new Pose2d(transform.translationMat.getScaledWPITranslation2d(),
+		transform.rotationMat.getWPIRotation2d());
+		ChassisSpeeds adjustedSpeeds = ramseteController.calculate(currentRobotPose, goal);
 		DifferentialDriveWheelSpeeds wheelspeeds = ramseteDiffDriveKinematics.toWheelSpeeds(adjustedSpeeds);
 		setWheelVelocity(new DriveSignal(Units.metersToInches(wheelspeeds.leftMetersPerSecond), 
 			Units.metersToInches(wheelspeeds.rightMetersPerSecond)));
 		//System.out.println(ramseteController.atReference());
 		//System.out.println("target speed" + Units.metersToInches(wheelspeeds.leftMetersPerSecond) + " " + Units.metersToInches(wheelspeeds.rightMetersPerSecond) + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
+		System.out.println("Goal: (" + goal.poseMeters.getTranslation().getX() + ", " + goal.poseMeters.getTranslation().getY() + ") Actual: (" + currentRobotPose.getX() + ", " + currentRobotPose.getY() + ")");
 		//TODO: not working
 		if(ramseteController.atReference() && (Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
 			driveState = DriveState.DONE;
