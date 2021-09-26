@@ -95,6 +95,8 @@ public class Robot extends TimedRobot {
 	enum AutoPosition {
 		MIDDLE, LEFT, RIGHT
 	}
+
+	TrenchDash trenchDash = new TrenchDash();
 	
 	@Override
 	public void robotInit() {
@@ -104,6 +106,7 @@ public class Robot extends TimedRobot {
 		drive.calibrateGyro();
 		autoChooser.addOption("3 Ball", "3 Ball");
 		autoChooser.addOption("3 Ball Drive", "3 Ball Drive");
+		autoChooser.addOption("Trench Dash", "Trench Dash");
 
 		autoChooser.setDefaultOption("8 Ball", "8 Ball");
 		
@@ -219,6 +222,8 @@ public class Robot extends TimedRobot {
 
 		if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
 		else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
+		else if(autoChooser.getSelected().equals("Trench Dash")) option = trenchDash;
+		option = trenchDash;
 
 		auto = new Thread(option);
 	

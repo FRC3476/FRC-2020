@@ -87,7 +87,7 @@ public class Drive extends Subsystem {
 
 	private boolean drivePercentVbus;
 
-	private NavXMPX_Gyro gyroSensor;// = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+	private NavXMPX_Gyro gyroSensor = new NavXMPX_Gyro(SPI.Port.kMXP);// = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
 	// private LazyTalonSRX leftTalon, rightTalon, leftSlaveTalon, leftSlave2Talon,
 	// rightSlaveTalon, rightSlave2Talon;
 	private PurePursuitController autonomousDriver;
