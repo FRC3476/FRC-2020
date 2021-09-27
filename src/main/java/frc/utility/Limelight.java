@@ -97,7 +97,6 @@ public class Limelight{
 	 * @return The pipeline’s latency contribution (ms). Add at least 11ms for image capture latency.
 	 */
 	public double getLatency(){
-		setLedMode(LedMode.DEFAULT);
 		return limelightTable.getEntry("ts").getDouble(0);
 	   
 	}

@@ -25,6 +25,7 @@ import frc.utility.Controller;
 import frc.utility.Limelight;
 import frc.utility.ShooterPreset;
 import frc.utility.VisionLookUpTable;
+import frc.utility.Limelight.LedMode;
 
 
 
@@ -134,6 +135,7 @@ public class Robot extends TimedRobot {
 
 		Thread.currentThread().setPriority(7);
 		blinkinLED.setColor(0.89);
+		limelight.setLedMode(LedMode.OFF);
 	}
 
 	/**
@@ -343,7 +345,7 @@ public class Robot extends TimedRobot {
 			
 			//do we want to shoot
 			if(xbox.getRawAxis(2)>0.5 || stick.getRawButton(1)){
-				//do we not want aiming want aiming
+				//do we not want aiming
 				if(visionOff || stick.getRawButton(1)){
 					shooter.setFiring(true);
 					hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
@@ -352,11 +354,13 @@ public class Robot extends TimedRobot {
 					visionManager.setState(VisionStatus.IDLE);
 				} else{
 					//We want to do auto aiming (This should shoot by itself if no target is visble)
+					limelight.setLedMode(LedMode.ON);
 					visionManager.setState(VisionStatus.WIN);
 				}
 
 			} else {
 				visionManager.setState(VisionStatus.IDLE);
+				limelight.setLedMode(LedMode.OFF);
 			}
 
 			//do normal drive fuction if Vision is idle
