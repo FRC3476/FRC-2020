@@ -93,17 +93,26 @@ public class Robot extends TimedRobot {
 	private final SendableChooser<String> startChooser = new SendableChooser<String>();
 	//private final SendableChooser<String> red_blue = new SendableChooser<String>();
 
-	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
-	 */
+	NetworkTableInstance instance = NetworkTableInstance.getDefault();
+    NetworkTable autoDataTable = instance.getTable("autodata");
+	NetworkTableEntry autoPath = autoDataTable.getEntry("autoPath");
+	
+	NetworkTable position = autoDataTable.getSubTable("position");
+	NetworkTableEntry xPos = position.getEntry("x");
+	NetworkTableEntry yPos = position.getEntry("y");
+	NetworkTableEntry enabled = autoDataTable.getEntry("enabled");
+
 
 	enum AutoPosition {
 		MIDDLE, LEFT, RIGHT
 	}
 
 	TrenchDash trenchDash = new TrenchDash();
-	
+
+	/**
+	 * This function is run when the robot is first started up and should be
+	 * used for any initialization code.
+	 */
 	@Override
 	public void robotInit() {
 		light.set(Relay.Value.kOff);
@@ -155,7 +164,10 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic() {
 		//System.out.println("Distance: " + Limelight.getInstance().getDistance() + " tx: " + Limelight.getInstance().getHorizontalOffset());
 		//System.out.println("Odometry: " + robotTracker.getOdometry().translationMat + " rotation: " +  robotTracker.getOdometry().rotationMat);
-
+		if(isEnabled()){
+			xPos.setDouble(robotTracker.getOdometry().translationMat.getX());
+			yPos.setDouble(robotTracker.getOdometry().translationMat.getY());
+		}
 	}
 
 	/**
@@ -192,9 +204,7 @@ public class Robot extends TimedRobot {
 		drive.start();
 	}
 
-	NetworkTableInstance instance = NetworkTableInstance.getDefault();
-    NetworkTable table = instance.getTable("autodata");
-    NetworkTableEntry autoPath = table.getEntry("autoPath");
+
 
 	@Override
 	public void autonomousInit() {
@@ -207,6 +217,7 @@ public class Robot extends TimedRobot {
 
 		int autoDir = 1;
 		double startX = 94.6;
+		enabled.setBoolean(true);
 
 
 
@@ -307,7 +318,7 @@ public class Robot extends TimedRobot {
 		//drive.setTeleop();
 		robotTracker.resetOdometry();
 		
-		
+		enabled.setBoolean(true);
 		
 	}
 	
@@ -557,6 +568,7 @@ public class Robot extends TimedRobot {
 		controlPanel.pause();
 		hopper.pause();
 		intake.pause();
+		enabled.setBoolean(false);
 	}
 	
 	@Override
