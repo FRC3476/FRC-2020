@@ -44,44 +44,36 @@ public class TrenchDash extends TemplateAuto implements Runnable  {
 		super(new Translation2D(120, /*-(165-55.5/2)*/  -240/*-131 */));
 		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
 
-		// TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(30), Units.inchesToMeters(10.42928));
-		// trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(10)));
+		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(60), Units.inchesToMeters(30.42928));
+		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(20)));
 
-		// ArrayList<Pose2d> path1 = new ArrayList<>();
-		// path1.add(new Pose2d(Units.inchesToMeters(-124), Units.inchesToMeters(-240), Rotation2d.fromDegrees(180+27)));
-		// path1.add(new Pose2d(Units.inchesToMeters(-124), Units.inchesToMeters(-240), Rotation2d.fromDegrees(180)));
+		ArrayList<Pose2d> path1 = new ArrayList<>();
+		path1.add(new Pose2d(3.054, 3.32, Rotation2d.fromDegrees(180)));
+		path1.add(new Pose2d(7.03, 3.32, Rotation2d.fromDegrees(180)));
 
-		// trajectoryConfig.setReversed(true);
-		// trajectory1 = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
+		trajectoryConfig.setReversed(true);
+		trajectory1 = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
 
-		// ArrayList<Pose2d> path2 = new ArrayList<>();
-		// path2.add(new Pose2d(Units.inchesToMeters(-124), Units.inchesToMeters(+(106.5-17)-120), Rotation2d.fromDegrees(180)));
-		// path2.add(new Pose2d(Units.inchesToMeters(-124+50), Units.inchesToMeters(+(106.5-17)), Rotation2d.fromDegrees(180)));
+		ArrayList<Pose2d> path2 = new ArrayList<>();
+		path2.add(new Pose2d(7.03, 3.32, Rotation2d.fromDegrees(180)));
+		path2.add(new Pose2d(3.05, 2.35, Rotation2d.fromDegrees(-166)));
 		
-		// trajectoryConfig.setReversed(false);
-		// trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
+		trajectoryConfig.setReversed(false);
+		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
 
-		// ArrayList<Pose2d> path3 = new ArrayList<>();
-		// path3.add(new Pose2d(Units.inchesToMeters((-124+50)), Units.inchesToMeters(+(106.5-17)), Rotation2d.fromDegrees(180)));
-		// path3.add(new Pose2d(Units.inchesToMeters(-24), Units.inchesToMeters(+124), Rotation2d.fromDegrees(180)));
-		// path3.add(new Pose2d(new Translation2D(-24, +124).translateBy(frontBumpDirLeft.scale(22)).translateBy(frontBumpDirRight.scale(-32)).getScaledWPITranslation2d(), Rotation2d.fromDegrees(150)));
-		// path3.add(new Pose2d(new Translation2D(-24, +124).translateBy(frontBumpDirLeft.scale(22)).translateBy(frontBumpDirRight.scale(19)).getScaledWPITranslation2d(), Rotation2d.fromDegrees(22)));
-		// path3.add(new Pose2d(new Translation2D(-24, +124).translateBy(frontBumpDirLeft.scale(22)).translateBy(frontBumpDirRight.scale(19)).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180-90+22)));
-		// path3.add(new Pose2d(new Translation2D(-24, +124).translateBy(frontBumpDirLeft.scale(32)).translateBy(frontBumpDirRight.scale(19)).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180+22)));
-		// path3.add(new Pose2d(new Translation2D(-24, +124).translateBy(frontBumpDirLeft.scale(32)).translateBy(frontBumpDirRight.scale(5)).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180+22+90)));
-		// path3.add(new Pose2d(new Translation2D(-24, +124).translateBy(frontBumpDirLeft.scale(45)).translateBy(frontBumpDirRight.scale(5)).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180+22)));
+		ArrayList<Pose2d> path3 = new ArrayList<>();
+		path3.add(new Pose2d(3.05, 2.35, Rotation2d.fromDegrees(-166)));
+		path3.add(new Pose2d(5.92, 1.01, Rotation2d.fromDegrees(112)));
+		path3.add(new Pose2d(6.35, -0.03, Rotation2d.fromDegrees(112)));
+		path3.add(new Pose2d(6.75, 0.13, Rotation2d.fromDegrees(-112)));
+		path3.add(new Pose2d(6.97, 0.78, Rotation2d.fromDegrees(-69)));
+		path3.add(new Pose2d(6.58, 0.86, Rotation2d.fromDegrees(-4)));
+		path3.add(new Pose2d(5.76, 1.67, Rotation2d.fromDegrees(-9)));
+		path3.add(new Pose2d(3.07, 1.88, Rotation2d.fromDegrees(3)));
 	
 		
-		// trajectoryConfig.setReversed(true);
-		// trajectory3 = TrajectoryGenerator.generateTrajectory(path3, trajectoryConfig);
-
-		// ArrayList<Pose2d> path4 = new ArrayList<>();
-		// path4.add(new Pose2d(new Translation2D(-24, -124).translateBy(frontBumpDirLeft.scale(45)).translateBy(frontBumpDirRight.scale(5)).getScaledWPITranslation2d(), Rotation2d.fromDegrees(180+22)));
-		// //path4.add(new Pose2d(Units.inchesToMeters(-124), Units.inchesToMeters(-(106.5-17)-124), Rotation2d.fromDegrees(180)));
-		// path4.add(new Pose2d(Units.inchesToMeters(-124+50), Units.inchesToMeters(-(106.5-17)), Rotation2d.fromDegrees(180)));
-		
-		// trajectoryConfig.setReversed(true);
-		// trajectory4 = TrajectoryGenerator.generateTrajectory(path4, trajectoryConfig);
+		trajectoryConfig.setReversed(true);
+		trajectory3 = TrajectoryGenerator.generateTrajectory(path3, trajectoryConfig);
 
 
 	}
