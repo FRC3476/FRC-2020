@@ -6,17 +6,22 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.auton.*;
+import frc.auton.guiauto.NetworkAuto;
 import frc.subsystem.*;
 import frc.subsystem.Hopper.FrontMotorState;
 import frc.subsystem.Hopper.SnailMotorState;
 import frc.subsystem.Intake.DeployState;
 import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.VisionManager.VisionStatus;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 //import frc.robot.subsystem.Drive;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 
 import java.util.concurrent.*;
+
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.ResourceBundle.Control;
@@ -187,7 +192,9 @@ public class Robot extends TimedRobot {
 		drive.start();
 	}
 
-	
+	NetworkTableInstance instance = NetworkTableInstance.getDefault();
+    NetworkTable table = instance.getTable("autodata");
+    NetworkTableEntry autoPath = table.getEntry("autoPath");
 
 	@Override
 	public void autonomousInit() {
@@ -222,12 +229,16 @@ public class Robot extends TimedRobot {
 		}
 
 		//option = new ShootAndMove(startX);
-		option = new NewEightBallOppTrench(275);//TenBall(275);
+		if(autoPath.getString(null) == null){
+			option = new NewEightBallOppTrench(275);//TenBall(275);
 
-		if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
-		else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
-		else if(autoChooser.getSelected().equals("Trench Dash")) option = trenchDash;
-		option = trenchDash;
+			if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
+			else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
+			else if(autoChooser.getSelected().equals("Trench Dash")) option = trenchDash;
+			option = trenchDash;
+		} else {
+			option = new NetworkAuto();
+		}
 
 		auto = new Thread(option);
 	

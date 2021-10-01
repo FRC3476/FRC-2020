@@ -126,4 +126,29 @@ public class Hopper extends Subsystem {
 	public void update() {
 		
 	}
+
+	public void setSnailMotorStateActive(boolean slow) {
+        setSnailMotorState(SnailMotorState.ACTIVE, slow);
+    }
+
+    public void setSnailMotorStateInactive(boolean slow) {
+        setSnailMotorState(SnailMotorState.INACTIVE, slow);
+    }
+
+    public void setSnailMotorStateReverse(boolean slow) {
+        setSnailMotorState(SnailMotorState.REVERSE, slow);
+    }
+
+    public void setFrontMotorStateActive() {
+        setFrontMotorState(FrontMotorState.ACTIVE);
+    }
+
+    public void setFrontMotorStateInactive() {
+        setFrontMotorState(FrontMotorState.INACTIVE);
+    }
+
+    public void setFrontMotorStateReverse() {
+        setFrontMotorState(FrontMotorState.REVERSE);
+    }
+
 }   
