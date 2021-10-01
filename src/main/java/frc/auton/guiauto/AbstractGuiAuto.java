@@ -33,6 +33,7 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
     @Override
     public void run() {
         if(autonmous != null){
+            System.out.println("Running: " + this.getClass().getName());
             for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
                 if(autonomousStep instanceof TrajectoryAutonomousStep){
                     TrajectoryAutonomousStep trajectoryAutonomousStep = (TrajectoryAutonomousStep) autonomousStep;
@@ -46,7 +47,10 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
             for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
                 autonomousStep.execute(this);
             }
+        } else {
+            System.out.println("auto is null");
         }
+
         synchronized (this) {
 			done = true; 
 		}

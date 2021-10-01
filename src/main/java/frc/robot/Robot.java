@@ -240,7 +240,8 @@ public class Robot extends TimedRobot {
 		}
 
 		//option = new ShootAndMove(startX);
-		if(autoPath.getString(null) == null){
+		if(autoPath.getString(null) == null){ //TODO: Make this an option on the smart dashboard
+			System.out.println("Using normal autos");
 			option = new NewEightBallOppTrench(275);//TenBall(275);
 
 			if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
@@ -248,6 +249,7 @@ public class Robot extends TimedRobot {
 			else if(autoChooser.getSelected().equals("Trench Dash")) option = trenchDash;
 			option = trenchDash;
 		} else {
+			System.out.println("Using autos from network tables");
 			option = new NetworkAuto();
 		}
 

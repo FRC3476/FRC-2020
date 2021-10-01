@@ -38,18 +38,22 @@ public class NetworkAuto extends TemplateAuto {
 
     @Override
     public void run() {
-        for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
-            if(autonomousStep instanceof TrajectoryAutonomousStep){
-                TrajectoryAutonomousStep trajectoryAutonomousStep = (TrajectoryAutonomousStep) autonomousStep;
-                Trajectory.State intialState = trajectoryAutonomousStep.getStates().get(0);
-                RobotTracker.getInstance().setInitialRotation(Rotation2D.fromWPIRotation2d(intialState.poseMeters.getRotation()));
-                RobotTracker.getInstance().setInitialTranslation(Translation2D.fromWPITranslation2d(intialState.poseMeters.getTranslation()));
-                break;
+        if(autonmous != null){
+            for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
+                if(autonomousStep instanceof TrajectoryAutonomousStep){
+                    TrajectoryAutonomousStep trajectoryAutonomousStep = (TrajectoryAutonomousStep) autonomousStep;
+                    Trajectory.State intialState = trajectoryAutonomousStep.getStates().get(0);
+                    RobotTracker.getInstance().setInitialRotation(Rotation2D.fromWPIRotation2d(intialState.poseMeters.getRotation()));
+                    RobotTracker.getInstance().setInitialTranslation(Translation2D.fromWPITranslation2d(intialState.poseMeters.getTranslation()));
+                    break;
+                }
             }
-        }
 
-        for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
-            autonomousStep.execute(this);
+            for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
+                autonomousStep.execute(this);
+            }
+        } else {
+            System.out.println("auto is null");
         }
 
         synchronized (this) {
