@@ -24,7 +24,7 @@ import frc.subsystem.VisionManager.VisionStatus;
 
 
 @SuppressWarnings("unused")
-public class TrenchDash extends TemplateAuto implements Runnable  {
+public class OpponentSteal extends TemplateAuto implements Runnable  {
    
 	double startY;
 
@@ -34,11 +34,9 @@ public class TrenchDash extends TemplateAuto implements Runnable  {
 
 	Trajectory trajectory1;
 	Trajectory trajectory2;
-	Trajectory trajectory3;
-	Trajectory trajectory4;
 
 
-	public TrenchDash() {
+	public OpponentSteal() {
 		//RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
 		//THIS WONT WORK
 		super(new Translation2D(120, /*-(165-55.5/2)*/  -240/*-131 */));
@@ -48,33 +46,18 @@ public class TrenchDash extends TemplateAuto implements Runnable  {
 		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(20)));
 
 		ArrayList<Pose2d> path1 = new ArrayList<>();
-		path1.add(new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(180)));
-		path1.add(new Pose2d(6.9357, 3.3663, Rotation2d.fromDegrees(180)));
+		path1.add(new Pose2d(3.58, -3.65, Rotation2d.fromDegrees(180)));
+		path1.add(new Pose2d(6.17, -3.65, Rotation2d.fromDegrees(180)));
 
 		trajectoryConfig.setReversed(true);
 		trajectory1 = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
 
 		ArrayList<Pose2d> path2 = new ArrayList<>();
-		path2.add(new Pose2d(6.9357, 3.3663, Rotation2d.fromDegrees(180)));
-		path2.add(new Pose2d(3.1465, 2.3712, Rotation2d.fromDegrees(-166)));
+		path1.add(new Pose2d(6.17, -3.65, Rotation2d.fromDegrees(180)));
+		path2.add(new Pose2d(3.05, 1.05, Rotation2d.fromDegrees(165)));
 		
 		trajectoryConfig.setReversed(false);
 		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
-
-		ArrayList<Pose2d> path3 = new ArrayList<>();
-		path3.add(new Pose2d(3.1465, 2.3712, Rotation2d.fromDegrees(-166)));
-		path3.add(new Pose2d(6.3608, 1.1321, Rotation2d.fromDegrees(113)));
-		path3.add(new Pose2d(6.7916, 0.1015, Rotation2d.fromDegrees(112)));
-		path3.add(new Pose2d(7.1633, 0.0508, Rotation2d.fromDegrees(-158)));
-		path3.add(new Pose2d(7.4336, 0.3634, Rotation2d.fromDegrees(-76)));
-		path3.add(new Pose2d(7.2309, 0.9885, Rotation2d.fromDegrees(-70)));
-		path3.add(new Pose2d(7.611, 1.3179, Rotation2d.fromDegrees(-158)));
-		path3.add(new Pose2d(5.6815, 1.9754, Rotation2d.fromDegrees(1)));
-		path3.add(new Pose2d(3.2327, 1.8413, Rotation2d.fromDegrees(3)));
-	
-		
-		trajectoryConfig.setReversed(true);
-		trajectory3 = TrajectoryGenerator.generateTrajectory(path3, trajectoryConfig);
 
 
 	}
@@ -96,19 +79,28 @@ public class TrenchDash extends TemplateAuto implements Runnable  {
 		System.out.println("TrenchRun");
 
 
-		
+		turnOnIntakeTrack();
 		drive.setAutoPath(trajectory1);
 		while(!drive.isFinished()) if(isDead()) return;
 
 		System.out.println("here1");
+		turnOffIntakeTrack();
+
+		shooter.setSpeed(4000); //May need to set hood pos
 
 		drive.setAutoPath(trajectory2);
 		while(!drive.isFinished()) if(isDead()) return;
 		System.out.println("here2");
 
-		drive.setAutoPath(trajectory3);
-		while(!drive.isFinished()) if(isDead()) return;
-		System.out.println("here3");
+		shootBalls(5);
+
+		// drive.setAutoPath(trajectory3);
+		// while(!drive.isFinished()) if(isDead()) return;
+		// System.out.println("here3");
+
+		// drive.setAutoPath(trajectory4);
+		// while(!drive.isFinished()) if(isDead()) return;
+		// System.out.println("here4");
 		
  
 		synchronized (this) {

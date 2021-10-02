@@ -39,6 +39,7 @@ public class NetworkAuto extends TemplateAuto {
     @Override
     public void run() {
         if(autonmous != null){
+            System.out.println("Running: " + this.getClass().getName());
             for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
                 if(autonomousStep instanceof TrajectoryAutonomousStep){
                     TrajectoryAutonomousStep trajectoryAutonomousStep = (TrajectoryAutonomousStep) autonomousStep;
