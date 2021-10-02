@@ -32,8 +32,6 @@ public class ScriptAutonomousStep extends AbstractAutonomousStep {
         engine.put("hopper", Hopper.getInstance());
         engine.put("intake", Intake.getInstance());
         engine.put("visionManager", VisionManager.getInstance());
-
-        engine.put("auto", this);
     }
 
     @JsonCreator
@@ -65,6 +63,7 @@ public class ScriptAutonomousStep extends AbstractAutonomousStep {
     public void execute(TemplateAuto templateAuto) {
         if(!templateAuto.isDead()){
             try {
+                engine.put("auto", templateAuto);
                 engine.eval(script);
             } catch (ScriptException | WrongMethodTypeException exception) {
                 System.out.println("Script " + script + " Failed to Execute");
