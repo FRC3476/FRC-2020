@@ -7,6 +7,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import frc.auton.TemplateAuto;
@@ -15,6 +16,7 @@ import frc.subsystem.Intake;
 import frc.subsystem.Shooter;
 import frc.subsystem.VisionManager;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ScriptAutonomousStep extends AbstractAutonomousStep {
 
     private final String script;

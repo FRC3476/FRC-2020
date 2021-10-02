@@ -33,6 +33,9 @@ public abstract class TemplateAuto implements Runnable {
 		RobotTracker.getInstance().setInitialTranslation(start);
 	}
 
+	public TemplateAuto() {
+	}
+
 	public TemplateAuto(Translation2D start, int side) {
 		RobotTracker.getInstance().setInitialTranslation(start);
 		this.side = side;

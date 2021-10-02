@@ -1,6 +1,7 @@
 package frc.auton.guiauto.serialization;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -11,6 +12,7 @@ import frc.subsystem.Drive;
 
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TrajectoryAutonomousStep extends AbstractAutonomousStep {
     private final List<State> states;
     private final List<Pose2d> pose2DList;

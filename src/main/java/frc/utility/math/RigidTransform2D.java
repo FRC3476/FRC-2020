@@ -2,6 +2,9 @@
 
 package frc.utility.math;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
 /**
  * Stores a Translation2D and a Rotation2D
  */
@@ -37,5 +40,9 @@ public class RigidTransform2D implements Interpolable<RigidTransform2D> {
 	public RigidTransform2D transform(RigidTransform2D delta) {
 		return new RigidTransform2D(translationMat.translateBy(delta.translationMat.rotateBy(rotationMat)),
 				rotationMat.rotateBy(delta.rotationMat));
+	}
+
+	public static RigidTransform2D fromWPIPose2d(Pose2d pose2d) {
+		return new RigidTransform2D(Translation2D.fromWPITranslation2d(pose2d.getTranslation()), Rotation2D.fromWPIRotation2d(pose2d.getRotation()));
 	}
 }

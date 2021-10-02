@@ -37,11 +37,6 @@ public class OpponentSteal extends TemplateAuto implements Runnable  {
 
 
 	public OpponentSteal() {
-		//RobotTracker.getInstance().setInitialTranslation(new Translation2D(startX, 75));
-		//THIS WONT WORK
-		super(new Translation2D(120, /*-(165-55.5/2)*/  -240/*-131 */));
-		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
-
 		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(60), Units.inchesToMeters(30.42928));
 		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(20)));
 
@@ -71,12 +66,11 @@ public class OpponentSteal extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
+		Pose2d initalPose = new Pose2d(3.58, -3.65, Rotation2d.fromDegrees(180));
 
-		robotTracker.setInitialTranslation(new Translation2D(-124, /*-(165-55.5/2)*/  -(106.5-17)/*-131 */));
-		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
-
-		//Start 120 275
-		System.out.println("TrenchRun");
+		robotTracker.setInitialTranslation(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
+		robotTracker.setInitialRotation(Rotation2D.fromWPIRotation2d(initalPose.getRotation()));
+		System.out.println("Oponent Steal");
 
 
 		turnOnIntakeTrack();
