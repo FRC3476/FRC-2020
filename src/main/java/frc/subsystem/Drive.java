@@ -125,7 +125,9 @@ public class Drive extends Subsystem {
 
 	private Drive() {
 		super(Constants.DrivePeriod);
-		ramseteController.setTolerance(new Pose2d(new Translation2D(5,5).getScaledWPITranslation2d(), Rotation2d.fromDegrees(30)));
+		Pose2d tollerance = new Pose2d(new Translation2D(20,20).getScaledWPITranslation2d(), Rotation2d.fromDegrees(90));
+		System.out.println(tollerance);
+		ramseteController.setTolerance(tollerance);
 
 		leftSpark = new LazyCANSparkMax(Constants.DriveLeftMasterId, MotorType.kBrushless);
 		leftSparkSlave = new LazyCANSparkMax(Constants.DriveLeftSlave1Id, MotorType.kBrushless);
@@ -854,14 +856,19 @@ public class Drive extends Subsystem {
 			Units.metersToInches(wheelspeeds.rightMetersPerSecond)));
 		//System.out.println(ramseteController.atReference());
 		//System.out.println("target speed" + Units.metersToInches(wheelspeeds.leftMetersPerSecond) + " " + Units.metersToInches(wheelspeeds.rightMetersPerSecond) + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
-		System.out.println("Goal: (" + goal.poseMeters.getTranslation().getX() + ", " + goal.poseMeters.getTranslation().getY() + ") Actual: (" + currentRobotPose.getX() + ", " + currentRobotPose.getY() + ")");
+		//System.out.println("Goal: (" + goal.poseMeters.getTranslation().getX() + ", " + goal.poseMeters.getTranslation().getY() + ") Actual: (" + currentRobotPose.getX() + ", " + currentRobotPose.getY() + ")");
 		//TODO: not working
+		if((Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
+		}
 		if(ramseteController.atReference() && (Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
 			driveState = DriveState.DONE;
 			stopMovement();
 		}
 	}
 
+	public double getRamseteCompletePercent(){
+		return (Timer.getFPGATimestamp()-autoStartTime)/ currentAutoTrajectory.getTotalTimeSeconds();
+	}
 	synchronized public boolean isAiming() {
 		return isAiming; 
 	}

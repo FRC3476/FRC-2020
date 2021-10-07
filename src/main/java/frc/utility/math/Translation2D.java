@@ -16,7 +16,7 @@ public class Translation2D implements Interpolable<Translation2D> {
 	}
 
 	public static Translation2D fromWPITranslation2d(Translation2d wpiTranslation2d) {
-		return new Translation2D(wpiTranslation2d.getX(), wpiTranslation2d.getY());
+		return new Translation2D(Units.metersToInches(wpiTranslation2d.getX()), Units.metersToInches(wpiTranslation2d.getY()));
 	}
 
 	private double x;

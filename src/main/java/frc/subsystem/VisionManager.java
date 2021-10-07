@@ -53,6 +53,8 @@ public class VisionManager extends Subsystem {
 				
 			}
 				shoot = shoot || !drive.isAiming();
+
+				//System.out.println("current angle: " + (-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()) + " wanted angle: " + (limelight.getHorizontalOffset()) + " shoot: " + shoot);
 				
 				if (shoot){
 					led.setColor(.77);
@@ -72,7 +74,7 @@ public class VisionManager extends Subsystem {
 				}
 
 				shoot = shoot || !drive.isAiming();
-				//System.out.println("current angle: " + (-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()) + " wanted angle: " + (limelight.getHorizontalOffset()));
+				//System.out.println("current angle: " + (-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()) + " wanted angle: " + (limelight.getHorizontalOffset()) + " shoot: " + shoot);
 
 				if(shoot) {
 
@@ -139,7 +141,10 @@ public class VisionManager extends Subsystem {
 
     public synchronized void setStateAiming(){
         setState(VisionStatus.AIMING);
+	}
+	
+    public synchronized void setStateWin(){
+        setState(VisionStatus.WIN);
     }
-
 
 }

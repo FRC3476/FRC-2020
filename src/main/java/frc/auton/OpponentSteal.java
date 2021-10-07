@@ -37,20 +37,22 @@ public class OpponentSteal extends TemplateAuto implements Runnable  {
 
 
 	public OpponentSteal() {
-		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(60), Units.inchesToMeters(30.42928));
-		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(20)));
+		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
+		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
 
 		ArrayList<Pose2d> path1 = new ArrayList<>();
-		path1.add(new Pose2d(3.58, -3.65, Rotation2d.fromDegrees(180)));
-		path1.add(new Pose2d(6.17, -3.65, Rotation2d.fromDegrees(180)));
+		path1.add(new Pose2d(3.6533, -2.92, Rotation2d.fromDegrees(180)));
+		//path1.add(new Pose2d(6.0837, -3.332, Rotation2d.fromDegrees(120)));
+		path1.add(new Pose2d(6.3126, -3.6092, Rotation2d.fromDegrees(120)));
 
 		trajectoryConfig.setReversed(true);
 		trajectory1 = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
 
 		ArrayList<Pose2d> path2 = new ArrayList<>();
-		path1.add(new Pose2d(6.17, -3.65, Rotation2d.fromDegrees(180)));
-		path2.add(new Pose2d(3.05, 1.05, Rotation2d.fromDegrees(165)));
-		
+		path2.add(new Pose2d(6.3126, -3.6092, Rotation2d.fromDegrees(120)));
+		path2.add(new Pose2d(4.1312, -1.4694, Rotation2d.fromDegrees(137)));
+		path2.add(new Pose2d(1.9804, 0.2412, Rotation2d.fromDegrees(149)));
+
 		trajectoryConfig.setReversed(false);
 		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
 
@@ -66,7 +68,7 @@ public class OpponentSteal extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-		Pose2d initalPose = new Pose2d(3.58, -3.65, Rotation2d.fromDegrees(180));
+		Pose2d initalPose = new Pose2d(3.5708, -2.9, Rotation2d.fromDegrees(180));
 
 		robotTracker.setInitialTranslation(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
 		robotTracker.setInitialRotation(Rotation2D.fromWPIRotation2d(initalPose.getRotation()));
@@ -83,10 +85,16 @@ public class OpponentSteal extends TemplateAuto implements Runnable  {
 		shooter.setSpeed(4000); //May need to set hood pos
 
 		drive.setAutoPath(trajectory2);
-		while(!drive.isFinished()) if(isDead()) return;
+		while(!drive.isFinished()) {
+			if(drive.getRamseteCompletePercent() > 0.1){
+				intake.setDeployState(DeployState.UNDEPLOY);
+			}
+			if(isDead()) return;
+		};
 		System.out.println("here2");
 
-		shootBalls(5);
+
+		shootBallsTimed(20);
 
 		// drive.setAutoPath(trajectory3);
 		// while(!drive.isFinished()) if(isDead()) return;

@@ -32,77 +32,106 @@ public class TrenchDash extends TemplateAuto {
 	
 	boolean killSwitch = false;
 
-	Trajectory trajectory1;
-	Trajectory trajectory2;
-	Trajectory trajectory3;
+	Trajectory trajectory1Left;
+	Trajectory trajectory2Left;
+
+	Trajectory trajectory1Right;
+	Trajectory trajectory2Right;
 
 
 	public TrenchDash() {
-		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(60), Units.inchesToMeters(30.42928));
-		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(20)));
+		//Left Side
+		{
+			TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
+			trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
 
-		ArrayList<Pose2d> path1 = new ArrayList<>();
-		path1.add(new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(180)));
-		path1.add(new Pose2d(6.9357, 3.3663, Rotation2d.fromDegrees(180)));
+			ArrayList<Pose2d> path1 = new ArrayList<>();
+			path1.add(new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(-180)));
+			path1.add(new Pose2d(6.26, 3.3663, Rotation2d.fromDegrees(180)));
+			path1.add(new Pose2d(9.21, 3.3663, Rotation2d.fromDegrees(180)));
 
-		trajectoryConfig.setReversed(true);
-		trajectory1 = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
+			trajectoryConfig.setReversed(true);
+			trajectory1Left = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
 
-		ArrayList<Pose2d> path2 = new ArrayList<>();
-		path2.add(new Pose2d(6.9357, 3.3663, Rotation2d.fromDegrees(180)));
-		path2.add(new Pose2d(3.1465, 2.3712, Rotation2d.fromDegrees(-166)));
+			ArrayList<Pose2d> path2 = new ArrayList<>();
+			path2.add(new Pose2d(7.865, 3.3663, Rotation2d.fromDegrees(180)));
+			path2.add(new Pose2d(3.7911, 3.3663, Rotation2d.fromDegrees(180)));
+			
+			trajectoryConfig.setReversed(false);
+			trajectory2Left = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
+		}
+
 		
-		trajectoryConfig.setReversed(false);
-		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
+		//Right Side
+		{
+			TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
+			trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
 
-		ArrayList<Pose2d> path3 = new ArrayList<>();
-		path3.add(new Pose2d(3.1465, 2.3712, Rotation2d.fromDegrees(-166)));
-		path3.add(new Pose2d(6.3608, 1.1321, Rotation2d.fromDegrees(113)));
-		path3.add(new Pose2d(6.7916, 0.1015, Rotation2d.fromDegrees(112)));
-		path3.add(new Pose2d(7.1633, 0.0508, Rotation2d.fromDegrees(-158)));
-		path3.add(new Pose2d(7.4336, 0.3634, Rotation2d.fromDegrees(-76)));
-		path3.add(new Pose2d(7.2309, 0.9885, Rotation2d.fromDegrees(-70)));
-		path3.add(new Pose2d(7.611, 1.3179, Rotation2d.fromDegrees(-158)));
-		path3.add(new Pose2d(5.6815, 1.9754, Rotation2d.fromDegrees(1)));
-		path3.add(new Pose2d(3.2327, 1.8413, Rotation2d.fromDegrees(3)));
-	
-		
-		trajectoryConfig.setReversed(true);
-		trajectory3 = TrajectoryGenerator.generateTrajectory(path3, trajectoryConfig);
+			ArrayList<Pose2d> path1 = new ArrayList<>();
+			path1.add(new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(-180)));
+			path1.add(new Pose2d(6.26, 3.3663, Rotation2d.fromDegrees(180)));
+			path1.add(new Pose2d(9.21, 3.3663, Rotation2d.fromDegrees(180)));
 
+			trajectoryConfig.setReversed(true);
+			trajectory1Right = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
 
-	}
-
-	public void turnOnIntakeTrack() {
-		intake.setDeployState(Intake.DeployState.DEPLOY);
-		intake.setSpeed(Constants.IntakeMotorPower);
-		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+			ArrayList<Pose2d> path2 = new ArrayList<>();
+			path2.add(new Pose2d(7.865, 3.3663, Rotation2d.fromDegrees(180)));
+			path2.add(new Pose2d(3.7911, 3.3663, Rotation2d.fromDegrees(180)));
+			
+			trajectoryConfig.setReversed(false);
+			trajectory2Right = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
+		}
 	}
 
 	@Override
 	public void run() {
 
 		Pose2d initalPose = new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(180));
-
-		robotTracker.setInitialTranslation(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
-		robotTracker.setInitialRotation(Rotation2D.fromWPIRotation2d(initalPose.getRotation()));
-
-		System.out.println("Trench Dash");
+		System.out.println(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
+		RobotTracker.getInstance().setInitialTranslation(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
+		RobotTracker.getInstance().setInitialRotation(Rotation2D.fromWPIRotation2d(initalPose.getRotation()));
 		
+		Trajectory trajectory1;
+		Trajectory trajectory2;
+		if(side == 1){
+			trajectory1 = trajectory1Left;
+			trajectory2 = trajectory2Left;
+		} else {
+			trajectory1 = trajectory1Right;
+			trajectory2 = trajectory2Right;
+		}
+
+		
+		System.out.println("Trench Dash");
+		shooter.setSpeed(4000);
+		shooter.setHoodAngle(41);
+		if(!shootBalls(3)) return;
+		shooter.setHoodAngle(75);
+
+		turnOnIntakeTrack();
 		drive.setAutoPath(trajectory1);
 		while(!drive.isFinished()) if(isDead()) return;
+		intake.setDeployState(DeployState.UNDEPLOY);
+		shooter.setSpeed(4000);
 
 		System.out.println("here1");
-
 		drive.setAutoPath(trajectory2);
-		while(!drive.isFinished()) if(isDead()) return;
+		while(!drive.isFinished()) {
+			if(drive.getRamseteCompletePercent() > 0.6){
+				setupShooter();
+				intake.setDeployState(DeployState.UNDEPLOY);
+			} else if(drive.getRamseteCompletePercent() > .4){
+				intake.setDeployState(DeployState.UNDEPLOY);
+			} else if(drive.getRamseteCompletePercent() > .2){
+				intake.setDeployState(DeployState.DEPLOY);
+			}
+			
+			if(isDead()) return;
+		}
 		System.out.println("here2");
+		if(!shootBalls(5)) return;
 
-		drive.setAutoPath(trajectory3);
-		while(!drive.isFinished()) if(isDead()) return;
-		System.out.println("here3");
-		
  
 		synchronized (this) {
 			done = true; 

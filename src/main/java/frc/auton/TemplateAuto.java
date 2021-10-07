@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.robot.Constants;
 import frc.subsystem.*;
 import frc.subsystem.VisionManager.VisionStatus;
+import frc.utility.Limelight;
+import frc.utility.OrangeUtility;
+import frc.utility.ShooterPreset;
+import frc.utility.VisionLookUpTable;
 import frc.utility.control.*;
 import frc.utility.control.motion.Path;
 import frc.utility.math.*;
@@ -78,10 +82,13 @@ public abstract class TemplateAuto implements Runnable {
 		hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
 	}
 
-	synchronized public void shootBalls (int amountOfBalls){
+	synchronized public boolean shootBalls(float amountOfBalls){
+		return shootBallsTimed(3);
+	}
+	synchronized public boolean shootBallsTimed (float amountOfBalls){
 		Shooter shooter = Shooter.getInstance();
 		VisionManager vision = VisionManager.getInstance();
-
+		setupShooter();
 
 		Translation2D target = new Translation2D(0, 67);
 		Translation2D robot = here();
@@ -93,25 +100,58 @@ public abstract class TemplateAuto implements Runnable {
 		//while(!drive.isFinished()) if(isDead()) return;
 		System.out.println("finsihed drive");
 
+		setupShooter();
+
 		vision.setState(VisionStatus.AIMING);
-		while (!shooter.isShooterSpeedOKAuto()) if(isDead()) return;
+		while (!shooter.isShooterSpeedOKAuto()) {
+			if(isDead()) return false;
+			System.out.println("shooter not ok: " + shooter.getRPM() + " target: " + shooter);
+			setupShooter();
+
+			OrangeUtility.sleep(50);
+		}
 		System.out.println("shooter speed ok");
+
 		vision.setState(VisionStatus.IDLE);
 		System.out.println("trying to shoot");
 		vision.setState(VisionStatus.WIN);
-		while(!vision.isFinished()) if(isDead()) return;
+		while(!vision.isFinished()) if(isDead()) {
+			setupShooter();
+			return false;
+		}
 		System.out.println("vision finished");
 		//shooter.setFiring(true);
 
-		double TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*3;
+		double TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*amountOfBalls;
 		
-		while (Timer.getFPGATimestamp() < TargetTime) if(isDead()) return;
-
+		while (Timer.getFPGATimestamp() < TargetTime) {
+			setupShooter();
+			if(isDead()) return false;
+		}
 		shooter.setSpeed(0);
 
 		//shooter.setFiring(false);
 		vision.setState(VisionStatus.IDLE);
 
+		return true;
+
+	}
+
+
+	protected void setupShooter(){
+		ShooterPreset sp = VisionLookUpTable.getInstance().getShooterPreset(Limelight.getInstance().getDistance());
+		//System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
+		shooter.setSpeed(sp.getFlyWheelSpeed());
+		shooter.setHoodAngle(sp.getHoodEjectAngle());
+	}
+
+	public void reset() {
+		this.killSwitch = false;
+		this.done = false; 
+	}
+
+	public void setSide(int side) {
+		this.side = side;
 	}
 
 

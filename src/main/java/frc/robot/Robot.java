@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.auton.*;
 import frc.auton.guiauto.NetworkAuto;
+import frc.auton.guiauto.serialization.ScriptAutonomousStep;
 import frc.subsystem.*;
 import frc.subsystem.Hopper.FrontMotorState;
 import frc.subsystem.Hopper.SnailMotorState;
 import frc.subsystem.Intake.DeployState;
 import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.VisionManager.VisionStatus;
+import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -101,6 +103,7 @@ public class Robot extends TimedRobot {
 	NetworkTableEntry xPos = position.getEntry("x");
 	NetworkTableEntry yPos = position.getEntry("y");
 	NetworkTableEntry enabled = autoDataTable.getEntry("enabled");
+	NetworkTableEntry processing = autoDataTable.getEntry("processing");
 
 
 	enum AutoPosition {
@@ -108,6 +111,8 @@ public class Robot extends TimedRobot {
 	}
 
 	TrenchDash trenchDash = new TrenchDash();
+	OpponentSteal opponentTrench = new OpponentSteal();
+	CenterBallsOnly centerOnly = new CenterBallsOnly();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -122,6 +127,8 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption("3 Ball", "3 Ball");
 		autoChooser.addOption("3 Ball Drive", "3 Ball Drive");
 		autoChooser.addOption("Trench Dash", "Trench Dash");
+		autoChooser.addOption("Opponent Trench", "Opponent Trench");
+		autoChooser.addOption("Center Only", "Center Only");
 
 		autoChooser.setDefaultOption("8 Ball", "8 Ball");
 		
@@ -150,7 +157,20 @@ public class Robot extends TimedRobot {
 		Thread.currentThread().setPriority(7);
 		blinkinLED.setColor(0.89);
 		limelight.setLedMode(LedMode.OFF);
+
+		processing.setDouble(0);
+
+		ScriptAutonomousStep.init();
+
+		// autoPath.addListener((event) -> {
+
+		// }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+	
+
+		
 	}
+
+	NetworkAuto networkAuto;
 
 	/**
 	 * This function is called every robot packet, no matter the mode. Use
@@ -168,6 +188,8 @@ public class Robot extends TimedRobot {
 			xPos.setDouble(robotTracker.getOdometry().translationMat.getX());
 			yPos.setDouble(robotTracker.getOdometry().translationMat.getY());
 		}
+
+	
 	}
 
 	/**
@@ -240,18 +262,24 @@ public class Robot extends TimedRobot {
 		}
 
 		//option = new ShootAndMove(startX);
-		if(autoPath.getString(null) == null){ //TODO: Make this an option on the smart dashboard
+		if(networkAuto == null){ //TODO: Make this an option on the smart dashboard
 			System.out.println("Using normal autos");
 			option = new NewEightBallOppTrench(275);//TenBall(275);
 
 			if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
 			else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
 			else if(autoChooser.getSelected().equals("Trench Dash")) option = trenchDash;
-			option = trenchDash;
+			else if(autoChooser.getSelected().equals("Opponent Trench")) option = opponentTrench;
+			else if(autoChooser.getSelected().equals("Center Only")) option = centerOnly;
+			
+			//option = trenchDash;
 		} else {
 			System.out.println("Using autos from network tables");
-			option = new NetworkAuto();
+			option = networkAuto;
 		}
+
+		option.reset();
+		option.setSide(0); //TODO: Implement
 
 		auto = new Thread(option);
 	
@@ -573,8 +601,21 @@ public class Robot extends TimedRobot {
 		enabled.setBoolean(false);
 	}
 	
+
+	String lastAutoPath = null;
 	@Override
 	public void disabledPeriodic() {
+		if(autoPath.getString(null) != null && !autoPath.getString(null).equals(lastAutoPath) ){
+			System.out.println("start parsing");
+			processing.setDouble(1);
+			lastAutoPath = autoPath.getString(null);
+
+			networkAuto = new NetworkAuto();
+			networkAuto.init();
+			System.out.println("done parsing");
+			processing.setDouble(2);
+			
+		}
 
 	}
 

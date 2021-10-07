@@ -3,9 +3,7 @@ package frc.auton.guiauto;
 import java.io.File;
 import java.io.IOException;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import frc.auton.TemplateAuto;
 import frc.auton.guiauto.serialization.AbstractAutonomousStep;
@@ -25,8 +23,7 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
         try {
             autonmous = Serializer.deserializeFromFile(autonmousFile);
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.print("Got invalid data the file");
+            DriverStation.reportError("Auotonmous Failed to deserialize", e.getStackTrace());
         }
     }
 
@@ -48,7 +45,7 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
                 autonomousStep.execute(this);
             }
         } else {
-            System.out.println("auto is null");
+            DriverStation.reportError("auto is null", true);
         }
 
         synchronized (this) {

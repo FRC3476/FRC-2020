@@ -148,6 +148,7 @@ public class Shooter extends Subsystem {
 	 * @param fire sets if the shooter should fire balls
 	 */
 	public synchronized void setFiring(boolean fire) {
+		//System.out.println("shooter: " + firing);
 		firing = fire;
 
 	}
@@ -296,7 +297,7 @@ public class Shooter extends Subsystem {
 	 * @return returns true one the shooter has reached an acceptable speed
 	 */
 	public synchronized boolean isShooterSpeedOKAuto() {
-		return Math.abs(getRPM() - targetShooterSpeed) < Constants.AutoShooterAccptableRange;
+		return getRPM() - targetShooterSpeed > 0-Constants.AutoShooterAccptableRange;
 	}
 
 	@Override
@@ -311,13 +312,16 @@ public class Shooter extends Subsystem {
 	
 
 
-	private double getRPM(){
+	public double getRPM(){
 		return shooterMaster.getSelectedSensorVelocity() * Constants.ShooterRPMPerTicksPer100ms;
-
-
 	}
 
 	public boolean getHomeSwitch(){
 		return !homeSwitch.get();
+	}
+
+	public double getTargetSpeeed(){
+		return targetShooterSpeed;
+
 	}
 }
