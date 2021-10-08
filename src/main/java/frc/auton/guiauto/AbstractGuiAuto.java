@@ -32,13 +32,7 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
         } catch (IOException | ClassNotFoundException e) {
             DriverStation.reportError("Failed to deserialize auto", e.getStackTrace());
         }
-    }
 
-    
-    Rotation2D initalRotation2d = new Rotation2D();
-    Translation2D initalTranslation2d = new Translation2D();
-
-    public void init(){
         for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
             if(autonomousStep instanceof TrajectoryAutonomousStep){
                 TrajectoryAutonomousStep trajectoryAutonomousStep = (TrajectoryAutonomousStep) autonomousStep;
@@ -49,6 +43,10 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
             }
         }
     }
+
+    
+    Rotation2D initalRotation2d = new Rotation2D();
+    Translation2D initalTranslation2d = new Translation2D();
 
     @Override
     public void run() {

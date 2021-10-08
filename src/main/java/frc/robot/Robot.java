@@ -159,9 +159,6 @@ public class Robot extends TimedRobot {
 		limelight.setLedMode(LedMode.OFF);
 
 		processing.setDouble(0);
-
-		ScriptAutonomousStep.init();
-
 		// autoPath.addListener((event) -> {
 
 		// }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
@@ -611,7 +608,6 @@ public class Robot extends TimedRobot {
 			lastAutoPath = autoPath.getString(null);
 
 			networkAuto = new NetworkAuto();
-			networkAuto.init();
 			System.out.println("done parsing");
 			processing.setDouble(2);
 			

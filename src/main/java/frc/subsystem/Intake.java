@@ -135,24 +135,4 @@ public class Intake extends Subsystem {
 
 		}*/
 	}
-
-	public void setDeployStateDeploy() {
-        setDeployState(DeployState.DEPLOY);
-    }
-
-    public void setDeployStateUnDeploy() {
-        setDeployState(DeployState.UNDEPLOY);
-    }
-
-    public synchronized void setIntakeStateIntake() {
-        setIntakeState(IntakeState.INTAKE);
-    }
-
-    public synchronized void setIntakeStateOff() {
-        setIntakeState(IntakeState.OFF);
-    }
-
-    public synchronized void setIntakeStateEject() {
-        setIntakeState(IntakeState.EJECT);
-    }
 }

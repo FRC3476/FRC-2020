@@ -2,8 +2,6 @@ package frc.subsystem;
 
 import frc.robot.Constants;
 import frc.utility.Limelight;
-import frc.utility.ShooterPreset;
-import frc.utility.VisionLookUpTable;
 import frc.utility.math.Rotation2D;
 
 public class VisionManager extends Subsystem { 
@@ -134,17 +132,5 @@ public class VisionManager extends Subsystem {
 	public void logData() {
 
 	}
-
-	public synchronized void setStateIdle(){
-        setState(VisionStatus.IDLE);
-    }
-
-    public synchronized void setStateAiming(){
-        setState(VisionStatus.AIMING);
-	}
-	
-    public synchronized void setStateWin(){
-        setState(VisionStatus.WIN);
-    }
 
 }
