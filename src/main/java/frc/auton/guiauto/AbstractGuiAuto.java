@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import frc.auton.TemplateAuto;
 import frc.auton.guiauto.serialization.AbstractAutonomousStep;
@@ -18,35 +19,49 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
 
     private  Autonomous autonmous;
     public AbstractGuiAuto(File autonmousFile) {
-        super(new Translation2D()); // unused
-        
         try {
             autonmous = Serializer.deserializeFromFile(autonmousFile);
         } catch (IOException e) {
-            DriverStation.reportError("Auotonmous Failed to deserialize", e.getStackTrace());
+            DriverStation.reportError("Failed to deserialize auto", e.getStackTrace());
+        }
+    }
+
+    public AbstractGuiAuto(String autonomousJson) {
+        try {
+            autonmous = Serializer.deserialize(autonomousJson);
+        } catch (IOException | ClassNotFoundException e) {
+            DriverStation.reportError("Failed to deserialize auto", e.getStackTrace());
+        }
+    }
+
+    
+    Rotation2D initalRotation2d = new Rotation2D();
+    Translation2D initalTranslation2d = new Translation2D();
+
+    public void init(){
+        for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
+            if(autonomousStep instanceof TrajectoryAutonomousStep){
+                TrajectoryAutonomousStep trajectoryAutonomousStep = (TrajectoryAutonomousStep) autonomousStep;
+                Trajectory.State intialState = trajectoryAutonomousStep.getStates().get(0);
+                initalRotation2d = Rotation2D.fromWPIRotation2d(intialState.poseMeters.getRotation());
+                initalTranslation2d = Translation2D.fromWPITranslation2d(intialState.poseMeters.getTranslation());
+                break;
+            }
         }
     }
 
     @Override
     public void run() {
-        if(autonmous != null){
-            System.out.println("Running: " + this.getClass().getName());
-            for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
-                if(autonomousStep instanceof TrajectoryAutonomousStep){
-                    TrajectoryAutonomousStep trajectoryAutonomousStep = (TrajectoryAutonomousStep) autonomousStep;
-                    Trajectory.State intialState = trajectoryAutonomousStep.getStates().get(0);
-                    RobotTracker.getInstance().setInitialRotation(Rotation2D.fromWPIRotation2d(intialState.poseMeters.getRotation()));
-                    RobotTracker.getInstance().setInitialTranslation(Translation2D.fromWPITranslation2d(intialState.poseMeters.getTranslation()));
-                    break;
-                }
-            }
+        System.out.println("Started Running: " + Timer.getFPGATimestamp());
+        RobotTracker.getInstance().setInitialRotation(initalRotation2d);
+        RobotTracker.getInstance().setInitialTranslation(initalTranslation2d);
 
-            for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
-                autonomousStep.execute(this);
-            }
-        } else {
-            DriverStation.reportError("auto is null", true);
+        for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
+            System.out.println("doing a step: " + Timer.getFPGATimestamp());
+            autonomousStep.execute(this);
         }
+
+        System.out.println("finished: " + Timer.getFPGATimestamp());
 
         synchronized (this) {
 			done = true; 
