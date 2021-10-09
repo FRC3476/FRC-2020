@@ -10,6 +10,7 @@ import frc.subsystem.Hopper.SnailMotorState;
 import frc.subsystem.Intake.DeployState;
 import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.VisionManager.VisionStatus;
+import frc.utility.OrangeUtility;
 
 public class Parser {
     public static boolean execute(String string, TemplateAuto context){
@@ -49,6 +50,11 @@ public class Parser {
                 case "setShooterSpeed":
                     try{
                         Shooter.getInstance().setSpeed(Float.parseFloat(argument.toString()));
+                    } catch (NumberFormatException | NullPointerException e) { return false; } 
+                    break;
+                case "sleep":
+                    try{
+                        OrangeUtility.sleep(Long.parseLong(argument.toString()));
                     } catch (NumberFormatException | NullPointerException e) { return false; } 
                     break;
                 case "deployIntake":
