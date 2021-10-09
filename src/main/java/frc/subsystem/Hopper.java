@@ -35,7 +35,41 @@ public class Hopper extends Subsystem {
 		SnailMotor.configPeakCurrentDuration(0);
 		SnailMotor.enableCurrentLimit(true);
 		//SnailMotor.enableCurrentLimit()
+		currentLimitEnabled = true;
 	}    
+
+
+	boolean currentLimitEnabled = true;
+	private void disableCurrentLimit(){
+		if(currentLimitEnabled){
+			FrontHopperMotor.configContinuousCurrentLimit(40);
+			FrontHopperMotor.configPeakCurrentLimit(0);
+			FrontHopperMotor.configPeakCurrentDuration(0);
+			FrontHopperMotor.enableCurrentLimit(true);
+			
+			SnailMotor.configContinuousCurrentLimit(40);
+			SnailMotor.configPeakCurrentLimit(0);
+			SnailMotor.configPeakCurrentDuration(0);
+			SnailMotor.enableCurrentLimit(true);
+
+			currentLimitEnabled = false;
+		}
+	}
+
+	private void enableCurrentLimit(){
+		if(!currentLimitEnabled){
+			FrontHopperMotor.configContinuousCurrentLimit(20);
+			FrontHopperMotor.configPeakCurrentLimit(0);
+			FrontHopperMotor.configPeakCurrentDuration(0);
+			FrontHopperMotor.enableCurrentLimit(true);
+			
+			SnailMotor.configContinuousCurrentLimit(20);
+			SnailMotor.configPeakCurrentLimit(0);
+			SnailMotor.configPeakCurrentDuration(0);
+			SnailMotor.enableCurrentLimit(true);
+			currentLimitEnabled = true; 
+		}
+	}
 
 	public FrontMotorState getFrontMotorState() {
 		return frontMotorState;
@@ -65,14 +99,16 @@ public class Hopper extends Subsystem {
 		switch (frontMotorState) {
 				case ACTIVE:
 					setFrontSpeed(0.8);
-
 					setFrontSpeed(Constants.HopperFrontMotorSpeed);
+					enableCurrentLimit();
 					break;
 				case INACTIVE:
 					setFrontSpeed(0);
+					enableCurrentLimit();
 					break;
 				case REVERSE:
 					setFrontSpeed(-Constants.HopperFrontMotorSpeed);
+					disableCurrentLimit();
 					break;
 		}
 	}
@@ -85,24 +121,30 @@ public class Hopper extends Subsystem {
 				switch(snailMotorState) {
 					case ACTIVE:
 						setSnailSpeed(Constants.SlowHopperSnailSpeed);
+						enableCurrentLimit();
 						break;
 					case INACTIVE: 
 						setSnailSpeed(0);
+						enableCurrentLimit();
 						break;
 					case REVERSE:
 						setSnailSpeed(-Constants.SlowHopperSnailSpeed);
+						disableCurrentLimit();
 						break;
 			}
 			} else {
 				switch(snailMotorState) {
 					case ACTIVE:
 						setSnailSpeed(Constants.HopperSnailSpeed);
+						enableCurrentLimit();
 						break;
 					case INACTIVE: 
 						setSnailSpeed(0);
+						enableCurrentLimit();
 						break;
 					case REVERSE:
 						setSnailSpeed(-Constants.HopperSnailSpeed);
+						disableCurrentLimit();
 						break;
 			}
 			
