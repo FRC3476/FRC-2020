@@ -24,6 +24,16 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
         } catch (IOException e) {
             DriverStation.reportError("Failed to deserialize auto", e.getStackTrace());
         }
+
+        for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
+            if(autonomousStep instanceof TrajectoryAutonomousStep){
+                TrajectoryAutonomousStep trajectoryAutonomousStep = (TrajectoryAutonomousStep) autonomousStep;
+                Trajectory.State intialState = trajectoryAutonomousStep.getStates().get(0);
+                initalRotation2d = Rotation2D.fromWPIRotation2d(intialState.poseMeters.getRotation());
+                initalTranslation2d = Translation2D.fromWPITranslation2d(intialState.poseMeters.getTranslation());
+                break;
+            }
+        }
     }
 
     public AbstractGuiAuto(String autonomousJson) {
@@ -53,6 +63,7 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
         System.out.println("Started Running: " + Timer.getFPGATimestamp());
         RobotTracker.getInstance().setInitialRotation(initalRotation2d);
         RobotTracker.getInstance().setInitialTranslation(initalTranslation2d);
+
 
         for(AbstractAutonomousStep autonomousStep : autonmous.getAutonomousSteps()){
             System.out.println("doing a step: " + Timer.getFPGATimestamp());
