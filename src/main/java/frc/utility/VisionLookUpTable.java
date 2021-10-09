@@ -13,14 +13,26 @@ public class VisionLookUpTable{
 	}
 
 	private VisionLookUpTable(){
-		lookUpTable.add(new ShooterPreset(44, 4000, 58));
-		lookUpTable.add(new ShooterPreset(41, 4000, 73));
-		lookUpTable.add(new ShooterPreset(42, 4000, 111));
-		lookUpTable.add(new ShooterPreset(41, 4000, 124));
-		lookUpTable.add(new ShooterPreset(30.5, 5400, 150));
-		lookUpTable.add(new ShooterPreset(33, 5600, 173));
-		lookUpTable.add(new ShooterPreset(33, 5700, 212));
+		lookUpTable.add(new ShooterPreset(45, 4000, 58));
+		lookUpTable.add(new ShooterPreset(42, 4000, 73));
+		lookUpTable.add(new ShooterPreset(43, 4000, 111));
+		lookUpTable.add(new ShooterPreset(42, 4000, 124));
+		lookUpTable.add(new ShooterPreset(31.5, 5400, 150));
+		lookUpTable.add(new ShooterPreset(33, 5400, 164));
+		lookUpTable.add(new ShooterPreset(34, 5600, 173));
+		lookUpTable.add(new ShooterPreset(34, 5700, 212));
+		lookUpTable.add(new ShooterPreset(34, 6000, 228));
 		//lookUpTable.add(new ShooterPreset(38.5, 5700, 223));
+
+
+		//Good Balls
+		// lookUpTable.add(new ShooterPreset(44, 4000, 58));
+		// lookUpTable.add(new ShooterPreset(41, 4000, 73));
+		// lookUpTable.add(new ShooterPreset(42, 4000, 111));
+		// lookUpTable.add(new ShooterPreset(41, 4000, 124));
+		// lookUpTable.add(new ShooterPreset(30.5, 5400, 150));
+		// lookUpTable.add(new ShooterPreset(33, 5600, 173));
+		// lookUpTable.add(new ShooterPreset(33, 5700, 212));
 
 	
 

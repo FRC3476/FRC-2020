@@ -87,11 +87,11 @@ public class Robot extends TimedRobot {
 	private int shooterSpeed = 6000;
 	private int shooterMode = 0;
 	private boolean targetFound = false;
+	private boolean takeSnapshots = false;
 
 	private String autoSelected;
 	private final SendableChooser<String> autoChooser = new SendableChooser<String>();
-	//private final SendableChooser<String> dir_chooser = new SendableChooser<String>();
-	private final SendableChooser<String> goodBad = new SendableChooser<String>();
+	private final SendableChooser<String> networkAutoEnabled = new SendableChooser<String>();
 	private final SendableChooser<String> startChooser = new SendableChooser<String>();
 	//private final SendableChooser<String> red_blue = new SendableChooser<String>();
 
@@ -128,9 +128,7 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption("3 Ball Drive", "3 Ball Drive");
 		autoChooser.addOption("Trench Dash", "Trench Dash");
 		autoChooser.addOption("Opponent Trench", "Opponent Trench");
-		autoChooser.addOption("Center Only", "Center Only");
-
-		autoChooser.setDefaultOption("8 Ball", "8 Ball");
+		autoChooser.setDefaultOption("Center Only", "Center Only");
 		
 		SmartDashboard.putData("Autonomous Mode", autoChooser);
 
@@ -142,12 +140,10 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putData("Starting Pos", startChooser);
 
-	
-		goodBad.setDefaultOption("good", "good");
-		goodBad.addOption("bad","bad");
-		goodBad.addOption("mindBuisness", "mindBuisness");
-		goodBad.addOption("mInDbUiSnEsS", "mInDbUiSnEsS");
-		SmartDashboard.putData("Good or Bad? To be or Not to Be?", goodBad);
+		networkAutoEnabled.setDefaultOption("Network Auto Enabled", "Network Auto Enabled");
+		networkAutoEnabled.addOption("Network Auto Disabled", "Network Auto Disabled");
+
+		SmartDashboard.putData("Network Auto Enabled/Disabled", networkAutoEnabled);
 
 		shooter.homeHood();
 		
@@ -259,7 +255,7 @@ public class Robot extends TimedRobot {
 		}
 
 		//option = new ShootAndMove(startX);
-		if(networkAuto == null){ //TODO: Make this an option on the smart dashboard
+		if(networkAuto == null || networkAutoEnabled.getSelected().equals("Network Auto Disabled")){
 			System.out.println("Using normal autos");
 			option = new NewEightBallOppTrench(275);//TenBall(275);
 
@@ -356,7 +352,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 			//System.out.println("angle to target " + (drive.getGyroAngle().getDegrees()+limelight.getHorizontalOffset()));
-			//System.out.println("distance: " + limelight.getDistance());
+			//ShooterPreset shooterPreset = visionLookUpTable.getShooterPreset(limelight.getDistance());
+			//System.out.println("distance: " + limelight.getDistance() + " flywheel speed: " + shooterPreset.getFlyWheelSpeed() + " hood angle: " + shooterPreset.getHoodEjectAngle());
 
 			
 
@@ -395,6 +392,7 @@ public class Robot extends TimedRobot {
 			//do we want to shoot
 			if(xbox.getRawAxis(2)>0.5 || stick.getRawButton(1)){
 				//do we not want aiming
+				limelight.setLedMode(LedMode.ON);
 				if(visionOff || stick.getRawButton(1)){
 					shooter.setFiring(true);
 					hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
@@ -403,7 +401,6 @@ public class Robot extends TimedRobot {
 					visionManager.setState(VisionStatus.IDLE);
 				} else{
 					//We want to do auto aiming (This should shoot by itself if no target is visble)
-					limelight.setLedMode(LedMode.ON);
 					visionManager.setState(VisionStatus.WIN);
 				}
 
@@ -513,31 +510,38 @@ public class Robot extends TimedRobot {
 
 			if(stick.getRawButton(7) && stick.getRawButton(8)) climber.release();
 
+			// if(buttonPanel.getRisingEdge(9)){
+			// 	controlPanelDeployed = !controlPanelDeployed;
+			// 	//System.out.println("Control panel deploy: " + controlPanelDeployed);
+			// 	if(controlPanelDeployed){
+			// 		controlPanel.deploy();
+			// 	} else{
+			// 		controlPanel.unDeploy();
+			// 	}
+			// }
+
+			// if(buttonPanel.getRisingEdge(11)){
+			// 	controlPanel.doLevelTwoSpin();
+			// }
+
+			// if(buttonPanel.getRisingEdge(12)){
+			// 	controlPanel.doLevelThreeSpin();;
+			// }
+
+			// if(buttonPanel.getFallingEdge(11)){
+			// 	controlPanel.stopSpin();;
+			// }
+
+			// if(buttonPanel.getFallingEdge(12)){
+			// 	controlPanel.stopSpin();
+			// }
+
 			if(buttonPanel.getRisingEdge(9)){
-				controlPanelDeployed = !controlPanelDeployed;
-				//System.out.println("Control panel deploy: " + controlPanelDeployed);
-				if(controlPanelDeployed){
-					controlPanel.deploy();
-				} else{
-					controlPanel.unDeploy();
-				}
+				takeSnapshots = !takeSnapshots;
+				limelight.takeSnapshots(takeSnapshots);
+				System.out.println("taking snapshots " + takeSnapshots );
 			}
 
-			if(buttonPanel.getRisingEdge(11)){
-				controlPanel.doLevelTwoSpin();
-			}
-
-			if(buttonPanel.getRisingEdge(12)){
-				controlPanel.doLevelThreeSpin();;
-			}
-
-			if(buttonPanel.getFallingEdge(11)){
-				controlPanel.stopSpin();;
-			}
-
-			if(buttonPanel.getFallingEdge(12)){
-				controlPanel.stopSpin();
-			}
 
 			
 
