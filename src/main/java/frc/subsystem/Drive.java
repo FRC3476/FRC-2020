@@ -101,7 +101,7 @@ public class Drive extends Subsystem {
 
 	// TODO: Change
 	public DifferentialDriveKinematics ramseteDiffDriveKinematics = Constants.RamseteDiffDriveKinematics;
-	RamseteController ramseteController = new RamseteController(2.6, 0.7);
+	RamseteController ramseteController = new RamseteController(5, 0.7);
 
 	double prevPositionL = 0;
 	double prevPositionR = 0;
