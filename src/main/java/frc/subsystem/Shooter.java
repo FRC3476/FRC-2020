@@ -1,7 +1,5 @@
 package frc.subsystem;
 
-import java.sql.Time;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -167,11 +165,9 @@ public class Shooter extends Subsystem {
 				hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 
 				if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
-					BlinkinLED.getInstance().setColor(0.77);
-				} else if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
-					BlinkinLED.getInstance().setColor(-0.05);
+					BlinkinLED.getInstance().setColor(-0.89);
 				} else {
-					BlinkinLED.getInstance().setColor(-0.11);
+					BlinkinLED.getInstance().setColor(-0.59);
 				}
 
 				//check if motor has sped up
