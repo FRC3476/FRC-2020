@@ -77,6 +77,7 @@ public class Climber extends Subsystem{
 	}
 
 	public void reset() {
+		startClimb = false;
 		climberMotor.set(ControlMode.PercentOutput, 0.5);
 		
 	}

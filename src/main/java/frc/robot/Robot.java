@@ -412,6 +412,7 @@ public class Robot extends TimedRobot {
 
 			} else {
 				visionManager.setState(VisionStatus.IDLE);
+				shooter.setFiring(false);
 				limelight.setLedMode(LedMode.OFF);
 			}
 
@@ -427,12 +428,14 @@ public class Robot extends TimedRobot {
 
 				} else drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
 	
-				if (shooterMode == 1){
+				if(!limelight.getConnected()){
+					blinkinLED.setColor(0.61);
+				} else if(shooterMode == 1){
 					blinkinLED.setColor(-0.29);
 				} else if (shooterMode == 2){
 					blinkinLED.setColor(-0.23);
 				} else if (shooterMode == 3){
-					blinkinLED.setColor(-0.15);
+					blinkinLED.setColor(-0.21);
 				}
 			}
 
@@ -440,7 +443,7 @@ public class Robot extends TimedRobot {
 			//Turn Shooter Flywheel On with distance detection
 			if (buttonPanel.getRawButton(6)){
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
-				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff ){
+				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff   && limelight.getConnected()){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
 					//System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
 					shooter.setSpeed(sp.getFlyWheelSpeed());

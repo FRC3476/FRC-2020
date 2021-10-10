@@ -1,7 +1,11 @@
 package frc.utility;
 
+import java.sql.Time;
+
+import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 
 /**
@@ -51,6 +55,9 @@ public class Limelight{
 
 	private Limelight(){
 		limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
+		limelightTable.getEntry("tx").addListener(event -> {
+			System.out.println("X Value Changed");
+		 }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 	}
 
 
@@ -63,6 +70,18 @@ public class Limelight{
 		} else {
 			return false;
 		}
+	}
+
+	double targetArea = 0;
+	double lastUpdate = 0;
+
+	public boolean getConnected(){
+		if(getTagetArea() != targetArea){
+			targetArea = getTagetArea();
+			lastUpdate = Timer.getFPGATimestamp();
+		} 
+		
+		return Timer.getFPGATimestamp() - lastUpdate < 0.2;
 	}
 
 	/**
