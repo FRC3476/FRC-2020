@@ -38,7 +38,8 @@ public class ShootAndMove extends TemplateAuto implements Runnable  {
 
 	@Override
 	public void run() {
-
+		robotTracker.setInitialTranslation(new Translation2D(120.5, startY));
+		robotTracker.setInitialRotation(Rotation2D.fromDegrees(180));
 		//Start 75 120
 		System.out.println("ShootAndMove");
 		double turnAngle = 0;
