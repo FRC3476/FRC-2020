@@ -55,8 +55,8 @@ public class Limelight{
 
 	private Limelight(){
 		limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
-		limelightTable.getEntry("tx").addListener(event -> {
-			System.out.println("X Value Changed");
+		limelightTable.getEntry("tl").addListener(event -> {
+			lastUpdate = Timer.getFPGATimestamp();
 		 }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 	}
 
@@ -76,12 +76,8 @@ public class Limelight{
 	double lastUpdate = 0;
 
 	public boolean getConnected(){
-		if(getTagetArea() != targetArea){
-			targetArea = getTagetArea();
-			lastUpdate = Timer.getFPGATimestamp();
-		} 
-		
-		return Timer.getFPGATimestamp() - lastUpdate < 0.2;
+		//System.out.println(Timer.getFPGATimestamp() - lastUpdate);
+		return Timer.getFPGATimestamp() - lastUpdate < 2;
 	}
 
 	/**

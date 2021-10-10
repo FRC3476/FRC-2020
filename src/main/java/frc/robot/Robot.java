@@ -403,7 +403,7 @@ public class Robot extends TimedRobot {
 					shooter.setFiring(true);
 					hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
 					hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-					blinkinLED.setColor(0.77);
+					//blinkinLED.setColor(0.77);
 					visionManager.setState(VisionStatus.IDLE);
 				} else{
 					//We want to do auto aiming (This should shoot by itself if no target is visble)
@@ -417,7 +417,7 @@ public class Robot extends TimedRobot {
 			}
 
 			//do normal drive fuction if Vision is idle
-			if(visionManager.getState().equals(VisionStatus.IDLE)){
+			if(visionManager.getState().equals(VisionStatus.IDLE) || !limelight.isTargetVisiable()){
 				if(controlPanelDeployed){	
 					if(-xbox.getRawAxis(1)>0){ //TODO: Remove negative if the slow is going backwards instead of forwards
 						drive.cheesyDrive(-xbox.getRawAxis(1)/3,  xbox.getRawAxis(4)/2 ,true);
@@ -427,16 +427,14 @@ public class Robot extends TimedRobot {
 					
 
 				} else drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
-	
-				if(!limelight.getConnected()){
-					blinkinLED.setColor(0.61);
-				} else if(shooterMode == 1){
-					blinkinLED.setColor(-0.29);
-				} else if (shooterMode == 2){
-					blinkinLED.setColor(-0.23);
-				} else if (shooterMode == 3){
-					blinkinLED.setColor(-0.21);
+				if(!(shooter.getTargetSpeed() > 10)){
+					if(!limelight.getConnected()){
+						blinkinLED.setColor(0.61);
+					} else {
+						blinkinLED.setColor(0.77);
+					} 
 				}
+				
 			}
 
 
