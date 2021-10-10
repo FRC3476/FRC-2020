@@ -75,7 +75,7 @@ public class Limelight{
 	double targetArea = 0;
 	double lastUpdate = 0;
 
-	public boolean getConnected(){
+	public boolean isConnected(){
 		//System.out.println(Timer.getFPGATimestamp() - lastUpdate);
 		return Timer.getFPGATimestamp() - lastUpdate < 2;
 	}
