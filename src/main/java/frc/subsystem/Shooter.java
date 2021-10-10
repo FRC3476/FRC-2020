@@ -151,7 +151,7 @@ public class Shooter extends Subsystem {
 
 	}
 
-	public synchronized void update(){
+	public void update(){
 		nextShootTime=0;
 		// System.out.println("Speed: " + shooterOutput + " Error: " + flywheelError );
 
@@ -316,7 +316,7 @@ public class Shooter extends Subsystem {
 		return !homeSwitch.get();
 	}
 
-	public double getTargetSpeeed(){
+	public double getTargetSpeed(){
 		return targetShooterSpeed;
 
 	}
