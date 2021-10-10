@@ -29,9 +29,9 @@ import frc.subsystem.Shooter.ShooterState;
 import frc.subsystem.VisionManager.VisionStatus;
 
 @SuppressWarnings("unused")
-public class CenterBallsOnly extends AbstractGuiAuto {
+public class CenterBallsOnlyBlue extends AbstractGuiAuto {
 
-	public CenterBallsOnly() {
+	public CenterBallsOnlyBlue() {
 		super(new File(Filesystem.getDeployDirectory().getPath() + "/auto/centerOnly.json"));
 	
 	}
