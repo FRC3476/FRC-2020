@@ -129,10 +129,10 @@ public class Robot extends TimedRobot {
 		Thread.currentThread().setPriority(5);
 		drive.calibrateGyro();
 		autoChooser.addOption("3 Ball", "3 Ball");
-		autoChooser.addOption("3 Ball Drive", "3 Ball Drive");
+		autoChooser.setDefaultOption("3 Ball Drive", "3 Ball Drive");
 		autoChooser.addOption("Trench Dash", "Trench Dash");
 		autoChooser.addOption("Opponent Trench", "Opponent Trench");
-		autoChooser.setDefaultOption("Center Only", "Center Only");	
+		autoChooser.addOption("Center Only", "Center Only");	
 		SmartDashboard.putData("Autonomous Mode", autoChooser);
 
 
@@ -430,7 +430,7 @@ public class Robot extends TimedRobot {
 
 				} else drive.cheesyDrive(-xbox.getRawAxis(1),  xbox.getRawAxis(4),true);
 				if(!(shooter.getTargetSpeed() > 10)){
-					if(!limelight.getConnected()){
+					if(!limelight.isConnected()){
 						blinkinLED.setColor(0.61);
 					} else {
 						blinkinLED.setColor(0.77);
@@ -443,7 +443,7 @@ public class Robot extends TimedRobot {
 			//Turn Shooter Flywheel On with distance detection
 			if (buttonPanel.getRawButton(6)){
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
-				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff   && limelight.getConnected()){
+				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff   && limelight.isConnected()){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
 					//System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
 					shooter.setSpeed(sp.getFlyWheelSpeed());
