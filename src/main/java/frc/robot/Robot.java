@@ -92,7 +92,6 @@ public class Robot extends TimedRobot {
 	private String autoSelected;
 	private final SendableChooser<String> autoChooser = new SendableChooser<String>();
 	private final SendableChooser<String> networkAutoEnabled = new SendableChooser<String>();
-	private final SendableChooser<String> startChooser = new SendableChooser<String>();
 	private final SendableChooser<String> red_blue = new SendableChooser<String>();
 
 	NetworkTableInstance instance = NetworkTableInstance.getDefault();
@@ -142,6 +141,8 @@ public class Robot extends TimedRobot {
 
 		red_blue.setDefaultOption("Red", "Red");
 		red_blue.addOption("Blue", "Blue");
+
+		SmartDashboard.putData("Side", red_blue);
 
 		shooter.homeHood();
 		
@@ -239,18 +240,6 @@ public class Robot extends TimedRobot {
 		//if(start_chooser.getSelected().equals("Lvl2")) startPos = 18+19-3;//-8;
 		//autoPosition = AutoPosition.MIDDLE;
 	 // if(m_chooser.getSelected().equals("Cargo 1_2")&& red_blue.getSelected().equals("Red")) option = new Ship1_2Red(autoDir, startPos);
-		switch(startChooser.getSelected()){
-			case "mid":
-				startX = 67;
-				break;
-			case "left":
-				startX = 67-48;
-				break;
-			case "right":
-				startX = 67+48;
-				break;
-				
-		}
 
 		//option = new ShootAndMove(startX);
 		if(networkAuto == null || networkAutoEnabled.getSelected().equals("Network Auto Disabled")){
