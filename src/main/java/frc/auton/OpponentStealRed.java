@@ -24,7 +24,7 @@ import frc.subsystem.VisionManager.VisionStatus;
 
 
 @SuppressWarnings("unused")
-public class OpponentSteal extends TemplateAuto implements Runnable  {
+public class OpponentStealRed extends TemplateAuto implements Runnable  {
    
 	double startY;
 
@@ -36,7 +36,7 @@ public class OpponentSteal extends TemplateAuto implements Runnable  {
 	Trajectory trajectory2;
 
 
-	public OpponentSteal() {
+	public OpponentStealRed() {
 		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
 		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
 

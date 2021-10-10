@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
 	private final SendableChooser<String> autoChooser = new SendableChooser<String>();
 	private final SendableChooser<String> networkAutoEnabled = new SendableChooser<String>();
 	private final SendableChooser<String> startChooser = new SendableChooser<String>();
-	//private final SendableChooser<String> red_blue = new SendableChooser<String>();
+	private final SendableChooser<String> red_blue = new SendableChooser<String>();
 
 	NetworkTableInstance instance = NetworkTableInstance.getDefault();
     NetworkTable autoDataTable = instance.getTable("autodata");
@@ -110,9 +110,13 @@ public class Robot extends TimedRobot {
 		MIDDLE, LEFT, RIGHT
 	}
 
-	TrenchDash trenchDash = new TrenchDash();
-	OpponentSteal opponentTrench = new OpponentSteal();
-	CenterBallsOnly centerOnly = new CenterBallsOnly();
+	TrenchDashRed trenchDashRed = new TrenchDashRed();
+	OpponentStealRed opponentTrenchRed = new OpponentStealRed();
+	CenterBallsOnlyRed centerOnlyRed = new CenterBallsOnlyRed();
+
+	TrenchDashBlue trenchDashBlue = new TrenchDashBlue();
+	OpponentStealBlue opponentTrenchBlue = new OpponentStealBlue();
+	CenterBallsOnlyBlue centerOnlyBlue = new CenterBallsOnlyBlue();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -128,22 +132,16 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption("3 Ball Drive", "3 Ball Drive");
 		autoChooser.addOption("Trench Dash", "Trench Dash");
 		autoChooser.addOption("Opponent Trench", "Opponent Trench");
-		autoChooser.setDefaultOption("Center Only", "Center Only");
-		
+		autoChooser.setDefaultOption("Center Only", "Center Only");	
 		SmartDashboard.putData("Autonomous Mode", autoChooser);
 
-		
-
-		startChooser.setDefaultOption("left", "left");
-		startChooser.addOption("mid", "mid");
-		startChooser.addOption("right", "right");
-
-		SmartDashboard.putData("Starting Pos", startChooser);
 
 		networkAutoEnabled.setDefaultOption("Network Auto Enabled", "Network Auto Enabled");
 		networkAutoEnabled.addOption("Network Auto Disabled", "Network Auto Disabled");
-
 		SmartDashboard.putData("Network Auto Enabled/Disabled", networkAutoEnabled);
+
+		red_blue.setDefaultOption("Red", "Red");
+		red_blue.addOption("Blue", "Blue");
 
 		shooter.homeHood();
 		
@@ -256,14 +254,24 @@ public class Robot extends TimedRobot {
 
 		//option = new ShootAndMove(startX);
 		if(networkAuto == null || networkAutoEnabled.getSelected().equals("Network Auto Disabled")){
-			System.out.println("Using normal autos");
-			option = new NewEightBallOppTrench(275);//TenBall(275);
-
-			if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
-			else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
-			else if(autoChooser.getSelected().equals("Trench Dash")) option = trenchDash;
-			else if(autoChooser.getSelected().equals("Opponent Trench")) option = opponentTrench;
-			else if(autoChooser.getSelected().equals("Center Only")) option = centerOnly;
+			if(red_blue.getSelected().equals("Red")){
+				System.out.println("Using normal autos: Red Side");
+	
+				if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
+				else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
+				else if(autoChooser.getSelected().equals("Trench Dash")) option = trenchDashRed;
+				else if(autoChooser.getSelected().equals("Opponent Trench")) option = opponentTrenchRed;
+				else if(autoChooser.getSelected().equals("Center Only")) option = centerOnlyRed;
+			} else {
+				System.out.println("Using normal autos: Blue Side");
+	
+				if(autoChooser.getSelected().equals("3 Ball")) option = new ShootOnly(startX);
+				else if(autoChooser.getSelected().equals("3 Ball Drive")) option = new ShootAndMove(startX);
+				else if(autoChooser.getSelected().equals("Trench Dash")) option = trenchDashBlue;
+				else if(autoChooser.getSelected().equals("Opponent Trench")) option = opponentTrenchBlue;
+				else if(autoChooser.getSelected().equals("Center Only")) option = centerOnlyBlue;
+			}
+			
 			
 			//option = trenchDash;
 		} else {
@@ -272,7 +280,6 @@ public class Robot extends TimedRobot {
 		}
 
 		option.reset();
-		option.setSide(0); //TODO: Implement
 
 		auto = new Thread(option);
 	

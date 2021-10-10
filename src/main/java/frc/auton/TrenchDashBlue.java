@@ -24,7 +24,7 @@ import frc.subsystem.VisionManager.VisionStatus;
 
 
 @SuppressWarnings("unused")
-public class TrenchDash extends TemplateAuto {
+public class TrenchDashBlue extends TemplateAuto {
    
 	double startY;
 
@@ -39,7 +39,7 @@ public class TrenchDash extends TemplateAuto {
 	Trajectory trajectory2Right;
 
 
-	public TrenchDash() {
+	public TrenchDashBlue() {
 		//Left Side
 		{
 			TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
