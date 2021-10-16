@@ -14,9 +14,9 @@ public class VisionLookUpTable{
 
 	private VisionLookUpTable(){
 		lookUpTable.add(new ShooterPreset(47, 4000, 58));
-		lookUpTable.add(new ShooterPreset(44, 4000, 73));
-		lookUpTable.add(new ShooterPreset(45, 4000, 111));
-		lookUpTable.add(new ShooterPreset(44, 4000, 124));
+		lookUpTable.add(new ShooterPreset(44, 4300, 73));
+		lookUpTable.add(new ShooterPreset(45, 4500, 111));
+		lookUpTable.add(new ShooterPreset(39, 5000, 124));
 		lookUpTable.add(new ShooterPreset(33.5, 5400, 150));
 		lookUpTable.add(new ShooterPreset(35, 5400, 164));
 		lookUpTable.add(new ShooterPreset(36, 5600, 173));
