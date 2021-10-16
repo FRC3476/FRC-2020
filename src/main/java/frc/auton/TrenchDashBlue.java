@@ -48,7 +48,7 @@ public class TrenchDashBlue extends TemplateAuto {
 
 		trajectoryConfig.setReversed(false);
 		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
-	
+	 
 	}
 
 	@Override

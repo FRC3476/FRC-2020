@@ -86,7 +86,7 @@ public class Intake extends Subsystem {
 				intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
 				break;
 			case SLOW:
-				intakeMotor.set(ControlMode.PercentOutput, -0.05);
+				intakeMotor.set(ControlMode.PercentOutput, -0.1);
 				break;
 			default:
 				break;
