@@ -96,14 +96,11 @@ public abstract class TemplateAuto implements Runnable {
 		Rotation2D pointAtTarget = robot.getAngle(target);
 		System.out.println(target);
 		drive.setRotation(pointAtTarget);
-  
-		//while(!drive.isFinished()) if(isDead()) return;
-		System.out.println("finsihed drive");
 
 		setupShooter();
 
 		vision.setState(VisionStatus.AIMING);
-		while (!shooter.isShooterSpeedOKAuto()) {
+		while (shooter.getTargetSpeed() < 100 || !shooter.isShooterSpeedOKAuto()) {
 			if(isDead()) return false;
 			System.out.println("shooter not ok: " + shooter.getRPM() + " target: " + shooter);
 			setupShooter();
