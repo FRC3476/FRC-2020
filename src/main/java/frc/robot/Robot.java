@@ -413,7 +413,10 @@ public class Robot extends TimedRobot {
 			} else {
 				visionManager.setState(VisionStatus.IDLE);
 				shooter.setFiring(false);
-				limelight.setLedMode(LedMode.OFF);
+				if(!buttonPanel.getRawButton(6)){
+					limelight.setLedMode(LedMode.OFF);
+				}
+				
 			}
 
 			//do normal drive fuction if Vision is idle
@@ -440,6 +443,7 @@ public class Robot extends TimedRobot {
 
 			//Turn Shooter Flywheel On with distance detection
 			if (buttonPanel.getRawButton(6)){
+				limelight.setLedMode(LedMode.ON);
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff   && limelight.isConnected()){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
