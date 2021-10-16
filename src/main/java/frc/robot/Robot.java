@@ -233,6 +233,7 @@ public class Robot extends TimedRobot {
 		//robotTracker.resetOdometry();
 
 		autoDone = false;
+		limelight.setLedMode(LedMode.ON);
 
 		int autoDir = 1;
 		double startX = 94.6;
