@@ -124,12 +124,16 @@ public class Limelight{
 		switch (ledMode){
 			case DEFAULT:
 				limelightTable.getEntry("ledMode").setNumber(0);
+				break;
 			case OFF:
 				limelightTable.getEntry("ledMode").setNumber(1);
+				break;
 			case BLINK:
 				limelightTable.getEntry("ledMode").setNumber(2);
+				break;
 			case ON:
 				limelightTable.getEntry("ledMode").setNumber(3);
+				break;
 			
 		}
 		
@@ -143,8 +147,10 @@ public class Limelight{
 		switch(camMode){
 			case VISION_PROCESSOR:
 				limelightTable.getEntry("camMode").setNumber(0);
+				break;
 			case DRIVER_CAMERA:
 				limelightTable.getEntry("camMode").setNumber(1);
+				break;
 		}
 	}
 
@@ -164,10 +170,13 @@ public class Limelight{
 		switch (streamingMode){
 			case STANDARD: 
 				limelightTable.getEntry("stream").setNumber(0);
+				break;
 			case PIP_MAIN: 
 				limelightTable.getEntry("stream").setNumber(1);
+				break;
 			case PIP_SECONDARY: 
 				limelightTable.getEntry("stream").setNumber(2);
+				break;
 		}
 	}
 
