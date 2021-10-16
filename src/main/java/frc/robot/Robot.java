@@ -630,6 +630,8 @@ public class Robot extends TimedRobot {
 			
 		}
 
+		limelight.setLedMode(LedMode.OFF);
+
 	}
 
 }
