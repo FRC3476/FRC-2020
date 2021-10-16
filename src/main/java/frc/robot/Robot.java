@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
 	boolean firstTeleopRun = true;
 	boolean visionOff = false;
 	boolean controlPanelDeployed = false;
+	boolean groundIntakeOn = true;
 
 	private boolean shooterSetOn = false;
 	private boolean intakeSetDeployed = true;
@@ -507,12 +508,25 @@ public class Robot extends TimedRobot {
 
 				} else if(xbox.getRawAxis(3)>0.5){
 					//intake on 
-					intake.setIntakeState(IntakeState.INTAKE);
+					if(groundIntakeOn){
+						intake.setIntakeState(IntakeState.INTAKE);
+					} else{
+						if(intake.getDeployState() == DeployState.DEPLOY){
+							intake.setIntakeState(IntakeState.SLOW);
+						} else {
+							intake.setIntakeState(IntakeState.OFF);
+						}
+						
+					}
 					hopper.setFrontMotorState(FrontMotorState.ACTIVE);
 					hopper.setSnailMotorState(SnailMotorState.ACTIVE , true);
 
 				} else{
-					intake.setIntakeState(IntakeState.OFF);
+					if(intake.getDeployState() == DeployState.DEPLOY){
+						intake.setIntakeState(IntakeState.SLOW);
+					} else {
+						intake.setIntakeState(IntakeState.OFF);
+					}
 					hopper.setFrontMotorState(FrontMotorState.INACTIVE);
 					hopper.setSnailMotorState(SnailMotorState.INACTIVE , true);
 				}
@@ -528,6 +542,10 @@ public class Robot extends TimedRobot {
 			}
 
 			if(stick.getRawButton(7) && stick.getRawButton(8)) climber.release();
+
+			if(buttonPanel.getRisingEdge(11)){
+				groundIntakeOn = !groundIntakeOn;
+			}
 
 			// if(buttonPanel.getRisingEdge(9)){
 			// 	controlPanelDeployed = !controlPanelDeployed;
