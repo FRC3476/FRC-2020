@@ -389,7 +389,7 @@ public class Robot extends TimedRobot {
 			} else if (buttonPanel.getRisingEdge(2)){
 				hoodPosition = 33;
 				visionOff = false;
-				shooterSpeed = 5700;
+				shooterSpeed = 5400;
 				shooterMode = 2;
 
 			} else if (buttonPanel.getRisingEdge(3)){
