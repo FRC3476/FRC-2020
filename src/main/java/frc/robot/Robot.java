@@ -544,7 +544,11 @@ public class Robot extends TimedRobot {
 			if(stick.getRawButton(7) && stick.getRawButton(8)) climber.release();
 
 			if(buttonPanel.getRisingEdge(11)){
-				groundIntakeOn = !groundIntakeOn;
+				groundIntakeOn = false;
+			}
+
+			if(buttonPanel.getRisingEdge(12)){
+				groundIntakeOn = true;
 			}
 
 			// if(buttonPanel.getRisingEdge(9)){
