@@ -24,64 +24,31 @@ import frc.subsystem.VisionManager.VisionStatus;
 
 
 @SuppressWarnings("unused")
-public class TrenchDashRed extends TemplateAuto {
-   
-	double startY;
-
-	private double TargetTime;
-	
+public class TrenchDashRed extends TemplateAuto {	
 	boolean killSwitch = false;
 
-	Trajectory trajectory1Left;
-	Trajectory trajectory2Left;
-
-	Trajectory trajectory1Right;
-	Trajectory trajectory2Right;
-
+	Trajectory trajectory1;
+	Trajectory trajectory2;
 
 	public TrenchDashRed() {
-		//Left Side
-		{
-			TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
-			trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
+		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
+		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
 
-			ArrayList<Pose2d> path1 = new ArrayList<>();
-			path1.add(new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(-180)));
-			path1.add(new Pose2d(6.26, 3.3663, Rotation2d.fromDegrees(180)));
-			path1.add(new Pose2d(9.21, 3.3663, Rotation2d.fromDegrees(180)));
+		ArrayList<Pose2d> path1 = new ArrayList<>();
+		path1.add(new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(180)));
+		path1.add(new Pose2d(6.26, 3.3663, Rotation2d.fromDegrees(180)));
+		path1.add(new Pose2d(9.21, 3.3663, Rotation2d.fromDegrees(180)));
 
-			trajectoryConfig.setReversed(true);
-			trajectory1Left = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
+		trajectoryConfig.setReversed(true);
+		trajectory1 = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
 
-			ArrayList<Pose2d> path2 = new ArrayList<>();
-			path2.add(new Pose2d(7.865, 3.3663, Rotation2d.fromDegrees(180)));
-			path2.add(new Pose2d(3.7911, 3.3663, Rotation2d.fromDegrees(180)));
-			
-			trajectoryConfig.setReversed(false);
-			trajectory2Left = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
-		}
-
+		ArrayList<Pose2d> path2 = new ArrayList<>();
+		path2.add(new Pose2d(7.865, 3.3663, Rotation2d.fromDegrees(180)));
+		path2.add(new Pose2d(3.7911, 3.3663, Rotation2d.fromDegrees(180)));
 		
-		//Right Side
-		{
-			TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
-			trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
-
-			ArrayList<Pose2d> path1 = new ArrayList<>();
-			path1.add(new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(-180)));
-			path1.add(new Pose2d(6.26, 3.3663, Rotation2d.fromDegrees(180)));
-			path1.add(new Pose2d(9.21, 3.3663, Rotation2d.fromDegrees(180)));
-
-			trajectoryConfig.setReversed(true);
-			trajectory1Right = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
-
-			ArrayList<Pose2d> path2 = new ArrayList<>();
-			path2.add(new Pose2d(7.865, 3.3663, Rotation2d.fromDegrees(180)));
-			path2.add(new Pose2d(3.7911, 3.3663, Rotation2d.fromDegrees(180)));
-			
-			trajectoryConfig.setReversed(false);
-			trajectory2Right = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
-		}
+		trajectoryConfig.setReversed(false);
+		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
+	
 	}
 
 	@Override
@@ -91,17 +58,6 @@ public class TrenchDashRed extends TemplateAuto {
 		System.out.println(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
 		RobotTracker.getInstance().setInitialTranslation(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
 		RobotTracker.getInstance().setInitialRotation(Rotation2D.fromWPIRotation2d(initalPose.getRotation()));
-		
-		Trajectory trajectory1;
-		Trajectory trajectory2;
-		if(side == 1){
-			trajectory1 = trajectory1Left;
-			trajectory2 = trajectory2Left;
-		} else {
-			trajectory1 = trajectory1Right;
-			trajectory2 = trajectory2Right;
-		}
-
 		
 		System.out.println("Trench Dash");
 		shooter.setSpeed(4000);

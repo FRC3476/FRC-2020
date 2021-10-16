@@ -186,7 +186,12 @@ public class Robot extends TimedRobot {
 			yPos.setDouble(robotTracker.getOdometry().translationMat.getY());
 		}
 
-	
+		if(buttonPanel.getRisingEdge(9)){
+			takeSnapshots = !takeSnapshots;
+			limelight.takeSnapshots(takeSnapshots);
+			System.out.println("taking snapshots " + takeSnapshots );
+		}
+
 	}
 
 	/**
@@ -547,15 +552,6 @@ public class Robot extends TimedRobot {
 			// if(buttonPanel.getFallingEdge(12)){
 			// 	controlPanel.stopSpin();
 			// }
-
-			if(buttonPanel.getRisingEdge(9)){
-				takeSnapshots = !takeSnapshots;
-				limelight.takeSnapshots(takeSnapshots);
-				System.out.println("taking snapshots " + takeSnapshots );
-			}
-
-
-			
 
 		}
 

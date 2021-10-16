@@ -116,6 +116,7 @@ public class Shooter extends Subsystem {
 		hoodPID.setD(Constants.kHoodD, 0);
 		hoodPID.setFF(Constants.kHoodF, 0);
 		hoodPID.setOutputRange(-Constants.HoodPIDSpeedMax, Constants.HoodPIDSpeedMax);
+		hoodMotor.burnFlash();
 
 	}
 
@@ -164,7 +165,10 @@ public class Shooter extends Subsystem {
 				//System.out.println("target shooter speed: " + targetShooterSpeed + " error: " + flywheelError);
 				hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 
-				if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
+				double hoodError = targetHoodPosition - hoodEncoder.getPosition();
+				if(Math.abs(hoodError) < Constants.HoodMaxDeviation ){
+					BlinkinLED.getInstance().setColor(0.69);
+				} else if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
 					BlinkinLED.getInstance().setColor(-0.89);
 				} else {
 					BlinkinLED.getInstance().setColor(-0.59);
@@ -172,8 +176,6 @@ public class Shooter extends Subsystem {
 
 				//check if motor has sped up
 				if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation || true){
-					double hoodError = targetHoodPosition - hoodEncoder.getPosition();
-
 					if(Math.abs(hoodError) < Constants.HoodMaxDeviation && firing && Timer.getFPGATimestamp() >=nextShootTime){// TODO: make hood do things
 						//Hood Ready
 						feederMotor.set(ControlMode.PercentOutput, Constants.FeederMotorSpeed);
@@ -183,6 +185,7 @@ public class Shooter extends Subsystem {
 						}
 					} else{
 						feederMotor.set(ControlMode.PercentOutput, 0 );
+						System.out.println("Hood error: " + hoodError);
 					}
 				
 				} else {
@@ -210,16 +213,16 @@ public class Shooter extends Subsystem {
 				hoodMotor.set(Constants.HoodHomingSpeed);
 				if (getHomeSwitch()) {
 					hoodEncoder.setPosition(0);
-					shooterState = ShooterState.OFF;
 					hoodPID.setReference(0, ControlType.kPosition);
 					targetHoodPosition = 0;
+					shooterState = ShooterState.OFF;
 					System.out.println("Homing succeeded!");
 
 				} else if (Timer.getFPGATimestamp() > hoodHomeStart + Constants.HoodHomeTimeout) {
 					hoodEncoder.setPosition(0);
-					shooterState = ShooterState.OFF;
 					hoodPID.setReference(0, ControlType.kPosition);
 					targetHoodPosition = 0;
+					shooterState = ShooterState.OFF;
 					System.out.println("Home Failed");
 
 				}
@@ -290,9 +293,10 @@ public class Shooter extends Subsystem {
 
 	/**
 	 * 
-	 * @return returns true one the shooter has reached an acceptable speed
+	 * @return returns true once the shooter has reached an acceptable speed
 	 */
 	public synchronized boolean isShooterSpeedOKAuto() {
+		if(!isHomed()) return false;
 		return getRPM() - targetShooterSpeed > 0-Constants.AutoShooterAccptableRange;
 	}
 
