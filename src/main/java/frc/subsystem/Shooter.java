@@ -162,11 +162,11 @@ public class Shooter extends Subsystem {
 
 				double flywheelError = getRPM() - targetShooterSpeed;
 
-				//System.out.println("target shooter speed: " + targetShooterSpeed + " error: " + flywheelError);
+				System.out.println("target shooter speed: " + targetShooterSpeed + " error: " + flywheelError);
 				hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 
 				double hoodError = targetHoodPosition - hoodEncoder.getPosition();
-				if(Math.abs(hoodError) < Constants.HoodMaxDeviation ){
+				if(Math.abs(hoodError) > Constants.HoodMaxDeviation ){
 					BlinkinLED.getInstance().setColor(0.69);
 				} else if(Math.abs(flywheelError) <  Constants.ShooterMaxDeviation){
 					BlinkinLED.getInstance().setColor(-0.89);
@@ -185,7 +185,7 @@ public class Shooter extends Subsystem {
 						}
 					} else{
 						feederMotor.set(ControlMode.PercentOutput, 0 );
-						System.out.println("Hood error: " + hoodError);
+						//System.out.println("Hood error: " + hoodError);
 					}
 				
 				} else {
