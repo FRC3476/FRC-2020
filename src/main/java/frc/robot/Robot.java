@@ -453,7 +453,7 @@ public class Robot extends TimedRobot {
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff   && limelight.isConnected()){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
-					//System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
+					System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
 					shooter.setSpeed(sp.getFlyWheelSpeed());
 					shooter.setHoodAngle(sp.getHoodEjectAngle());
 					targetFound = true;
