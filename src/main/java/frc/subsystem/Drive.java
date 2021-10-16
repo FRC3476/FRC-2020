@@ -836,7 +836,7 @@ public class Drive extends Subsystem {
 			Units.metersToInches(wheelspeeds.rightMetersPerSecond)));
 		//System.out.println(ramseteController.atReference());
 		//System.out.println("target speed" + Units.metersToInches(wheelspeeds.leftMetersPerSecond) + " " + Units.metersToInches(wheelspeeds.rightMetersPerSecond) + "time: " +(Timer.getFPGATimestamp()-autoStartTime) );
-		//System.out.println("Goal: (" + goal.poseMeters.getTranslation().getX() + ", " + goal.poseMeters.getTranslation().getY() + ") Actual: (" + currentRobotPose.getX() + ", " + currentRobotPose.getY() + ")");
+		System.out.println("Goal: (" + goal.poseMeters.getTranslation().getX() + ", " + goal.poseMeters.getTranslation().getY() + ") Actual: (" + currentRobotPose.getX() + ", " + currentRobotPose.getY() + ")");
 		//TODO: not working
 		if((Timer.getFPGATimestamp()-autoStartTime)>= currentAutoTrajectory.getTotalTimeSeconds()){
 		}
