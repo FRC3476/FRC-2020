@@ -15,7 +15,7 @@ public class Intake extends Subsystem {
     }
 	
     public enum IntakeState {
-	    INTAKE, OFF, EJECT
+	    INTAKE, OFF, EJECT, SLOW
     }
 
 
@@ -84,6 +84,11 @@ public class Intake extends Subsystem {
 				break;
 			case INTAKE:
 				intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
+				break;
+			case SLOW:
+				intakeMotor.set(ControlMode.PercentOutput, -0.05);
+				break;
+			default:
 				break;
 
 		}
