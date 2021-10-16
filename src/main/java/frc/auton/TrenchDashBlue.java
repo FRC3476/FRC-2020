@@ -31,7 +31,7 @@ public class TrenchDashBlue extends TemplateAuto {
 	Trajectory trajectory2;
 
 	public TrenchDashBlue() {
-		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
+		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(80), Units.inchesToMeters(60));
 		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
 
 		ArrayList<Pose2d> path1 = new ArrayList<>();
@@ -45,7 +45,7 @@ public class TrenchDashBlue extends TemplateAuto {
 		ArrayList<Pose2d> path2 = new ArrayList<>();
 		path2.add(new Pose2d(7.865, 3.3663, Rotation2d.fromDegrees(180)));
 		path2.add(new Pose2d(3.7911, 3.3663, Rotation2d.fromDegrees(180)));
-		
+
 		trajectoryConfig.setReversed(false);
 		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
 	
