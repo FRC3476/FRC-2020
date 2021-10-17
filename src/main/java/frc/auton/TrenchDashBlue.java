@@ -37,13 +37,13 @@ public class TrenchDashBlue extends TemplateAuto {
 		ArrayList<Pose2d> path1 = new ArrayList<>();
 		path1.add(new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(180)));
 		path1.add(new Pose2d(6.26, 3.3663, Rotation2d.fromDegrees(180)));
-		path1.add(new Pose2d(9.21, 3.3663, Rotation2d.fromDegrees(180)));
+		path1.add(new Pose2d(7.95, 3.3663, Rotation2d.fromDegrees(180)));
 
 		trajectoryConfig.setReversed(true);
 		trajectory1 = TrajectoryGenerator.generateTrajectory(path1, trajectoryConfig);
 
 		ArrayList<Pose2d> path2 = new ArrayList<>();
-		path2.add(new Pose2d(7.865, 3.3663, Rotation2d.fromDegrees(180)));
+		path2.add(new Pose2d(7.95, 3.3663, Rotation2d.fromDegrees(180)));
 		path2.add(new Pose2d(3.7911, 3.3663, Rotation2d.fromDegrees(180)));
 
 		trajectoryConfig.setReversed(false);
