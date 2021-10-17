@@ -65,9 +65,9 @@ public final class Constants {
 	public static final double FeederMotorSpeed = .5;
 
 	public static final double ShooterRPMPerTicksPer100ms = 600d/2048d;
-	public static final double kShooterP = 2.0e-3;//1.0e-6;//1.0e-6; //1.5 e-4 //2.0e-3
-	public static final double kShooterI = 8.0e-5;//5.0e-6;//5.0e-5;//5.0e-5;
-	public static final double kShooterD = 2.0e-1;//10.5;//2.5e-5; 2.0e-1
+	public static final double kShooterP = 2.2e-3;//2.0e-3;
+	public static final double kShooterI = 8.0e-5;
+	public static final double kShooterD = 2.0e-1;
 	public static final double kShooterF = (0.5*1023.0) * ShooterRPMPerTicksPer100ms / 3270d;
 	public static final double ShooterGain = 1;
 	public static final int ShooterIntegralZone = (int)(200.0 / ShooterRPMPerTicksPer100ms);
@@ -106,7 +106,7 @@ public final class Constants {
 	public static final int SnailMotorId = 41; //random number
 	public static final double HopperFrontMotorSpeed = 0.3;
 	public static final double HopperSnailSpeed = 1.0;
-	public static final double SlowHopperSnailSpeed = .5;
+	public static final double SlowHopperSnailSpeed = .8;
 	
 	
 	// Controller

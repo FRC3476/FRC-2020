@@ -395,7 +395,7 @@ public class Robot extends TimedRobot {
 
 			} else if (buttonPanel.getRisingEdge(3)){
 				//hits bootom of 3pt: 64.5, 5000
-				hoodPosition = 66;
+				hoodPosition = 67.5;
 				shooterSpeed = 5000;//3250;,  5500
 				visionOff = true;
 				shooterMode = 3;
@@ -454,7 +454,7 @@ public class Robot extends TimedRobot {
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff   && limelight.isConnected()){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
-					System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
+					System.out.println("distance: " + limelight.getDistance()+  "flywheel speed: " +sp.getFlyWheelSpeed() + " wanted hood angle: " + sp.getHoodEjectAngle());
 					shooter.setSpeed(sp.getFlyWheelSpeed());
 					shooter.setHoodAngle(sp.getHoodEjectAngle());
 					targetFound = true;
@@ -469,7 +469,7 @@ public class Robot extends TimedRobot {
 
 			//Turn shooter flywheel on with manuel settings 
 			} else if(buttonPanel.getRawButton(5)){
-				//System.out.println("using manuel contorls");
+				System.out.println("using manuel contorls by choice");
 				shooter.setSpeed(shooterSpeed); 
 				shooter.setHoodAngle(hoodPosition);
 				

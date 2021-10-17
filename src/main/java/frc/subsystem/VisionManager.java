@@ -77,12 +77,12 @@ public class VisionManager extends Subsystem {
 				if(shoot) {
 
 					shooter.setFiring(true);
-					hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+					hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, true);
 					hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 
 				} else {
 					shooter.setFiring(false);
-					hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
+					hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, true);
 					hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 				   //System.out.println("ready: " + shoot);
 
