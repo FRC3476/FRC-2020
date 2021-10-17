@@ -30,6 +30,8 @@ public class Intake extends Subsystem {
 	private DeployState deployState = DeployState.UNDEPLOY;
 	private IntakeState intakeState = IntakeState.OFF;
 	private double allowOpenTime = 0;
+	private double targetIntakeMotorSpeed = 0;
+	private double actualIntakeMotorSpeed = 0;
 
 
 
@@ -77,16 +79,20 @@ public class Intake extends Subsystem {
 		this.intakeState = intakeState;
 		switch(intakeState) {
 			case EJECT:
-				intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
+				targetIntakeMotorSpeed = -Constants.IntakeMotorPower;
+				//intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
 				break;
 			case OFF:
-				intakeMotor.set(ControlMode.PercentOutput, 0.0);
+				//intakeMotor.set(ControlMode.PercentOutput, 0.0);
+				targetIntakeMotorSpeed = 0;
 				break;
 			case INTAKE:
-				intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
+				//intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
+				targetIntakeMotorSpeed = Constants.IntakeMotorPower;
 				break;
 			case SLOW:
-				intakeMotor.set(ControlMode.PercentOutput, -0.25);
+				//intakeMotor.set(ControlMode.PercentOutput, 0);
+				targetIntakeMotorSpeed = 0;
 				break;
 			default:
 				break;
@@ -125,20 +131,19 @@ public class Intake extends Subsystem {
 
 	@Override
 	public synchronized void update() {	
-		/*
-		switch(intakeState) {
-			case INTAKE:
-				if (allowOpenTime<Timer.getFPGATimestamp()){
-					intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPowerIntake);
-				}   
-			case OFF:
-				intakeMotor.set(ControlMode.PercentOutput, 0);
-			case EJECT: 
-				if (allowOpenTime<Timer.getFPGATimestamp()){
-					intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPowerEject);
-				}
-
-		}*/
+		if(actualIntakeMotorSpeed < targetIntakeMotorSpeed){
+			targetIntakeMotorSpeed += 0.1;
+			if(actualIntakeMotorSpeed > targetIntakeMotorSpeed){
+				actualIntakeMotorSpeed = targetIntakeMotorSpeed;
+			}
+			setSpeed(actualIntakeMotorSpeed);
+		} else if(actualIntakeMotorSpeed > targetIntakeMotorSpeed){
+			targetIntakeMotorSpeed -= 0.1;
+			if(actualIntakeMotorSpeed < targetIntakeMotorSpeed){
+				actualIntakeMotorSpeed = targetIntakeMotorSpeed;
+			}
+			setSpeed(actualIntakeMotorSpeed);
+		}
 	}
 }
 
