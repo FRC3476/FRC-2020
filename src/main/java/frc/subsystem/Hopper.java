@@ -98,7 +98,6 @@ public class Hopper extends Subsystem {
 
 		switch (frontMotorState) {
 				case ACTIVE:
-					setFrontSpeed(0.8);
 					setFrontSpeed(Constants.HopperFrontMotorSpeed);
 					enableCurrentLimit();
 					break;
