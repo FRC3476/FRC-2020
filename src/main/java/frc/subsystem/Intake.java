@@ -80,18 +80,18 @@ public class Intake extends Subsystem {
 		switch(intakeState) {
 			case EJECT:
 				targetIntakeMotorSpeed = -Constants.IntakeMotorPower;
-				//intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
+				intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
 				break;
 			case OFF:
-				//intakeMotor.set(ControlMode.PercentOutput, 0.0);
+				intakeMotor.set(ControlMode.PercentOutput, 0.0);
 				targetIntakeMotorSpeed = 0;
 				break;
 			case INTAKE:
-				//intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
+				intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
 				targetIntakeMotorSpeed = Constants.IntakeMotorPower;
 				break;
 			case SLOW:
-				//intakeMotor.set(ControlMode.PercentOutput, 0);
+				intakeMotor.set(ControlMode.PercentOutput, 0);
 				targetIntakeMotorSpeed = 0;
 				break;
 			default:
@@ -131,19 +131,18 @@ public class Intake extends Subsystem {
 
 	@Override
 	public synchronized void update() {	
-		if(actualIntakeMotorSpeed < targetIntakeMotorSpeed){
-			targetIntakeMotorSpeed += 0.1;
-			if(actualIntakeMotorSpeed > targetIntakeMotorSpeed){
-				actualIntakeMotorSpeed = targetIntakeMotorSpeed;
-			}
-			setSpeed(actualIntakeMotorSpeed);
-		} else if(actualIntakeMotorSpeed > targetIntakeMotorSpeed){
-			targetIntakeMotorSpeed -= 0.1;
-			if(actualIntakeMotorSpeed < targetIntakeMotorSpeed){
-				actualIntakeMotorSpeed = targetIntakeMotorSpeed;
-			}
-			setSpeed(actualIntakeMotorSpeed);
-		}
+		// if(actualIntakeMotorSpeed < targetIntakeMotorSpeed){
+		// 	targetIntakeMotorSpeed += 0.1;
+		// 	if(actualIntakeMotorSpeed > targetIntakeMotorSpeed){
+		// 		actualIntakeMotorSpeed = targetIntakeMotorSpeed;
+		// 	}
+		// } else if(actualIntakeMotorSpeed > targetIntakeMotorSpeed){
+		// 	targetIntakeMotorSpeed -= 0.1;
+		// 	if(actualIntakeMotorSpeed < targetIntakeMotorSpeed){
+		// 		actualIntakeMotorSpeed = targetIntakeMotorSpeed;
+		// 	}
+		// }
+		// intakeMotor.set(ControlMode.PercentOutput, actualIntakeMotorSpeed);
 	}
 }
 
