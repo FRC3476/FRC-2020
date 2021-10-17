@@ -395,7 +395,7 @@ public class Robot extends TimedRobot {
 
 			} else if (buttonPanel.getRisingEdge(3)){
 				//hits bootom of 3pt: 64.5, 5000
-				hoodPosition = 66;
+				hoodPosition = 67.5;
 				shooterSpeed = 5000;//3250;,  5500
 				visionOff = true;
 				shooterMode = 3;
