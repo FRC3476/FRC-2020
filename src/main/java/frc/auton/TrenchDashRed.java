@@ -59,6 +59,7 @@ public class TrenchDashRed extends TemplateAuto {
 		RobotTracker.getInstance().setInitialTranslation(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
 		RobotTracker.getInstance().setInitialRotation(Rotation2D.fromWPIRotation2d(initalPose.getRotation()));
 		
+		intake.setDeployState(DeployState.DEPLOY);
 		System.out.println("Trench Dash");
 		shooter.setSpeed(4000);
 		shooter.setHoodAngle(41);
@@ -68,7 +69,6 @@ public class TrenchDashRed extends TemplateAuto {
 		turnOnIntakeTrack();
 		drive.setAutoPath(trajectory1);
 		while(!drive.isFinished()) if(isDead()) return;
-		intake.setDeployState(DeployState.UNDEPLOY);
 		shooter.setSpeed(4000);
 
 		System.out.println("here1");
@@ -76,13 +76,7 @@ public class TrenchDashRed extends TemplateAuto {
 		while(!drive.isFinished()) {
 			if(drive.getRamseteCompletePercent() > 0.6){
 				setupShooter();
-				intake.setDeployState(DeployState.UNDEPLOY);
-			} else if(drive.getRamseteCompletePercent() > .4){
-				intake.setDeployState(DeployState.UNDEPLOY);
-			} else if(drive.getRamseteCompletePercent() > .2){
-				intake.setDeployState(DeployState.DEPLOY);
 			}
-			
 			if(isDead()) return;
 		}
 		System.out.println("here2");

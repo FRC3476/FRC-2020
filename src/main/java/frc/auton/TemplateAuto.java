@@ -112,9 +112,9 @@ public abstract class TemplateAuto implements Runnable {
 		vision.setState(VisionStatus.IDLE);
 		System.out.println("trying to shoot");
 		vision.setState(VisionStatus.WIN);
-		while(!vision.isFinished()) if(isDead()) {
+		while(!vision.isFinished()){
 			setupShooter();
-			return false;
+			if(isDead()) return false;
 		}
 		System.out.println("vision finished");
 		//shooter.setFiring(true);
