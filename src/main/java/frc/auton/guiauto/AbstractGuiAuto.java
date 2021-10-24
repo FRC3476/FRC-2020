@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import frc.auton.TemplateAuto;
 import frc.auton.guiauto.serialization.AbstractAutonomousStep;
 import frc.auton.guiauto.serialization.Autonomous;
-import frc.auton.guiauto.serialization.Serializer;
 import frc.auton.guiauto.serialization.TrajectoryAutonomousStep;
 import frc.subsystem.RobotTracker;
+import frc.utility.json.Serializer;
 import frc.utility.math.Rotation2D;
 import frc.utility.math.Translation2D;
 
@@ -20,7 +20,7 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
     private  Autonomous autonmous;
     public AbstractGuiAuto(File autonmousFile) {
         try {
-            autonmous = Serializer.deserializeFromFile(autonmousFile);
+            autonmous = (Autonomous) Serializer.deserializeFromFile(autonmousFile, Autonomous.class);
         } catch (IOException e) {
             DriverStation.reportError("Failed to deserialize auto", e.getStackTrace());
         }
@@ -38,8 +38,8 @@ public abstract class AbstractGuiAuto extends TemplateAuto {
 
     public AbstractGuiAuto(String autonomousJson) {
         try {
-            autonmous = Serializer.deserialize(autonomousJson);
-        } catch (IOException | ClassNotFoundException e) {
+            autonmous = (Autonomous) Serializer.deserialize(autonomousJson, Autonomous.class);
+        } catch (IOException e) {
             DriverStation.reportError("Failed to deserialize auto", e.getStackTrace());
         }
 

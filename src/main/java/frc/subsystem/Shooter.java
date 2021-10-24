@@ -8,6 +8,8 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import frc.utility.LazyCANSparkMax;
@@ -15,8 +17,8 @@ import frc.utility.LazyTalonFX;
 import frc.utility.LazyTalonSRX;
 import frc.utility.Limelight;
 import frc.utility.OrangeUtility;
-import frc.utility.ShooterPreset;
-import frc.utility.VisionLookUpTable;
+import frc.utility.visionlookup.ShooterPreset;
+import frc.utility.visionlookup.VisionLookUpTable;
 import frc.robot.Constants;
 
 @SuppressWarnings("unused")
@@ -305,9 +307,12 @@ public class Shooter extends Subsystem {
 		
 	}
 
+	NetworkTable shooterTable = NetworkTableInstance.getDefault().getTable("shooter");
+
 	@Override
 	public void logData() {
-
+		shooterTable.getEntry("rpm").setDouble(getRPM());
+		shooterTable.getEntry("hoodangle").setDouble(getHoodAngle());
 	}
 	
 

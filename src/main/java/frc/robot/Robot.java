@@ -18,24 +18,26 @@ import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 //import frc.robot.subsystem.Drive;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 
 import java.util.concurrent.*;
-
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.ResourceBundle.Control;
 
 import frc.utility.Controller;
 import frc.utility.Limelight;
-import frc.utility.ShooterPreset;
-import frc.utility.VisionLookUpTable;
 import frc.utility.Limelight.LedMode;
-
-
-
+import frc.utility.json.Serializer;
+import frc.utility.visionlookup.ShooterConfig;
+import frc.utility.visionlookup.ShooterPreset;
+import frc.utility.visionlookup.VisionLookUpTable;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -46,19 +48,17 @@ import frc.utility.Limelight.LedMode;
  */
 public class Robot extends TimedRobot {
 
-
 	public static final boolean profileTeleop = true;
 
-	
-	//CollisionManager collisionManager = CollisionManager.getInstance();
+	// CollisionManager collisionManager = CollisionManager.getInstance();
 	public Controller xbox = new Controller(0);
 	public Controller wheel = new Controller(3);
-	//public static Joystick xbox = new Joystick(0);
+	// public static Joystick xbox = new Joystick(0);
 	public Controller stick = new Controller(1);
 	public Controller buttonPanel = new Controller(2);
 	Relay light = new Relay(3);
-	//DigitalOutput light = new DigitalOutput(2);
-	//PWM light = new PWM(0);
+	// DigitalOutput light = new DigitalOutput(2);
+	// PWM light = new PWM(0);
 
 	Drive drive = Drive.getInstance();
 	RobotTracker robotTracker = RobotTracker.getInstance();
@@ -73,6 +73,7 @@ public class Robot extends TimedRobot {
 	VisionLookUpTable visionLookUpTable = VisionLookUpTable.getInstance();
 
 	ExecutorService executor = Executors.newFixedThreadPool(4);
+	ExecutorService deserializerExecutor = Executors.newSingleThreadExecutor();
 	Thread auto;
 	TemplateAuto option;
 	AutoPosition autoPosition = AutoPosition.MIDDLE;
@@ -97,15 +98,19 @@ public class Robot extends TimedRobot {
 	private final SendableChooser<String> startChooser = new SendableChooser<String>();
 
 	NetworkTableInstance instance = NetworkTableInstance.getDefault();
-    NetworkTable autoDataTable = instance.getTable("autodata");
+	NetworkTable autoDataTable = instance.getTable("autodata");
 	NetworkTableEntry autoPath = autoDataTable.getEntry("autoPath");
-	
+
 	NetworkTable position = autoDataTable.getSubTable("position");
 	NetworkTableEntry xPos = position.getEntry("x");
 	NetworkTableEntry yPos = position.getEntry("y");
 	NetworkTableEntry enabled = autoDataTable.getEntry("enabled");
-	NetworkTableEntry processing = autoDataTable.getEntry("processing");
+	NetworkTableEntry pathProcessingStatusEntry = autoDataTable.getEntry("processing");
+	NetworkTableEntry pathProcessingStatusIdEntry = autoDataTable.getEntry("processingid");
 
+	NetworkTableEntry shooterConfigEntry = instance.getTable("limelightgui").getEntry("shooterconfig");
+	NetworkTableEntry shooterConfigStatusEntry = instance.getTable("limelightgui").getEntry("shooterconfigStatus");
+	NetworkTableEntry shooterConfigStatusIdEntry = instance.getTable("limelightgui").getEntry("shooterconfigStatusId");
 
 	enum AutoPosition {
 		MIDDLE, LEFT, RIGHT
@@ -120,22 +125,21 @@ public class Robot extends TimedRobot {
 	CenterBallsOnlyBlue centerOnlyBlue = new CenterBallsOnlyBlue();
 
 	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
+	 * This function is run when the robot is first started up and should be used
+	 * for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
 		light.set(Relay.Value.kOff);
-		
+
 		Thread.currentThread().setPriority(5);
 		drive.calibrateGyro();
 		autoChooser.addOption("3 Ball", "3 Ball");
 		autoChooser.setDefaultOption("3 Ball Drive", "3 Ball Drive");
 		autoChooser.addOption("Trench Dash", "Trench Dash");
 		autoChooser.addOption("Opponent Trench", "Opponent Trench");
-		autoChooser.addOption("Center Only", "Center Only");	
+		autoChooser.addOption("Center Only", "Center Only");
 		SmartDashboard.putData("Autonomous Mode", autoChooser);
-
 
 		networkAutoEnabled.setDefaultOption("Network Auto Enabled", "Network Auto Enabled");
 		networkAutoEnabled.addOption("Network Auto Disabled", "Network Auto Disabled");
@@ -151,7 +155,6 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Starting Pos", startChooser);
 
 		shooter.homeHood();
-		
 
 		drive.setSimpleDrive(false);
 
@@ -159,38 +162,75 @@ public class Robot extends TimedRobot {
 		blinkinLED.setColor(0.89);
 		limelight.setLedMode(LedMode.OFF);
 
-		processing.setDouble(0);
+		pathProcessingStatusEntry.setDouble(0);
 		// autoPath.addListener((event) -> {
 
 		// }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
-	
 
-		
 	}
 
 	NetworkAuto networkAuto;
+	String lastAutoPath = null;
+	String lastShooterConfig = null;
 
 	/**
-	 * This function is called every robot packet, no matter the mode. Use
-	 * this for items like diagnostics that you want ran during disabled,
-	 * autonomous, teleoperated and test.
+	 * This function is called every robot packet, no matter the mode. Use this for
+	 * items like diagnostics that you want ran during disabled, autonomous,
+	 * teleoperated and test.
 	 *
-	 * <p>This runs after the mode specific periodic functions, but before
-	 * LiveWindow and SmartDashboard integrated updating.
+	 * <p>
+	 * This runs after the mode specific periodic functions, but before LiveWindow
+	 * and SmartDashboard integrated updating.
 	 */
 	@Override
 	public void robotPeriodic() {
-		//System.out.println("Distance: " + Limelight.getInstance().getDistance() + " tx: " + Limelight.getInstance().getHorizontalOffset());
-		//System.out.println("Odometry: " + robotTracker.getOdometry().translationMat + " rotation: " +  robotTracker.getOdometry().rotationMat);
-		if(isEnabled()){
+		// System.out.println("Distance: " + Limelight.getInstance().getDistance() + "
+		// tx: " + Limelight.getInstance().getHorizontalOffset());
+		// System.out.println("Odometry: " + robotTracker.getOdometry().translationMat +
+		// " rotation: " + robotTracker.getOdometry().rotationMat);
+		if (isEnabled()) {
 			xPos.setDouble(robotTracker.getOdometry().translationMat.getX());
 			yPos.setDouble(robotTracker.getOdometry().translationMat.getY());
 		}
 
-		if(buttonPanel.getRisingEdge(9)){
+		if (buttonPanel.getRisingEdge(9)) {
 			takeSnapshots = !takeSnapshots;
 			limelight.takeSnapshots(takeSnapshots);
-			System.out.println("taking snapshots " + takeSnapshots );
+			System.out.println("taking snapshots " + takeSnapshots);
+		}
+
+		if (autoPath.getString(null) != null && !autoPath.getString(null).equals(lastAutoPath)) {
+			lastAutoPath = autoPath.getString(null);
+			deserializerExecutor.execute(() -> {
+				System.out.println("start parsing autonoumous");
+				pathProcessingStatusEntry.setDouble(1);
+				pathProcessingStatusIdEntry.setDouble(pathProcessingStatusIdEntry.getDouble(0) + 1);
+
+				networkAuto = new NetworkAuto();
+				System.out.println("done parsing autonomous");
+				pathProcessingStatusEntry.setDouble(2);
+				pathProcessingStatusIdEntry.setDouble(pathProcessingStatusIdEntry.getDouble(0) + 1);
+			});
+		}
+
+		if (shooterConfigEntry.getString(null) != null
+				&& !shooterConfigEntry.getString(null).equals(lastShooterConfig)) {
+			lastShooterConfig = shooterConfigEntry.getString(null);
+			deserializerExecutor.execute(() -> {
+				System.out.println("start parsing shooter config");
+				shooterConfigStatusEntry.setDouble(1);
+				shooterConfigStatusIdEntry.setDouble(pathProcessingStatusIdEntry.getDouble(0) + 1);
+				try {
+					ShooterConfig shooterConfig = (ShooterConfig) Serializer.deserialize(shooterConfigEntry.getString(null), ShooterConfig.class);
+					Collections.sort(shooterConfig.getShooterConfigs());
+				} catch (IOException e) {
+					DriverStation.reportError("Failed to deseralize shooter config from networktables", e.getStackTrace());
+				}
+
+				System.out.println("done parsing shooter config");
+				shooterConfigStatusEntry.setDouble(2);
+				shooterConfigStatusIdEntry.setDouble(pathProcessingStatusIdEntry.getDouble(0)+1);
+			});
 		}
 
 	}
@@ -454,13 +494,12 @@ public class Robot extends TimedRobot {
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff   && limelight.isConnected()){
 					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
-					System.out.println("distance: " + limelight.getDistance()+  "flywheel speed: " +sp.getFlyWheelSpeed() + " wanted hood angle: " + sp.getHoodEjectAngle());
-					shooter.setSpeed(sp.getFlyWheelSpeed());
+					// System.out.println("distance: " + limelight.getDistance()+  "flywheel speed: " +sp.getFlywheelSpeed() + " wanted hood angle: " + sp.getHoodEjectAngle());
+					shooter.setSpeed(sp.getFlywheelSpeed());
 					shooter.setHoodAngle(sp.getHoodEjectAngle());
 					targetFound = true;
 			
 				// use manuel selection if a target is not found
-				} else if(!targetFound){
 					//System.out.println("using manuel contorls");
 					//the !targetFound means we should not go into manuel mode if we previously found our target
 					shooter.setSpeed(shooterSpeed); 
@@ -633,20 +672,9 @@ public class Robot extends TimedRobot {
 	}
 	
 
-	String lastAutoPath = null;
+	
 	@Override
 	public void disabledPeriodic() {
-		if(autoPath.getString(null) != null && !autoPath.getString(null).equals(lastAutoPath) ){
-			System.out.println("start parsing");
-			processing.setDouble(1);
-			lastAutoPath = autoPath.getString(null);
-
-			networkAuto = new NetworkAuto();
-			System.out.println("done parsing");
-			processing.setDouble(2);
-			
-		}
-
 		limelight.setLedMode(LedMode.OFF);
 
 	}

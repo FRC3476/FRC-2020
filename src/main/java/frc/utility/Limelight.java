@@ -14,6 +14,7 @@ import frc.robot.Constants;
  */
 public class Limelight{
 	NetworkTable limelightTable;
+	NetworkTable limelightGuiTable;
 
 	private static Limelight limelight = new Limelight();
 	public static Limelight getInstance(){
@@ -55,9 +56,19 @@ public class Limelight{
 
 	private Limelight(){
 		limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
+		limelightGuiTable = NetworkTableInstance.getDefault().getTable("limelightgui");
+		limelightGuiTable.getEntry("CameraTargetHeightOffset").setDouble(Constants.CameraTargetHeightOffset);
+		limelightGuiTable.getEntry("CameraYAngle").setDouble(Constants.CameraYAngle);
+
 		limelightTable.getEntry("tl").addListener(event -> {
 			lastUpdate = Timer.getFPGATimestamp();
 		 }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+
+		limelightGuiTable.getEntry("forceledon").addListener(event -> {
+			if(event.getEntry().getBoolean(false)){
+				limelight.setLedMode(LedMode.ON);
+			}
+		}, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 	}
 
 
@@ -121,20 +132,23 @@ public class Limelight{
 	 * @param ledMode
 	 */
 	public void setLedMode(LedMode ledMode){
-		switch (ledMode){
-			case DEFAULT:
-				limelightTable.getEntry("ledMode").setNumber(0);
-				break;
-			case OFF:
-				limelightTable.getEntry("ledMode").setNumber(1);
-				break;
-			case BLINK:
-				limelightTable.getEntry("ledMode").setNumber(2);
-				break;
-			case ON:
-				limelightTable.getEntry("ledMode").setNumber(3);
-				break;
-			
+		if(!limelightGuiTable.getEntry("forceledon").getBoolean(false)){
+			switch (ledMode){
+				case DEFAULT:
+					limelightTable.getEntry("ledMode").setNumber(0);
+					break;
+				case OFF:
+					limelightTable.getEntry("ledMode").setNumber(1);
+					break;
+				case BLINK:
+					limelightTable.getEntry("ledMode").setNumber(2);
+					break;
+				case ON:
+					limelightTable.getEntry("ledMode").setNumber(3);
+					break;
+			}
+		} else {
+			limelightTable.getEntry("ledMode").setNumber(3);
 		}
 		
 	}
@@ -195,7 +209,7 @@ public class Limelight{
 	 */
 	public double getDistance(){
 		if(isTargetVisiable()){
-			return  (Constants.CamerTargetHeightOffset) / Math.tan(Math.toRadians(Constants.CameraYAngle + getVerticalOffset()));
+			return  (Constants.CameraTargetHeightOffset) / Math.tan(Math.toRadians(Constants.CameraYAngle + getVerticalOffset()));
 		} else {
 			return 0;
 		}

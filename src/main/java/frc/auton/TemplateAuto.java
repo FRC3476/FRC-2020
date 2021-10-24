@@ -7,11 +7,11 @@ import frc.subsystem.*;
 import frc.subsystem.VisionManager.VisionStatus;
 import frc.utility.Limelight;
 import frc.utility.OrangeUtility;
-import frc.utility.ShooterPreset;
-import frc.utility.VisionLookUpTable;
 import frc.utility.control.*;
 import frc.utility.control.motion.Path;
 import frc.utility.math.*;
+import frc.utility.visionlookup.ShooterPreset;
+import frc.utility.visionlookup.VisionLookUpTable;
 
 @SuppressWarnings("unused")
 public abstract class TemplateAuto implements Runnable {
@@ -138,7 +138,7 @@ public abstract class TemplateAuto implements Runnable {
 	protected void setupShooter(){
 		ShooterPreset sp = VisionLookUpTable.getInstance().getShooterPreset(Limelight.getInstance().getDistance());
 		//System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
-		shooter.setSpeed(sp.getFlyWheelSpeed());
+		shooter.setSpeed(sp.getFlywheelSpeed());
 		shooter.setHoodAngle(sp.getHoodEjectAngle());
 	}
 

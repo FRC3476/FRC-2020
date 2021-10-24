@@ -68,8 +68,10 @@ public abstract class Subsystem implements Runnable {
 	public void run() {
 		while(signal != ThreadSignal.DEAD) {
 			double startTime = Timer.getFPGATimestamp();
-			if(signal == ThreadSignal.ALIVE) update();
-
+			if(signal == ThreadSignal.ALIVE) {
+				update();
+				logData();
+			}
 			double executionTimeMS = (Timer.getFPGATimestamp()-startTime)*1000;
 			try { 
 				Thread.sleep((long) (period-executionTimeMS));
