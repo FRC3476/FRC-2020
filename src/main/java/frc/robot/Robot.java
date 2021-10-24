@@ -218,8 +218,8 @@ public class Robot extends TimedRobot {
 			lastShooterConfig = shooterConfigEntry.getString(null);
 			deserializerExecutor.execute(() -> {
 				System.out.println("start parsing shooter config");
-				shooterConfigStatusEntry.setDouble(1);
-				shooterConfigStatusIdEntry.setDouble(pathProcessingStatusIdEntry.getDouble(0) + 1);
+				shooterConfigStatusEntry.setDouble(2);
+				shooterConfigStatusIdEntry.setDouble(shooterConfigStatusIdEntry.getDouble(0) + 1);
 				try {
 					ShooterConfig shooterConfig = (ShooterConfig) Serializer.deserialize(shooterConfigEntry.getString(null), ShooterConfig.class);
 					Collections.sort(shooterConfig.getShooterConfigs());
@@ -228,8 +228,8 @@ public class Robot extends TimedRobot {
 				}
 
 				System.out.println("done parsing shooter config");
-				shooterConfigStatusEntry.setDouble(2);
-				shooterConfigStatusIdEntry.setDouble(pathProcessingStatusIdEntry.getDouble(0)+1);
+				shooterConfigStatusEntry.setDouble(1);
+				shooterConfigStatusIdEntry.setDouble(shooterConfigStatusIdEntry.getDouble(0)+1);
 			});
 		}
 
