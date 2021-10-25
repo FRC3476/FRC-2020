@@ -68,10 +68,10 @@ public class VisionManager extends Subsystem {
 			case WIN:
 				if (limelight.isTargetVisiable()){            
 					drive.setRotationTeleop(Rotation2D.fromDegrees((-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees())+limelight.getHorizontalOffset()+Constants.cameraXOffset));
-					
+					shoot = shoot || (!drive.isAiming() && shooter.getRPM() > shooter.getTargetSpeed() - 100);
 				}
 
-				shoot = shoot || !drive.isAiming();
+				
 				//System.out.println("current angle: " + (-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()) + " wanted angle: " + (limelight.getHorizontalOffset()) + " shoot: " + shoot);
 
 				if(shoot) {
@@ -117,6 +117,10 @@ public class VisionManager extends Subsystem {
 		visionStatus = state;
 
 
+	}
+
+	public synchronized boolean isShooting(){
+		return shoot && visionStatus == VisionStatus.WIN;
 	}
 
 	public synchronized boolean isFinished(){

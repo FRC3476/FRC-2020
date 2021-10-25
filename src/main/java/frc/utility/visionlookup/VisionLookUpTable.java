@@ -21,10 +21,11 @@ public class VisionLookUpTable {
 	private VisionLookUpTable() {
 
 		try {
-			File shooterDataFile = new File(Filesystem.getDeployDirectory().getPath() + "/shooter/shooterConfig.json");
+			File shooterDataFile = new File(Filesystem.getDeployDirectory().getPath() + "/shooter/shooterconfig.json");
 			shooterConfig = (ShooterConfig) Serializer.deserializeFromFile(shooterDataFile, ShooterConfig.class);
+			System.out.println("sucesfully loaded shooter config from the file");
 		} catch (IOException e) {
-			DriverStation.reportError("Failed to load shooter config from /shooter/shooterConfig.json. Using default values", e.getStackTrace());
+			DriverStation.reportError("Failed to load shooter config from /shooter/shooterconfig.json. Using default values", e.getStackTrace());
 			shooterConfig = new ShooterConfig();
 			shooterConfig.getShooterConfigs().add(new ShooterPreset(47, 4800, 58));
 			shooterConfig.getShooterConfigs().add(new ShooterPreset(46, 4800, 73));

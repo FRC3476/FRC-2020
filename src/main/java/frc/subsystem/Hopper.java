@@ -24,7 +24,7 @@ public class Hopper extends Subsystem {
 	private Hopper() {
 		super(Constants.hopperPeriod);
 		FrontHopperMotor = new LazyTalonSRX(Constants.FrontHopperMotorId);
-		FrontHopperMotor.configContinuousCurrentLimit(20);
+		FrontHopperMotor.configContinuousCurrentLimit(3 );
 		FrontHopperMotor.configPeakCurrentLimit(0);
 		FrontHopperMotor.configPeakCurrentDuration(0);
 		FrontHopperMotor.enableCurrentLimit(true);
@@ -58,7 +58,7 @@ public class Hopper extends Subsystem {
 
 	private void enableCurrentLimit(){
 		if(!currentLimitEnabled){
-			FrontHopperMotor.configContinuousCurrentLimit(20);
+			FrontHopperMotor.configContinuousCurrentLimit(3);
 			FrontHopperMotor.configPeakCurrentLimit(0);
 			FrontHopperMotor.configPeakCurrentDuration(0);
 			FrontHopperMotor.enableCurrentLimit(true);

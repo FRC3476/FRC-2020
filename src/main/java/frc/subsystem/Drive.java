@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.utility.LazyCANSparkMax;
+import frc.utility.Limelight;
 
 public class Drive extends Subsystem {
 
@@ -920,7 +921,7 @@ public class Drive extends Subsystem {
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
 		} else {
 			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 5 /* <-- change this */), deltaSpeed); //Johnathan increase that if the robot stays still when turning and decrease that if you get issues. 
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3 /* <-- change this */), deltaSpeed);
 		}
 		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
 
@@ -930,7 +931,9 @@ public class Drive extends Subsystem {
 		//System.out.println("error " + error + " speed " + (getLeftSpeed()-getRightSpeed()));
 
 		//if (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
-		if (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
+			
+		if (((Limelight.getInstance().getDistance() >= 160 && Math.abs(error) < Constants.maxTurnErrorFar) || (Limelight.getInstance().getDistance() < 160 && Math.abs(error) < Constants.maxTurnError))
+		 && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
 			setWheelVelocity(new DriveSignal(0, 0));
 			
 			isAiming = false;

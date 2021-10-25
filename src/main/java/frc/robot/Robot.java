@@ -223,6 +223,8 @@ public class Robot extends TimedRobot {
 				try {
 					ShooterConfig shooterConfig = (ShooterConfig) Serializer.deserialize(shooterConfigEntry.getString(null), ShooterConfig.class);
 					Collections.sort(shooterConfig.getShooterConfigs());
+					visionLookUpTable.setShooterConfig(shooterConfig);
+					System.out.println(shooterConfig.getShooterConfigs());
 				} catch (IOException e) {
 					DriverStation.reportError("Failed to deseralize shooter config from networktables", e.getStackTrace());
 				}
@@ -493,13 +495,15 @@ public class Robot extends TimedRobot {
 				limelight.setLedMode(LedMode.ON);
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff   && limelight.isConnected()){
-					ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
-					// System.out.println("distance: " + limelight.getDistance()+  "flywheel speed: " +sp.getFlywheelSpeed() + " wanted hood angle: " + sp.getHoodEjectAngle());
-					shooter.setSpeed(sp.getFlywheelSpeed());
-					shooter.setHoodAngle(sp.getHoodEjectAngle());
-					targetFound = true;
-			
-				// use manuel selection if a target is not found
+					if(!visionManager.isShooting()){
+						ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
+						// System.out.println("distance: " + limelight.getDistance()+  "flywheel speed: " +sp.getFlywheelSpeed() + " wanted hood angle: " + sp.getHoodEjectAngle());
+						shooter.setSpeed(sp.getFlywheelSpeed());
+						shooter.setHoodAngle(sp.getHoodEjectAngle());
+						targetFound = true;
+					}
+				} else{
+					// use manuel selection if a target is not found
 					//System.out.println("using manuel contorls");
 					//the !targetFound means we should not go into manuel mode if we previously found our target
 					shooter.setSpeed(shooterSpeed); 

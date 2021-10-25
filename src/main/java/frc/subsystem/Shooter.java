@@ -155,7 +155,7 @@ public class Shooter extends Subsystem {
 	}
 
 	public void update(){
-		nextShootTime=0;
+		//nextShootTime=0;
 		// System.out.println("Speed: " + shooterOutput + " Error: " + flywheelError );
 
 		switch(shooterState){
@@ -181,10 +181,14 @@ public class Shooter extends Subsystem {
 					if(Math.abs(hoodError) < Constants.HoodMaxDeviation && firing && Timer.getFPGATimestamp() >=nextShootTime){// TODO: make hood do things
 						//Hood Ready
 						feederMotor.set(ControlMode.PercentOutput, Constants.FeederMotorSpeed);
-
-						if((Timer.getFPGATimestamp()-nextShootTime)> 0.1){
-							nextShootTime = Timer.getFPGATimestamp() +0.5;
+						if(Limelight.getInstance().getDistance() > 150){
+							if((Timer.getFPGATimestamp()-nextShootTime)> 0.1){
+								nextShootTime = Timer.getFPGATimestamp() +0.2;
+							}
+						} else {
+							nextShootTime = Timer.getFPGATimestamp();
 						}
+						
 					} else{
 						feederMotor.set(ControlMode.PercentOutput, 0 );
 						//System.out.println("Hood error: " + hoodError);
@@ -192,7 +196,7 @@ public class Shooter extends Subsystem {
 				
 				} else {
 					feederMotor.set(ControlMode.PercentOutput, 0 );
-					nextShootTime = Timer.getFPGATimestamp() + 0.5;
+					nextShootTime = Timer.getFPGATimestamp();
 				}
 				break;
 

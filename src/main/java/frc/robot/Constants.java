@@ -98,7 +98,7 @@ public final class Constants {
 	//Intake Constants
 	public static final int IntakeMasterId = 50;
 	public static final int IntakeSolenoidId = 1;
-	public static final double IntakeMotorPower = 0.4;
+	public static final double IntakeMotorPower = 1;
 	public static final double IntakeOpenTime = 0.5;
 	
 	//Hopper Constants
@@ -146,6 +146,7 @@ public final class Constants {
 	public static final double kDriveInchesPerRevolution = Math.PI* Constants.WheelDiameter/10d;
 
 	public static final double maxTurnError = 1;
+	public static final double maxTurnErrorFar = .1;
 	public static final double maxPIDStopSpeed = 9;
   
 	public static final double DriveHighSpeed = 145;
