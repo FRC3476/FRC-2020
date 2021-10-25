@@ -877,6 +877,9 @@ public class Drive extends Subsystem {
 	public void setRotation(Rotation2D angle) {
 		synchronized (this) {
 			wantedHeading = angle;
+			if(driveState != DriveState.TURN){
+				turnMinSpeed = 3;
+			}
 			driveState = DriveState.TURN;
 			rotateAuto = true;
 			isAiming = !getTurningDone();
@@ -904,36 +907,34 @@ public class Drive extends Subsystem {
 
 	}
 
+	double turnMinSpeed;
+
 	private void updateTurn() {
 		double error = wantedHeading.rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
 		double deltaSpeed;
 
-		
+		double curSpeed =  Math.abs(getLeftSpeed()-getRightSpeed());
 
-		// System.out.println(Timer.getFPGATimestamp() - prevTime);
-		// prevTime =  Timer.getFPGATimestamp(); 
+		if(curSpeed < 1){
+			//Updates every 10ms
+			turnMinSpeed = Math.min(turnMinSpeed + 0.05, 6);
+		} else {
+			turnMinSpeed = 2;
+		}
 
-		
-		//System.out.println(RobotTracker.getInstance().getOdometry().rotationMat.getDegrees());
-		//System.out.println("error: " + error);
 		if (rotateAuto){
 			deltaSpeed = turnPIDAuto.update(error);
 			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
 		} else {
 			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3 /* <-- change this */), deltaSpeed);
+			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), Math.max(turnMinSpeed, 2) /* <-- change this */), deltaSpeed);
 		}
-		//System.out.println("error: "  + error + " DeltaSpeed: " + deltaSpeed);
+		
 
 		
-		//System.out.println(deltaSpeed);
-		//deltaSpeed = Math.copySign(OrangeUtility.coercedNormalize(Math.abs(deltaSpeed), 0, 180, 0, Constants.DriveHighSpeed), deltaSpeed);
-		//System.out.println("error " + error + " speed " + (getLeftSpeed()-getRightSpeed()));
-
-		//if (Math.abs(error) < Constants.maxTurnError && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
 			
 		if (((Limelight.getInstance().getDistance() >= 160 && Math.abs(error) < Constants.maxTurnErrorFar) || (Limelight.getInstance().getDistance() < 160 && Math.abs(error) < Constants.maxTurnError))
-		 && Math.abs(getLeftSpeed()-getRightSpeed()) < Constants.maxPIDStopSpeed) {
+		 && curSpeed < Constants.maxPIDStopSpeed) {
 			setWheelVelocity(new DriveSignal(0, 0));
 			
 			isAiming = false;
