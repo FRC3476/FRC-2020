@@ -911,48 +911,42 @@ public class Drive extends Subsystem {
 
 	private void updateTurn() {
 		double error = wantedHeading.rotateBy(RobotTracker.getInstance().getOdometry().rotationMat).getDegrees();
-		double deltaSpeed;
-
 		double curSpeed =  Math.abs(getLeftSpeed()-getRightSpeed());
+		double deltaSpeed;
+		double pidDeltaSpeed;
 
-		if(curSpeed < 1){
-			//Updates every 10ms
-			turnMinSpeed = Math.min(turnMinSpeed + 0.05, 6);
+		if (rotateAuto) {
+			pidDeltaSpeed = turnPIDAuto.update(error);
+			deltaSpeed = Math.copySign(Math.max(Math.abs(pidDeltaSpeed), 3), pidDeltaSpeed);
 		} else {
-			turnMinSpeed = 2;
-		}
-
-		if (rotateAuto){
-			deltaSpeed = turnPIDAuto.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), 3), deltaSpeed);
-		} else {
-			deltaSpeed = turnPID.update(error);
-			deltaSpeed = Math.copySign(Math.max(Math.abs(deltaSpeed), Math.max(turnMinSpeed, 2) /* <-- change this */), deltaSpeed);
+			pidDeltaSpeed = turnPID.update(error);
+			deltaSpeed = Math.copySign(Math.max(Math.abs(pidDeltaSpeed), turnMinSpeed), pidDeltaSpeed);
 		}
 		
-
-		
-			
-		if (((Limelight.getInstance().getDistance() >= 160 && Math.abs(error) < Constants.maxTurnErrorFar) || (Limelight.getInstance().getDistance() < 160 && Math.abs(error) < Constants.maxTurnError))
-		 && curSpeed < Constants.maxPIDStopSpeed) {
+		if (((Limelight.getInstance().getDistance() >= 160 && Math.abs(error) < Constants.maxTurnErrorFar) || 
+				(Limelight.getInstance().getDistance() < 160 && Math.abs(error) < Constants.maxTurnError)) && curSpeed < Constants.maxPIDStopSpeed) {
 			setWheelVelocity(new DriveSignal(0, 0));
-			
 			isAiming = false;
 			//configBrake();
-			if( rotateAuto )
-			{
+			if( rotateAuto ) {
 				synchronized (this) {
 					configBrake();
 					driveState = DriveState.DONE;
 				}
 			}
 			
-		} 
-		
-		else {
-			//System.out.println(" i am here " + deltaSpeed);
+		} else {
+			System.out.println("Error: " + error + " curSpeed: " + curSpeed + " command: " + deltaSpeed + " pidOut: " 
+				+ pidDeltaSpeed + " minSpeed: " + turnMinSpeed);
 			isAiming = true;
 			setWheelVelocity(new DriveSignal(-deltaSpeed, deltaSpeed));
+
+			if(curSpeed < 0.5) {
+				//Updates every 10ms
+				turnMinSpeed = Math.min(turnMinSpeed + 0.1, 6);
+			} else {
+				turnMinSpeed = 2;
+			}
 		}
 	}
 
