@@ -35,6 +35,12 @@ public class CenterBallsOnlyBlue extends AbstractGuiAuto {
 		super(new File(Filesystem.getDeployDirectory().getPath() + "/auto/centerOnly.json"));
 	
 	}
+
+	@Override
+	public void run() {
+		drive.configRamsete(5, 0.7);
+		super.run();
+	}
 	
 	// boolean killSwitch = false;
 

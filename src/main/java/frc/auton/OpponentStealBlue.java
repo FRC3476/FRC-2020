@@ -37,6 +37,7 @@ public class OpponentStealBlue extends TemplateAuto implements Runnable  {
 
 
 	public OpponentStealBlue() {
+		drive.configRamsete(4, 0.8);
 		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
 		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
 

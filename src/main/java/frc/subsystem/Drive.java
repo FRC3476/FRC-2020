@@ -102,7 +102,7 @@ public class Drive extends Subsystem {
 
 	// TODO: Change
 	public DifferentialDriveKinematics ramseteDiffDriveKinematics = Constants.RamseteDiffDriveKinematics;
-	RamseteController ramseteController = new RamseteController(4, 0.8);
+	RamseteController ramseteController;
 
 	double prevPositionL = 0;
 	double prevPositionR = 0;
@@ -126,9 +126,8 @@ public class Drive extends Subsystem {
 
 	private Drive() {
 		super(Constants.DrivePeriod);
-		Pose2d tollerance = new Pose2d(new Translation2D(20,20).getScaledWPITranslation2d(), Rotation2d.fromDegrees(90));
-		System.out.println(tollerance);
-		ramseteController.setTolerance(tollerance);
+
+		configRamsete(4, 0.8);
 
 		leftSpark = new LazyCANSparkMax(Constants.DriveLeftMasterId, MotorType.kBrushless);
 		leftSparkSlave = new LazyCANSparkMax(Constants.DriveLeftSlave1Id, MotorType.kBrushless);
@@ -193,6 +192,16 @@ public class Drive extends Subsystem {
 
 		configHigh();
 		configAuto();
+	}
+	/**
+	 * Construct a Ramsete unicycle controller.
+	 * @param b Tuning parameter (b > 0) for which larger values make convergence more aggressive like a proportional term.
+	 * @param zeta Tuning parameter (0 < zeta < 1) for which larger values provide more damping in response.
+	 */
+	public void configRamsete(double b, double zeta){
+		ramseteController = new RamseteController(4, 0.8);
+		Pose2d tollerance = new Pose2d(new Translation2D(20,20).getScaledWPITranslation2d(), Rotation2d.fromDegrees(90));
+		ramseteController.setTolerance(tollerance);
 	}
 
 	public void debug() {

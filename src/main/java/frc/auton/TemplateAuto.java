@@ -15,7 +15,7 @@ import frc.utility.visionlookup.VisionLookUpTable;
 
 @SuppressWarnings("unused")
 public abstract class TemplateAuto implements Runnable {
-	Drive drive = Drive.getInstance();
+	protected Drive drive = Drive.getInstance();
 	RobotTracker robotTracker = RobotTracker.getInstance();
 	Intake intake = Intake.getInstance();
 	VisionManager vision = VisionManager.getInstance();
