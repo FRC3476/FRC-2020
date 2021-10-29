@@ -102,7 +102,7 @@ public class Drive extends Subsystem {
 
 	// TODO: Change
 	public DifferentialDriveKinematics ramseteDiffDriveKinematics = Constants.RamseteDiffDriveKinematics;
-	RamseteController ramseteController = new RamseteController(5, 0.7);
+	RamseteController ramseteController = new RamseteController(4, 0.8);
 
 	double prevPositionL = 0;
 	double prevPositionR = 0;
@@ -927,7 +927,7 @@ public class Drive extends Subsystem {
 				(Limelight.getInstance().getDistance() < 160 && Math.abs(error) < Constants.maxTurnError)) && curSpeed < Constants.maxPIDStopSpeed) {
 			setWheelVelocity(new DriveSignal(0, 0));
 			isAiming = false;
-			//configBrake();
+			
 			if( rotateAuto ) {
 				synchronized (this) {
 					configBrake();
