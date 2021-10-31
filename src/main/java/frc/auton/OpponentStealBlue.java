@@ -37,7 +37,7 @@ public class OpponentStealBlue extends TemplateAuto implements Runnable  {
 
 
 	public OpponentStealBlue() {
-		drive.configRamsete(4, 0.8);
+		drive.configRamsete(2, 0.7);
 		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
 		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
 
@@ -52,7 +52,7 @@ public class OpponentStealBlue extends TemplateAuto implements Runnable  {
 		ArrayList<Pose2d> path2 = new ArrayList<>();
 		path2.add(new Pose2d(6.3126, -3.6092, Rotation2d.fromDegrees(120)));
 		path2.add(new Pose2d(4.1312, -1.4694, Rotation2d.fromDegrees(137)));
-		path2.add(new Pose2d(1.9804, 0.2412, Rotation2d.fromDegrees(149)));
+		path2.add(new Pose2d(3.0333, 0.2412, Rotation2d.fromDegrees(149)));
 
 		trajectoryConfig.setReversed(false);
 		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);

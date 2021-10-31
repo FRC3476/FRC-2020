@@ -375,6 +375,9 @@ public class Robot extends TimedRobot {
 		
 	}
 
+	boolean shootingLastTime = false;
+	double shootEjectTill = 0;
+
 	@Override 
 	public void teleopInit() {
 		startAll();
@@ -437,7 +440,7 @@ public class Robot extends TimedRobot {
 
 			} else if (buttonPanel.getRisingEdge(3)){
 				//hits bootom of 3pt: 64.5, 5000
-				hoodPosition = 67.5;
+				hoodPosition = 55;
 				shooterSpeed = 5000;//3250;,  5500
 				visionOff = true;
 				shooterMode = 3;
@@ -449,9 +452,20 @@ public class Robot extends TimedRobot {
 				//do we not want aiming
 				limelight.setLedMode(LedMode.ON);
 				if(visionOff || stick.getRawButton(1)){
-					shooter.setFiring(true);
-					hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
-					hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+					if(!shootingLastTime){
+						shootEjectTill = Timer.getFPGATimestamp() + 0.1;
+						shootingLastTime = true;
+					}
+					if(Timer.getFPGATimestamp() > shootEjectTill){
+						shooter.setFiring(true);
+						hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+						hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+					} else {
+						shooter.setFiring(false);
+						hopper.setSnailMotorState(Hopper.SnailMotorState.REVERSE, false);
+						hopper.setFrontMotorState(Hopper.FrontMotorState.REVERSE);
+					}
+					
 					//blinkinLED.setColor(0.77);
 					visionManager.setState(VisionStatus.IDLE);
 				} else{
@@ -462,6 +476,7 @@ public class Robot extends TimedRobot {
 			} else {
 				visionManager.setState(VisionStatus.IDLE);
 				shooter.setFiring(false);
+				shootingLastTime = false;
 				if(!buttonPanel.getRawButton(6)){
 					limelight.setLedMode(LedMode.OFF);
 				}
@@ -494,7 +509,7 @@ public class Robot extends TimedRobot {
 			if (buttonPanel.getRawButton(6)){
 				limelight.setLedMode(LedMode.ON);
 				//check if target is visible and that vision is enabled. Then turn shooter on with correct settings based on our distance
-				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff   && limelight.isConnected()){
+				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff && limelight.isConnected()){
 					if(!visionManager.isShooting()){
 						ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
 						// System.out.println("distance: " + limelight.getDistance()+  "flywheel speed: " +sp.getFlywheelSpeed() + " wanted hood angle: " + sp.getHoodEjectAngle());

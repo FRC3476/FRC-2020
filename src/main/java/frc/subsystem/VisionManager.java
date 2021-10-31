@@ -1,5 +1,6 @@
 package frc.subsystem;
 
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.utility.Limelight;
 import frc.utility.math.Rotation2D;
@@ -16,6 +17,7 @@ public class VisionManager extends Subsystem {
 	boolean shoot = false;
 	BlinkinLED led;
 	public int winStage = 0;
+	double ejectTillTime = 0;
    
 	private static final VisionManager vm = new VisionManager();
 
@@ -46,11 +48,17 @@ public class VisionManager extends Subsystem {
 		switch(visionStatus){
 			case AIMING:
 				
-			if (limelight.isTargetVisiable()){            
-				drive.setRotationTeleop(Rotation2D.fromDegrees((-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees())+limelight.getHorizontalOffset()+Constants.cameraXOffset));
-				
-			}
-				shoot = shoot || !drive.isAiming();
+				if (limelight.isTargetVisiable()){            
+					drive.setRotationTeleop(Rotation2D.fromDegrees((-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees())+limelight.getHorizontalOffset()+Constants.cameraXOffset));
+					
+				}
+
+				if(!shoot){
+					if(!drive.isAiming()){
+						ejectTillTime = Timer.getFPGATimestamp() + 0.1;
+						shoot = true;
+					}
+				}
 
 				//System.out.println("current angle: " + (-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()) + " wanted angle: " + (limelight.getHorizontalOffset()) + " shoot: " + shoot);
 				
@@ -68,17 +76,29 @@ public class VisionManager extends Subsystem {
 			case WIN:
 				if (limelight.isTargetVisiable()){            
 					drive.setRotationTeleop(Rotation2D.fromDegrees((-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees())+limelight.getHorizontalOffset()+Constants.cameraXOffset));
-					shoot = shoot || (!drive.isAiming() && shooter.getRPM() > shooter.getTargetSpeed() - 100);
+					if(!shoot){
+						if(!drive.isAiming() && shooter.getRPM() > shooter.getTargetSpeed() - 100){
+							ejectTillTime = Timer.getFPGATimestamp() + 0.1;
+							shoot = true;
+						}
+					}
+					
 				}
 
 				
 				//System.out.println("current angle: " + (-RobotTracker.getInstance().getOdometry().rotationMat.getDegrees()) + " wanted angle: " + (limelight.getHorizontalOffset()) + " shoot: " + shoot);
 
 				if(shoot) {
+					if(Timer.getFPGATimestamp() > ejectTillTime){
+						shooter.setFiring(true);
+						hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, true);
+						hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
+					} else {
+						shooter.setFiring(false);
+						hopper.setSnailMotorState(Hopper.SnailMotorState.REVERSE, true);
+						hopper.setFrontMotorState(Hopper.FrontMotorState.REVERSE);
+					}
 
-					shooter.setFiring(true);
-					hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, true);
-					hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 
 				} else {
 					shooter.setFiring(false);

@@ -133,8 +133,17 @@ public class Drive extends Subsystem {
 		leftSparkSlave = new LazyCANSparkMax(Constants.DriveLeftSlave1Id, MotorType.kBrushless);
 		rightSpark = new LazyCANSparkMax(Constants.DriveRightMasterId, MotorType.kBrushless);
 		rightSparkSlave = new LazyCANSparkMax(Constants.DriveRightSlave1Id, MotorType.kBrushless);
-		// rightSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
-		// leftSparkSlave2 = new CANSparkMax(0, MotorType.kBrushless);
+		
+		leftSpark.setSmartCurrentLimit(40);
+		leftSparkSlave.setSmartCurrentLimit(40);
+		rightSpark.setSmartCurrentLimit(40);
+		rightSparkSlave.setSmartCurrentLimit(40);
+
+		leftSpark.burnFlash();
+		leftSparkSlave.burnFlash();
+		rightSpark.burnFlash();
+		rightSparkSlave.burnFlash();
+		
 		leftSpark.setInverted(true);
 		rightSpark.setInverted(false);
 		leftSparkSlave.setInverted(true);

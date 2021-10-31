@@ -38,7 +38,7 @@ public class CenterBallsOnlyRed extends AbstractGuiAuto {
 
 	@Override
 	public void run() {
-		drive.configRamsete(5, 0.7);
+		drive.configRamsete(2.5, 0.7);
 		super.run();
 	}
 	

@@ -77,26 +77,30 @@ public class Intake extends Subsystem {
 		}
 	public synchronized void setIntakeState(IntakeState intakeState) {
 		this.intakeState = intakeState;
-		switch(intakeState) {
-			case EJECT:
-				targetIntakeMotorSpeed = -Constants.IntakeMotorPower;
-				intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
-				break;
-			case OFF:
-				intakeMotor.set(ControlMode.PercentOutput, 0.0);
-				targetIntakeMotorSpeed = 0;
-				break;
-			case INTAKE:
-				intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
-				targetIntakeMotorSpeed = Constants.IntakeMotorPower;
-				break;
-			case SLOW:
-				intakeMotor.set(ControlMode.PercentOutput, 0);
-				targetIntakeMotorSpeed = 0;
-				break;
-			default:
-				break;
-
+		if(deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime){
+			
+			switch(intakeState) {
+				case EJECT:
+					targetIntakeMotorSpeed = -Constants.IntakeMotorPower;
+					intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
+					break;
+				case OFF:
+					intakeMotor.set(ControlMode.PercentOutput, 0.0);
+					targetIntakeMotorSpeed = 0;
+					break;
+				case INTAKE:
+					intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
+					targetIntakeMotorSpeed = Constants.IntakeMotorPower;
+					break;
+				case SLOW:
+					intakeMotor.set(ControlMode.PercentOutput, 0);
+					targetIntakeMotorSpeed = 0;
+					break;
+				default:
+					break;
+			}
+		} else {
+			intakeMotor.set(ControlMode.PercentOutput, 0);
 		}
 
 	}

@@ -37,7 +37,7 @@ public class OpponentStealRed extends TemplateAuto implements Runnable  {
 
 
 	public OpponentStealRed() {
-		drive.configRamsete(4, 0.8);
+		drive.configRamsete(2, 0.7);
 		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(100), Units.inchesToMeters(80));
 		trajectoryConfig.addConstraint(new CentripetalAccelerationConstraint(Units.inchesToMeters(25)));
 

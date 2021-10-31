@@ -53,7 +53,7 @@ public class TrenchDashRed extends TemplateAuto {
 
 	@Override
 	public void run() {
-		drive.configRamsete(4, 0.8);
+		drive.configRamsete(2, 0.7);
 		Pose2d initalPose = new Pose2d(3.6098, 3.3663, Rotation2d.fromDegrees(180));
 		System.out.println(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
 		RobotTracker.getInstance().setInitialTranslation(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
