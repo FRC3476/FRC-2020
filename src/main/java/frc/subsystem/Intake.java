@@ -30,8 +30,6 @@ public class Intake extends Subsystem {
 	private DeployState deployState = DeployState.UNDEPLOY;
 	private IntakeState intakeState = IntakeState.OFF;
 	private double allowOpenTime = 0;
-	private double targetIntakeMotorSpeed = 0;
-	private double actualIntakeMotorSpeed = 0;
 
 
 
@@ -60,7 +58,6 @@ public class Intake extends Subsystem {
 		synchronized (this) {
 			this.deployState = deployState;
 		}
-		
 
 		switch (deployState) {
 			case DEPLOY:
@@ -74,27 +71,23 @@ public class Intake extends Subsystem {
 				intakeState = IntakeState.OFF;
 				break;
 		}
-		}
+	}
+
 	public synchronized void setIntakeState(IntakeState intakeState) {
 		this.intakeState = intakeState;
 		if(deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime){
-			
 			switch(intakeState) {
 				case EJECT:
-					targetIntakeMotorSpeed = -Constants.IntakeMotorPower;
 					intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
 					break;
 				case OFF:
 					intakeMotor.set(ControlMode.PercentOutput, 0.0);
-					targetIntakeMotorSpeed = 0;
 					break;
 				case INTAKE:
 					intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
-					targetIntakeMotorSpeed = Constants.IntakeMotorPower;
 					break;
 				case SLOW:
 					intakeMotor.set(ControlMode.PercentOutput, 0);
-					targetIntakeMotorSpeed = 0;
 					break;
 				default:
 					break;
@@ -135,18 +128,26 @@ public class Intake extends Subsystem {
 
 	@Override
 	public synchronized void update() {	
-		// if(actualIntakeMotorSpeed < targetIntakeMotorSpeed){
-		// 	targetIntakeMotorSpeed += 0.1;
-		// 	if(actualIntakeMotorSpeed > targetIntakeMotorSpeed){
-		// 		actualIntakeMotorSpeed = targetIntakeMotorSpeed;
-		// 	}
-		// } else if(actualIntakeMotorSpeed > targetIntakeMotorSpeed){
-		// 	targetIntakeMotorSpeed -= 0.1;
-		// 	if(actualIntakeMotorSpeed < targetIntakeMotorSpeed){
-		// 		actualIntakeMotorSpeed = targetIntakeMotorSpeed;
-		// 	}
-		// }
-		// intakeMotor.set(ControlMode.PercentOutput, actualIntakeMotorSpeed);
+		if(deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime){
+			switch(intakeState) {
+				case EJECT:
+					intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
+					break;
+				case OFF:
+					intakeMotor.set(ControlMode.PercentOutput, 0.0);
+					break;
+				case INTAKE:
+					intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
+					break;
+				case SLOW:
+					intakeMotor.set(ControlMode.PercentOutput, 0);
+					break;
+				default:
+					break;
+			}
+		} else {
+			intakeMotor.set(ControlMode.PercentOutput, 0);
+		}
 	}
 }
 
