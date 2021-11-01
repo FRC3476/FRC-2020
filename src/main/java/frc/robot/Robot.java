@@ -375,9 +375,6 @@ public class Robot extends TimedRobot {
 		
 	}
 
-	boolean shootingLastTime = false;
-	double shootEjectTill = 0;
-
 	@Override 
 	public void teleopInit() {
 		startAll();
@@ -452,20 +449,9 @@ public class Robot extends TimedRobot {
 				//do we not want aiming
 				limelight.setLedMode(LedMode.ON);
 				if(visionOff || stick.getRawButton(1)){
-					if(!shootingLastTime){
-						shootEjectTill = Timer.getFPGATimestamp() + 0.1;
-						shootingLastTime = true;
-					}
-					if(Timer.getFPGATimestamp() > shootEjectTill){
-						shooter.setFiring(true);
-						hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
-						hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-					} else {
-						shooter.setFiring(false);
-						hopper.setSnailMotorState(Hopper.SnailMotorState.REVERSE, false);
-						hopper.setFrontMotorState(Hopper.FrontMotorState.REVERSE);
-					}
-					
+					shooter.setFiring(true);
+					hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
+					hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 					//blinkinLED.setColor(0.77);
 					visionManager.setState(VisionStatus.IDLE);
 				} else{
@@ -476,7 +462,6 @@ public class Robot extends TimedRobot {
 			} else {
 				visionManager.setState(VisionStatus.IDLE);
 				shooter.setFiring(false);
-				shootingLastTime = false;
 				if(!buttonPanel.getRawButton(6)){
 					limelight.setLedMode(LedMode.OFF);
 				}
