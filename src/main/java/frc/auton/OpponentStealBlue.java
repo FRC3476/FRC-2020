@@ -77,17 +77,22 @@ public class OpponentStealBlue extends TemplateAuto implements Runnable  {
 
 
 		turnOnIntakeTrack();
+		intake.setDeployState(DeployState.DEPLOY);
 		drive.setAutoPath(trajectory1);
-		while(!drive.isFinished()) if(isDead()) return;
+		while(!drive.isFinished()){
+			turnOnIntakeTrack();
+			if(isDead()) return;
+		} 
 
 		System.out.println("here1");
-		turnOffIntakeTrack();
+		//turnOffIntakeTrack();
 
 		shooter.setSpeed(4000); //May need to set hood pos
 
 		drive.setAutoPath(trajectory2);
 		while(!drive.isFinished()) {
 			if(drive.getRamseteCompletePercent() > 0.1){
+				turnOffIntakeTrack();
 				intake.setDeployState(DeployState.UNDEPLOY);
 			}
 			if(isDead()) return;

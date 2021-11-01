@@ -52,7 +52,7 @@ public class OpponentStealRed extends TemplateAuto implements Runnable  {
 		ArrayList<Pose2d> path2 = new ArrayList<>();
 		path2.add(new Pose2d(6.3126, -3.6092, Rotation2d.fromDegrees(120)));
 		path2.add(new Pose2d(4.1312, -1.4694, Rotation2d.fromDegrees(137)));
-		path2.add(new Pose2d(1.9804, 0.2412, Rotation2d.fromDegrees(149)));
+		path2.add(new Pose2d(3.0333, 0.2412, Rotation2d.fromDegrees(149)));
 
 		trajectoryConfig.setReversed(false);
 		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
@@ -77,17 +77,22 @@ public class OpponentStealRed extends TemplateAuto implements Runnable  {
 
 
 		turnOnIntakeTrack();
+		intake.setDeployState(DeployState.DEPLOY);
 		drive.setAutoPath(trajectory1);
-		while(!drive.isFinished()) if(isDead()) return;
+		while(!drive.isFinished()){
+			turnOnIntakeTrack();
+			if(isDead()) return;
+		} 
 
 		System.out.println("here1");
-		turnOffIntakeTrack();
+		//turnOffIntakeTrack();
 
 		shooter.setSpeed(4000); //May need to set hood pos
 
 		drive.setAutoPath(trajectory2);
 		while(!drive.isFinished()) {
 			if(drive.getRamseteCompletePercent() > 0.1){
+				turnOffIntakeTrack();
 				intake.setDeployState(DeployState.UNDEPLOY);
 			}
 			if(isDead()) return;
