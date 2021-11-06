@@ -55,21 +55,25 @@ public class Intake extends Subsystem {
 	}
 
 	public void setDeployState(final DeployState deployState) {
-		synchronized (this) {
-			this.deployState = deployState;
-		}
 
 		switch (deployState) {
 			case DEPLOY:
 				//setSpeed(0.64);
 				deploySolenoid.set(true);
-				allowOpenTime = Timer.getFPGATimestamp() + Constants.IntakeOpenTime;
+				if(this.deployState != deployState){
+					allowOpenTime = 0; //Timer.getFPGATimestamp() + Constants.IntakeOpenTime;
+				}
+				 
 				break;
 			case UNDEPLOY:
 				//setSpeed(0.64);
 				deploySolenoid.set(false);
 				intakeState = IntakeState.OFF;
 				break;
+		}
+
+		synchronized (this) {
+			this.deployState = deployState;
 		}
 	}
 

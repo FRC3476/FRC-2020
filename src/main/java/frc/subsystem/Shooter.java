@@ -164,7 +164,7 @@ public class Shooter extends Subsystem {
 
 				double flywheelError = getRPM() - targetShooterSpeed;
 
-				System.out.println("target shooter speed: " + targetShooterSpeed + " error: " + flywheelError);
+				//System.out.println("target shooter speed: " + targetShooterSpeed + " error: " + flywheelError);
 				hoodPID.setReference(targetHoodPosition, ControlType.kPosition);
 
 				double hoodError = targetHoodPosition - hoodEncoder.getPosition();
