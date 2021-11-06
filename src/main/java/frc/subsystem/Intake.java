@@ -80,7 +80,7 @@ public class Intake extends Subsystem {
 
 	public synchronized void setIntakeState(IntakeState intakeState) {
 		this.intakeState = intakeState;
-		if((deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime) || DriverStation.getInstance().isAutonomous()){
+		if((deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime)){
 			switch(intakeState) {
 				case EJECT:
 					intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
@@ -133,28 +133,27 @@ public class Intake extends Subsystem {
 
 	@Override
 	public synchronized void update() {
-		// if(deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime){
-		// 	switch(intakeState) {
-		// 		case EJECT:
-		// 			intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
-		// 			break;
-		// 		case OFF:
-		// 			intakeMotor.set(ControlMode.PercentOutput, 0.0);
-		// 			break;
-		// 		case INTAKE:
-		// 			intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
-		// 			break;
-		// 		case SLOW:
-		// 			intakeMotor.set(ControlMode.PercentOutput, 0);
+		if(deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime){
+			switch(intakeState) {
+				case EJECT:
+					intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
+					break;
+				case OFF:
+					intakeMotor.set(ControlMode.PercentOutput, 0.0);
+					break;
+				case INTAKE:
+					intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
+					break;
+				case SLOW:
+					intakeMotor.set(ControlMode.PercentOutput, 0);
 
-		// 			break;
-		// 		default:
-		// 			break;
-		// 	}
-		// 	System.out.println(intakeState);
-		// } else {
-		// 	intakeMotor.set(ControlMode.PercentOutput, 0);
-		// }
+					break;
+				default:
+					break;
+			}
+		} else {
+			intakeMotor.set(ControlMode.PercentOutput, 0);
+		}
 	}
 }
 
