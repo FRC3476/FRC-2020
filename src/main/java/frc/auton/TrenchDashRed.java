@@ -24,7 +24,7 @@ import frc.subsystem.VisionManager.VisionStatus;
 
 
 @SuppressWarnings("unused")
-public class TrenchDashRed extends TemplateAuto {	
+public class TrenchDashRed extends TemplateAuto {
 	boolean killSwitch = false;
 
 	Trajectory trajectory1;
@@ -48,7 +48,7 @@ public class TrenchDashRed extends TemplateAuto {
 
 		trajectoryConfig.setReversed(false);
 		trajectory2 = TrajectoryGenerator.generateTrajectory(path2, trajectoryConfig);
-	
+	 
 	}
 
 	@Override
@@ -59,8 +59,8 @@ public class TrenchDashRed extends TemplateAuto {
 		RobotTracker.getInstance().setInitialTranslation(Translation2D.fromWPITranslation2d(initalPose.getTranslation()));
 		RobotTracker.getInstance().setInitialRotation(Rotation2D.fromWPIRotation2d(initalPose.getRotation()));
 		
-		intake.setDeployState(DeployState.DEPLOY);
 		System.out.println("Trench Dash");
+		intake.setDeployState(DeployState.DEPLOY);
 		shooter.setSpeed(4000);
 		shooter.setHoodAngle(41);
 		if(!shootBalls(3)) return;
@@ -69,7 +69,6 @@ public class TrenchDashRed extends TemplateAuto {
 		turnOnIntakeTrack();
 		drive.setAutoPath(trajectory1);
 		while(!drive.isFinished()){
-			turnOnIntakeTrack();
 			if(isDead()) return;
 		} 
 		shooter.setSpeed(4000);
@@ -79,9 +78,12 @@ public class TrenchDashRed extends TemplateAuto {
 		while(!drive.isFinished()) {
 			if(drive.getRamseteCompletePercent() > 0.6){
 				setupShooter();
+				turnOffIntakeTrack();
 			}
+			
 			if(isDead()) return;
 		}
+		turnOffIntakeTrack();
 		System.out.println("here2");
 		if(!shootBalls(5)) return;
 

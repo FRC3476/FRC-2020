@@ -75,12 +75,10 @@ public class OpponentStealBlue extends TemplateAuto implements Runnable  {
 		robotTracker.setInitialRotation(Rotation2D.fromWPIRotation2d(initalPose.getRotation()));
 		System.out.println("Oponent Steal");
 
-
 		turnOnIntakeTrack();
 		intake.setDeployState(DeployState.DEPLOY);
 		drive.setAutoPath(trajectory1);
 		while(!drive.isFinished()){
-			turnOnIntakeTrack();
 			if(isDead()) return;
 		} 
 

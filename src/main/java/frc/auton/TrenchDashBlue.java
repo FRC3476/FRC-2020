@@ -69,7 +69,6 @@ public class TrenchDashBlue extends TemplateAuto {
 		turnOnIntakeTrack();
 		drive.setAutoPath(trajectory1);
 		while(!drive.isFinished()){
-			turnOnIntakeTrack();
 			if(isDead()) return;
 		} 
 		shooter.setSpeed(4000);

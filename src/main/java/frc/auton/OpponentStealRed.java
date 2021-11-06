@@ -24,17 +24,16 @@ import frc.subsystem.VisionManager.VisionStatus;
 
 
 @SuppressWarnings("unused")
-public class OpponentStealRed extends TemplateAuto implements Runnable  {
-   
+public class OpponentStealRed extends TemplateAuto implements Runnable {
+
 	double startY;
 
 	private double TargetTime;
-	
+
 	boolean killSwitch = false;
 
 	Trajectory trajectory1;
 	Trajectory trajectory2;
-
 
 	public OpponentStealRed() {
 		drive.configRamsete(2, 0.7);
@@ -75,12 +74,10 @@ public class OpponentStealRed extends TemplateAuto implements Runnable  {
 		robotTracker.setInitialRotation(Rotation2D.fromWPIRotation2d(initalPose.getRotation()));
 		System.out.println("Oponent Steal");
 
-
 		turnOnIntakeTrack();
 		intake.setDeployState(DeployState.DEPLOY);
 		drive.setAutoPath(trajectory1);
 		while(!drive.isFinished()){
-			turnOnIntakeTrack();
 			if(isDead()) return;
 		} 
 
