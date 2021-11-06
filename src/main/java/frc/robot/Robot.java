@@ -497,7 +497,7 @@ public class Robot extends TimedRobot {
 				if(limelight.isTargetVisiable() && limelight.getTagetArea()>= Constants.ShooterVisionMinimumTargetArea && !visionOff && limelight.isConnected()){
 					if(!visionManager.isShooting()){
 						ShooterPreset sp = visionLookUpTable.getShooterPreset(limelight.getDistance());
-						System.out.println("time: " + DriverStation.getInstance().getMatchTime() +  " distance: " + limelight.getDistance()+  "flywheel speed: " +sp.getFlywheelSpeed() + " wanted hood angle: " + sp.getHoodEjectAngle());
+						System.out.println("time: " + (150-DriverStation.getInstance().getMatchTime()) +  " distance: " + limelight.getDistance()+  "flywheel speed: " +sp.getFlywheelSpeed() + " wanted hood angle: " + sp.getHoodEjectAngle());
 						shooter.setSpeed(sp.getFlywheelSpeed());
 						shooter.setHoodAngle(sp.getHoodEjectAngle());
 						targetFound = true;

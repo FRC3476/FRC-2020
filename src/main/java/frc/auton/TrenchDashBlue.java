@@ -85,7 +85,7 @@ public class TrenchDashBlue extends TemplateAuto {
 		}
 		turnOffIntakeTrack();
 		System.out.println("here2");
-		if(!shootBalls(5)) return;
+		if(!shootBallsTimed(10)) return;
 
  
 		synchronized (this) {

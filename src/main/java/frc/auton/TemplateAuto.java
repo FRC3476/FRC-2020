@@ -1,5 +1,6 @@
 package frc.auton;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.robot.Constants;
@@ -119,11 +120,12 @@ public abstract class TemplateAuto implements Runnable {
 		}
 		System.out.println("vision finished");
 		//shooter.setFiring(true);
+		ShooterPreset sp = VisionLookUpTable.getInstance().getShooterPreset(Limelight.getInstance().getDistance());
+		System.out.println("Shooting Auto Using: time: " + (15-DriverStation.getInstance().getMatchTime()) +  " distance: " + Limelight.getInstance().getDistance()+  "flywheel speed: " +sp.getFlywheelSpeed() + " wanted hood angle: " + sp.getHoodEjectAngle());
 
 		double TargetTime = Timer.getFPGATimestamp() +Constants.AutoShooterOnTimePerBall*amountOfBalls;
 		
 		while (Timer.getFPGATimestamp() < TargetTime) {
-			setupShooter();
 			if(isDead()) return false;
 		}
 		shooter.setSpeed(0);
@@ -138,7 +140,6 @@ public abstract class TemplateAuto implements Runnable {
 
 	protected void setupShooter(){
 		ShooterPreset sp = VisionLookUpTable.getInstance().getShooterPreset(Limelight.getInstance().getDistance());
-		//System.out.println("flywheel speed: " +sp.getFlyWheelSpeed() + " hood angle: " + sp.getHoodEjectAngle());
 		shooter.setSpeed(sp.getFlywheelSpeed());
 		shooter.setHoodAngle(sp.getHoodEjectAngle());
 	}
