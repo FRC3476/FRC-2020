@@ -62,7 +62,7 @@ public class OpponentStealBlue extends TemplateAuto implements Runnable  {
 
 	public void turnOnIntakeTrack() {
 		intake.setDeployState(Intake.DeployState.DEPLOY);
-		intake.setSpeed(Constants.IntakeMotorPower);
+		intake.setIntakeState(IntakeState.INTAKE);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
 	}

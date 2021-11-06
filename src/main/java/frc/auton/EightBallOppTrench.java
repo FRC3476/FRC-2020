@@ -30,13 +30,6 @@ public class EightBallOppTrench extends TemplateAuto implements Runnable  {
 
 	}
 
-	public void turnOnIntakeTrack() {
-		intake.setDeployState(Intake.DeployState.DEPLOY);
-		intake.setSpeed(Constants.IntakeMotorPower);
-		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
-	}
-
 	@Override
 	public void run() {
 
@@ -51,7 +44,7 @@ public class EightBallOppTrench extends TemplateAuto implements Runnable  {
 
 		p1.addPoint(new Translation2D(243 - 35.0/2+6,  -(131)), 130);
 		intake.setDeployState(Intake.DeployState.DEPLOY);
-		intake.setSpeed(Constants.IntakeMotorPower);
+		intake.setIntakeState(IntakeState.INTAKE);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
 		drive.setAutoPath(p1, true);
@@ -65,7 +58,7 @@ public class EightBallOppTrench extends TemplateAuto implements Runnable  {
 		p2.addPoint(new Translation2D(120.5, 0), 140);
 		drive.setAutoPath(p2, false);
 		while(!drive.isFinished()) if(isDead()) return;
-		intake.setSpeed(0);
+		intake.setIntakeState(IntakeState.OFF);;
 		hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
 		shooter.setHoodAngle(33);

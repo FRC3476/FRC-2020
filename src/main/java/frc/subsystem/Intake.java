@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 //import frc.utility.telemetry.TelemetryServer;
 import frc.utility.LazyTalonSRX;
 import frc.utility.OrangeUtility;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Intake extends Subsystem {
@@ -54,14 +55,14 @@ public class Intake extends Subsystem {
 		return intakeState;
 	}
 
-	public void setDeployState(final DeployState deployState) {
+	public synchronized void setDeployState(final DeployState deployState) {
 
 		switch (deployState) {
 			case DEPLOY:
 				//setSpeed(0.64);
 				deploySolenoid.set(true);
 				if(this.deployState != deployState){
-					allowOpenTime = 0; //Timer.getFPGATimestamp() + Constants.IntakeOpenTime;
+					allowOpenTime = Timer.getFPGATimestamp() + Constants.IntakeOpenTime;
 				}
 				 
 				break;
@@ -72,14 +73,14 @@ public class Intake extends Subsystem {
 				break;
 		}
 
-		synchronized (this) {
-			this.deployState = deployState;
-		}
+		
+		this.deployState = deployState;
+		
 	}
 
 	public synchronized void setIntakeState(IntakeState intakeState) {
 		this.intakeState = intakeState;
-		if(deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime){
+		if((deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime) || DriverStation.getInstance().isAutonomous()){
 			switch(intakeState) {
 				case EJECT:
 					intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
@@ -102,7 +103,7 @@ public class Intake extends Subsystem {
 
 	}
 
-	public synchronized void setSpeed(double speed) {
+	private synchronized void setSpeed(double speed) {
 		intakeMotor.set(ControlMode.PercentOutput, speed);
 	}
 
@@ -131,27 +132,29 @@ public class Intake extends Subsystem {
 	}
 
 	@Override
-	public synchronized void update() {	
-		if(deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime){
-			switch(intakeState) {
-				case EJECT:
-					intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
-					break;
-				case OFF:
-					intakeMotor.set(ControlMode.PercentOutput, 0.0);
-					break;
-				case INTAKE:
-					intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
-					break;
-				case SLOW:
-					intakeMotor.set(ControlMode.PercentOutput, 0);
-					break;
-				default:
-					break;
-			}
-		} else {
-			intakeMotor.set(ControlMode.PercentOutput, 0);
-		}
+	public synchronized void update() {
+		// if(deployState == DeployState.DEPLOY && Timer.getFPGATimestamp() > allowOpenTime){
+		// 	switch(intakeState) {
+		// 		case EJECT:
+		// 			intakeMotor.set(ControlMode.PercentOutput, -Constants.IntakeMotorPower);
+		// 			break;
+		// 		case OFF:
+		// 			intakeMotor.set(ControlMode.PercentOutput, 0.0);
+		// 			break;
+		// 		case INTAKE:
+		// 			intakeMotor.set(ControlMode.PercentOutput, Constants.IntakeMotorPower);  
+		// 			break;
+		// 		case SLOW:
+		// 			intakeMotor.set(ControlMode.PercentOutput, 0);
+
+		// 			break;
+		// 		default:
+		// 			break;
+		// 	}
+		// 	System.out.println(intakeState);
+		// } else {
+		// 	intakeMotor.set(ControlMode.PercentOutput, 0);
+		// }
 	}
 }
 

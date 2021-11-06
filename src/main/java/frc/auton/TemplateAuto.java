@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.robot.Constants;
 import frc.subsystem.*;
+import frc.subsystem.Intake.IntakeState;
 import frc.subsystem.VisionManager.VisionStatus;
 import frc.utility.Limelight;
 import frc.utility.OrangeUtility;
@@ -70,14 +71,14 @@ public abstract class TemplateAuto implements Runnable {
 	
 	public void turnOnIntakeTrack() {
 		intake.setDeployState(Intake.DeployState.DEPLOY);
-		intake.setSpeed(Constants.IntakeMotorPower);
+		intake.setIntakeState(IntakeState.INTAKE);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
 	}
 
 
 	public void turnOffIntakeTrack() {
-		intake.setSpeed(0);
+		intake.setIntakeState(IntakeState.OFF);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
 	}

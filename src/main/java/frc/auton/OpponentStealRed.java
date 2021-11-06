@@ -59,13 +59,6 @@ public class OpponentStealRed extends TemplateAuto implements Runnable {
 
 	}
 
-	public void turnOnIntakeTrack() {
-		intake.setDeployState(Intake.DeployState.DEPLOY);
-		intake.setSpeed(Constants.IntakeMotorPower);
-		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
-		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
-	}
-
 	@Override
 	public void run() {
 		Pose2d initalPose = new Pose2d(3.5708, -2.9, Rotation2d.fromDegrees(180));

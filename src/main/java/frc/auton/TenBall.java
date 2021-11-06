@@ -46,7 +46,7 @@ public class TenBall extends TemplateAuto implements Runnable  {
 		p1.addPoint(new Translation2D(243 - 35.0/2+6, -131), 130);
 
 		intake.setDeployState(Intake.DeployState.DEPLOY);
-		intake.setSpeed(Constants.IntakeMotorPower);
+		intake.setIntakeState(IntakeState.INTAKE);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
 
@@ -63,7 +63,7 @@ public class TenBall extends TemplateAuto implements Runnable  {
 		drive.setAutoPath(p2, false);
 		while(!drive.isFinished()) if(isDead()) return;
 
-		intake.setSpeed(0);
+		intake.setIntakeState(IntakeState.OFF);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
 
@@ -75,7 +75,7 @@ public class TenBall extends TemplateAuto implements Runnable  {
 		//while(!drive.isFinished()) if(isDead()) return;
 
 		intake.setDeployState(Intake.DeployState.DEPLOY);
-		intake.setSpeed(Constants.IntakeMotorPower);
+		intake.setIntakeState(IntakeState.INTAKE);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE, false);
 		Path p3 = new Path(here());
@@ -94,7 +94,7 @@ public class TenBall extends TemplateAuto implements Runnable  {
 		while(!drive.isFinished()) if(isDead()) return;
 
 		intake.setDeployState(Intake.DeployState.DEPLOY);
-		intake.setSpeed(Constants.IntakeMotorPower);
+		intake.setIntakeState(IntakeState.INTAKE);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.ACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.ACTIVE , false);
 		
@@ -110,7 +110,7 @@ public class TenBall extends TemplateAuto implements Runnable  {
 		drive.setAutoPath(p6, false);
 		while(!drive.isFinished()) if(isDead()) return;
 
-		intake.setSpeed(0);
+		intake.setIntakeState(IntakeState.OFF);
 		hopper.setFrontMotorState(Hopper.FrontMotorState.INACTIVE);
 		hopper.setSnailMotorState(Hopper.SnailMotorState.INACTIVE, false);
 
