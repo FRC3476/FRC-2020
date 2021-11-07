@@ -43,7 +43,7 @@ public class Intake extends Subsystem {
 		intakeMotor.setInverted(true);
 		intakeMotor.configPeakCurrentLimit(0);
 		intakeMotor.configPeakCurrentDuration(0);
-		intakeMotor.configContinuousCurrentLimit(40);
+		intakeMotor.configContinuousCurrentLimit(30);
 		intakeMotor.enableCurrentLimit(true);
 	}
 

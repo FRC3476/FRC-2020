@@ -134,10 +134,19 @@ public class Drive extends Subsystem {
 		rightSpark = new LazyCANSparkMax(Constants.DriveRightMasterId, MotorType.kBrushless);
 		rightSparkSlave = new LazyCANSparkMax(Constants.DriveRightSlave1Id, MotorType.kBrushless);
 		
-		leftSpark.setSmartCurrentLimit(40);
-		leftSparkSlave.setSmartCurrentLimit(40);
-		rightSpark.setSmartCurrentLimit(40);
-		rightSparkSlave.setSmartCurrentLimit(40);
+
+		boolean error = false;
+		error = error | CANError.kOk != leftSpark.setSmartCurrentLimit(30);
+		error = error | CANError.kOk != leftSparkSlave.setSmartCurrentLimit(30);
+		error = error | CANError.kOk != rightSpark.setSmartCurrentLimit(30);
+		error = error | CANError.kOk != rightSparkSlave.setSmartCurrentLimit(30);
+		if(error){
+			System.out.println("failed to enable current limit");
+			System.out.println("failed to enable current limit");
+			System.out.println("failed to enable current limit");
+			System.out.println("failed to enable current limit");
+			System.out.println("failed to enable current limit");
+		}
 
 		leftSpark.burnFlash();
 		leftSparkSlave.burnFlash();
@@ -198,6 +207,12 @@ public class Drive extends Subsystem {
 		turnPIDAuto.setSetpoint(0);
 
 		moveProfiler = new RateLimiter(Constants.DriveTeleopAccLimit);
+
+
+		leftFrontSpark.burnFlash();
+		leftBackSpark.burnFlash();
+		rightFrontSpark.burnFlash();
+		rightBackSpark.burnFlash();
 
 		configHigh();
 		configAuto();
