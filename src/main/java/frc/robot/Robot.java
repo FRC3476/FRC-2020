@@ -198,26 +198,29 @@ public class Robot extends TimedRobot {
 			limelight.takeSnapshots(takeSnapshots);
 			System.out.println("taking snapshots " + takeSnapshots);
 		}
-
+		
+		//Listen changes in the network auto
 		if (autoPath.getString(null) != null && !autoPath.getString(null).equals(lastAutoPath)) {
 			lastAutoPath = autoPath.getString(null);
-			deserializerExecutor.execute(() -> {
+			deserializerExecutor.execute(() -> { //Start deserializing on another thread
 				System.out.println("start parsing autonoumous");
+				//Set networktable entries for the gui notifications
 				pathProcessingStatusEntry.setDouble(1);
 				pathProcessingStatusIdEntry.setDouble(pathProcessingStatusIdEntry.getDouble(0) + 1);
 
-				networkAuto = new NetworkAuto();
+				networkAuto = new NetworkAuto(); //Create the auto object which will start deserializing the json and the auto ready to be run
 				System.out.println("done parsing autonomous");
+				//Set networktable entries for the gui notifications
 				pathProcessingStatusEntry.setDouble(2);
 				pathProcessingStatusIdEntry.setDouble(pathProcessingStatusIdEntry.getDouble(0) + 1);
 			});
 		}
 
-		if (shooterConfigEntry.getString(null) != null
-				&& !shooterConfigEntry.getString(null).equals(lastShooterConfig)) {
+		if (shooterConfigEntry.getString(null) != null && !shooterConfigEntry.getString(null).equals(lastShooterConfig)) {
 			lastShooterConfig = shooterConfigEntry.getString(null);
 			deserializerExecutor.execute(() -> {
 				System.out.println("start parsing shooter config");
+				//Set networktable entries for the loading circle
 				shooterConfigStatusEntry.setDouble(2);
 				shooterConfigStatusIdEntry.setDouble(shooterConfigStatusIdEntry.getDouble(0) + 1);
 				try {
@@ -226,10 +229,12 @@ public class Robot extends TimedRobot {
 					visionLookUpTable.setShooterConfig(shooterConfig);
 					System.out.println(shooterConfig.getShooterConfigs());
 				} catch (IOException e) {
-					DriverStation.reportError("Failed to deseralize shooter config from networktables", e.getStackTrace());
+					//Should never happen. The gui should never upload invalid data.
+					DriverStation.reportError("Failed to deseralize shooter config from networktables", e.getStackTrace()); 
 				}
 
 				System.out.println("done parsing shooter config");
+				//Set networktable entries for the loading circle
 				shooterConfigStatusEntry.setDouble(1);
 				shooterConfigStatusIdEntry.setDouble(shooterConfigStatusIdEntry.getDouble(0)+1);
 			});
@@ -332,10 +337,6 @@ public class Robot extends TimedRobot {
 		auto = new Thread(option);
 	
 		auto.start();
-		
-	
-
-		
 	}
 
 	/**

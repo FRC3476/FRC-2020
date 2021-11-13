@@ -26,9 +26,9 @@ public class TrajectoryAutonomousStep extends AbstractAutonomousStep {
 
     @Override
     public void execute(TemplateAuto templateAuto) {
-        if(!templateAuto.isDead()){
-            Drive.getInstance().setAutoPath(getTrajectory());
-            while(!Drive.getInstance().isFinished()) if(templateAuto.isDead()) return;
+        if(!templateAuto.isDead()){ //Check that the auto is not dead
+            Drive.getInstance().setAutoPath(getTrajectory()); //Send the auto to our drive class to be executed
+            while(!Drive.getInstance().isFinished()) if(templateAuto.isDead()) return; //Wait till the auto is done (or exit early if it is killed)
         }
     }
 

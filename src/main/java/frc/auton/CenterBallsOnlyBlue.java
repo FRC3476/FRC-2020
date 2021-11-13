@@ -32,8 +32,7 @@ import frc.subsystem.VisionManager.VisionStatus;
 public class CenterBallsOnlyBlue extends AbstractGuiAuto {
 
 	public CenterBallsOnlyBlue() {
-		super(new File(Filesystem.getDeployDirectory().getPath() + "/auto/centerOnly.json"));
-	
+		super(new File(Filesystem.getDeployDirectory().getPath() + "/auto/centerOnly.json")); //Load the json file 
 	}
 
 	@Override

@@ -6,6 +6,8 @@ import frc.utility.control.motion.Path;
 import frc.utility.math.Rotation2D;
 import frc.utility.math.Translation2D;
 
+
+//This is broken don't use it 
 public abstract class SimpleAutonomous extends TemplateAuto {
     
     Translation2D lastTranslation2d = new Translation2D();

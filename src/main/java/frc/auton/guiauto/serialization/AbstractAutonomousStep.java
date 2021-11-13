@@ -19,8 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public abstract class AbstractAutonomousStep{
 
     @JsonCreator
-    protected AbstractAutonomousStep() {
-    }
+    protected AbstractAutonomousStep() {}
 
     public abstract void execute(TemplateAuto templateAuto);
 

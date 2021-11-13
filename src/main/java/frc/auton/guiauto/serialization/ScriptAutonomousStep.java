@@ -16,14 +16,10 @@ public class ScriptAutonomousStep extends AbstractAutonomousStep {
 
     private final String script;
 
-    static ScriptEngineManager manager;
-    static ScriptEngine engine;
-
     @JsonCreator
     public ScriptAutonomousStep(@JsonProperty(required = true, value = "script") String script) {
         this.script = script;
     }
-
 
     @Override
     public String toString() {
@@ -37,12 +33,11 @@ public class ScriptAutonomousStep extends AbstractAutonomousStep {
 
     @Override
     public void execute(TemplateAuto templateAuto) {
-        if(!templateAuto.isDead()){
+        if(!templateAuto.isDead()){ //Check that our auto is still running
             if(!Parser.execute(this.getScript(), templateAuto)){
+                //The script failed to execute; kill the auto
                 templateAuto.killSwitch();
             }
         }
-
-
     }
 }

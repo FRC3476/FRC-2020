@@ -13,7 +13,6 @@ public class Autonomous{
 
     @JsonCreator
     public Autonomous(@JsonProperty(required = true, value = "autonomousSteps") List<AbstractAutonomousStep> autonomousSteps){
-
         this.autonomousSteps = autonomousSteps;
     }
 

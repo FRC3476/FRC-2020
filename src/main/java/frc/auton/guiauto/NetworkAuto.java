@@ -10,12 +10,8 @@ public class NetworkAuto extends AbstractGuiAuto {
     static NetworkTable table = instance.getTable("autodata");
     static NetworkTableEntry autoPath = table.getEntry("autoPath");
 
-    String autonmousJson;
-
     public NetworkAuto() {
-
         super(autoPath.getString(null));
     }
-
     
 }
