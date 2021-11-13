@@ -4,6 +4,8 @@
 
 FRC 2020 robot code
 
+Code for the robot we drove is in the 2020-robot branch. The master branch has code for a v2 of our robot that was designed, but not built.
+
 The code that we have written is located in src/main/java/frc/
 
 The subsystem folder has all the code that controls the robot
