@@ -37,84 +37,78 @@ public class Parser {
 
             //System.out.println("Command " + command + " method name: " + methodName + " argument: " + argument);
             if(methodName == null) return false;
-            switch (methodName.toString()){
-                case "print":
-                    if(argument == null) return false;
-                    System.out.println(argument);
-                    break;
-                case "shootBalls":
-                    try{
-                        context.shootBallsTimed(Float.parseFloat(argument.toString()));
-                    } catch (NumberFormatException | NullPointerException e) { return false; } 
-                    break;
-                case "setShooterSpeed":
-                    try{
-                        Shooter.getInstance().setSpeed(Float.parseFloat(argument.toString()));
-                    } catch (NumberFormatException | NullPointerException e) { return false; } 
-                    break;
-                case "sleep":
-                    try{
-                        OrangeUtility.sleep(Long.parseLong(argument.toString()));
-                    } catch (NumberFormatException | NullPointerException e) { return false; } 
-                    break;
-                case "deployIntake":
-                    Intake.getInstance().setDeployState(DeployState.DEPLOY);
-                    break;
-                case "undeployIntake":
-                    Intake.getInstance().setDeployState(DeployState.UNDEPLOY);
-                    break;
-                case "intakeOn":
-                    Intake.getInstance().setIntakeState(IntakeState.INTAKE);
-                    break;
-                case "intakeOff":
-                    Intake.getInstance().setIntakeState(IntakeState.OFF);
-                    break;
-                case "intakeReverse":
-                    Intake.getInstance().setIntakeState(IntakeState.EJECT);
-                    break;
-                case "snailOn":
-                    Hopper.getInstance().setSnailMotorState(SnailMotorState.ACTIVE, false);
-                    break;
-                case "snailOff":
-                    Hopper.getInstance().setSnailMotorState(SnailMotorState.INACTIVE, false);
-                    break;
-                case "snailReverse":
-                    Hopper.getInstance().setSnailMotorState(SnailMotorState.REVERSE, false);
-                    break;
-                case "frontActive":
-                    Hopper.getInstance().setFrontMotorState(FrontMotorState.ACTIVE);
-                    break;
-                case "frontInactive":
-                    Hopper.getInstance().setFrontMotorState(FrontMotorState.INACTIVE);
-                    break;
-                case "frontReverse":
-                    Hopper.getInstance().setFrontMotorState(FrontMotorState.REVERSE);
-                    break;
-                case "visionIdle":
-                    VisionManager.getInstance().setState(VisionStatus.IDLE);
-                    break;
-                case "visionWin":
-                    VisionManager.getInstance().setState(VisionStatus.WIN);
-                    break;
-                case "visionAim":
-                    VisionManager.getInstance().setState(VisionStatus.AIMING);
-                    break;
-                case "fireShooter":
-                    Shooter.getInstance().setFiring(true);
-                    break;
-                case "stopFiringShooter":
-                    Shooter.getInstance().setFiring(false);
-                    break;
-                case "turnOnIntakeTrack":
-                    context.turnOnIntakeTrack();
-                    break;
-                case "turnOffIntakeTrack":
-                    context.turnOffIntakeTrack();
-                    break;
-                default:
-                    return false;
-                    
-            }
+            try{    
+                switch (methodName.toString()){
+                    case "print":
+                        System.out.println(argument);
+                        break;
+                    case "shootBalls":
+                            context.shootBallsTimed(Float.parseFloat(argument.toString()));
+                        break;
+                    case "setShooterSpeed":
+                            Shooter.getInstance().setSpeed(Float.parseFloat(argument.toString()));
+                        break;
+                    case "sleep":
+                            OrangeUtility.sleep(Long.parseLong(argument.toString()));
+                        break;
+                    case "deployIntake":
+                        Intake.getInstance().setDeployState(DeployState.DEPLOY);
+                        break;
+                    case "undeployIntake":
+                        Intake.getInstance().setDeployState(DeployState.UNDEPLOY);
+                        break;
+                    case "intakeOn":
+                        Intake.getInstance().setIntakeState(IntakeState.INTAKE);
+                        break;
+                    case "intakeOff":
+                        Intake.getInstance().setIntakeState(IntakeState.OFF);
+                        break;
+                    case "intakeReverse":
+                        Intake.getInstance().setIntakeState(IntakeState.EJECT);
+                        break;
+                    case "snailOn":
+                        Hopper.getInstance().setSnailMotorState(SnailMotorState.ACTIVE, false);
+                        break;
+                    case "snailOff":
+                        Hopper.getInstance().setSnailMotorState(SnailMotorState.INACTIVE, false);
+                        break;
+                    case "snailReverse":
+                        Hopper.getInstance().setSnailMotorState(SnailMotorState.REVERSE, false);
+                        break;
+                    case "frontActive":
+                        Hopper.getInstance().setFrontMotorState(FrontMotorState.ACTIVE);
+                        break;
+                    case "frontInactive":
+                        Hopper.getInstance().setFrontMotorState(FrontMotorState.INACTIVE);
+                        break;
+                    case "frontReverse":
+                        Hopper.getInstance().setFrontMotorState(FrontMotorState.REVERSE);
+                        break;
+                    case "visionIdle":
+                        VisionManager.getInstance().setState(VisionStatus.IDLE);
+                        break;
+                    case "visionWin":
+                        VisionManager.getInstance().setState(VisionStatus.WIN);
+                        break;
+                    case "visionAim":
+                        VisionManager.getInstance().setState(VisionStatus.AIMING);
+                        break;
+                    case "fireShooter":
+                        Shooter.getInstance().setFiring(true);
+                        break;
+                    case "stopFiringShooter":
+                        Shooter.getInstance().setFiring(false);
+                        break;
+                    case "turnOnIntakeTrack":
+                        context.turnOnIntakeTrack();
+                        break;
+                    case "turnOffIntakeTrack":
+                        context.turnOffIntakeTrack();
+                        break;
+                    default:
+                        return false; 
+                }
+            } catch (NumberFormatException | NullPointerException e) { return false; } 
         }
         return true;
     }
