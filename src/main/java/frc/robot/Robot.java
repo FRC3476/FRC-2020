@@ -5,6 +5,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.auton.*;
 import frc.auton.guiauto.NetworkAuto;
 import frc.auton.guiauto.serialization.ScriptAutonomousStep;
@@ -189,8 +190,8 @@ public class Robot extends TimedRobot {
 		// System.out.println("Odometry: " + robotTracker.getOdometry().translationMat +
 		// " rotation: " + robotTracker.getOdometry().rotationMat);
 		if (isEnabled()) {
-			xPos.setDouble(robotTracker.getOdometry().translationMat.getX());
-			yPos.setDouble(robotTracker.getOdometry().translationMat.getY());
+			xPos.setDouble(Units.inchesToMeters(robotTracker.getOdometry().translationMat.getX()));
+			yPos.setDouble(Units.inchesToMeters(robotTracker.getOdometry().translationMat.getY()));
 		}
 
 		if (buttonPanel.getRisingEdge(9)) {
