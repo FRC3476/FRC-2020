@@ -58,7 +58,7 @@ public class Hopper extends Subsystem {
 		}
 	}
 
-	private void enableCurrentLimit(){
+	public void enableCurrentLimit(){
 		if(!currentLimitEnabled){
 			FrontHopperMotor.configContinuousCurrentLimit(3);
 			FrontHopperMotor.configPeakCurrentLimit(0);

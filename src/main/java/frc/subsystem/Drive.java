@@ -1050,4 +1050,8 @@ public class Drive extends Subsystem {
 	public void logData() {
 
 	}
+
+	public void setDriveState(DriveState state) {
+		driveState = state;
+	}
 }
