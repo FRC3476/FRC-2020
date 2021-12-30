@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import frc.auton.TemplateAuto;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
@@ -16,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @Type(value = ScriptAutonomousStep.class, name = "script"),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class AbstractAutonomousStep{
+public abstract class AbstractAutonomousStep {
 
     @JsonCreator
     protected AbstractAutonomousStep() {}
