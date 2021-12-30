@@ -1,4 +1,4 @@
-package frc.auton.guiauto.guiauto.serialization.reflection;
+package frc.auton.guiauto.serialization.reflection;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

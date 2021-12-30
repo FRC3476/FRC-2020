@@ -1,4 +1,4 @@
-package frc.auton.guiauto.guiauto.serialization;
+package frc.auton.guiauto.serialization;
 
 public class OsUtil
 {

@@ -18,8 +18,11 @@ import frc.auton.TemplateAuto;
 public abstract class AbstractAutonomousStep {
 
     @JsonCreator
-    protected AbstractAutonomousStep() {}
+    protected AbstractAutonomousStep() {
+    }
 
+    //The method argument is not necessary. We use it to access methods in our superclass of our auto
     public abstract void execute(TemplateAuto templateAuto);
+
 
 }

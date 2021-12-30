@@ -1,4 +1,4 @@
-package frc.auton.guiauto.guiauto.serialization.reflection;
+package frc.auton.guiauto.serialization.reflection;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.utility.Serializer;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static frc.auton.guiauto.guiauto.serialization.reflection.ReflectionUtils.findClasses;
+import static frc.auton.guiauto.serialization.reflection.ReflectionUtils.findClasses;
 public final class ClassInformationSender {
     public ClassInformationSender() {
 

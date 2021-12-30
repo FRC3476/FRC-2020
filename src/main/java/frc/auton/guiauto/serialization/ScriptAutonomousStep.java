@@ -13,7 +13,7 @@ public class ScriptAutonomousStep extends AbstractAutonomousStep {
     private final SendableScript script;
 
     @JsonCreator
-    public ScriptAutonomousStep(@JsonProperty(required = true, value = "script") SendableScript script) {
+    public ScriptAutonomousStep(SendableScript script) {
         this.script = script;
     }
 
@@ -28,8 +28,9 @@ public class ScriptAutonomousStep extends AbstractAutonomousStep {
     }
 
     @Override
+    //If you've removed this method argument elsewhere you will need to remove it here too
     public void execute(TemplateAuto templateAuto) {
-        if(!templateAuto.isDead()){ //Check that our auto is still running
+        if (!templateAuto.isDead()) { //Check that our auto is still running
             if (!script.execute()) {
                 //The script failed to execute; kill the auto
                 templateAuto.killSwitch();
