@@ -13,7 +13,7 @@ public class ScriptAutonomousStep extends AbstractAutonomousStep {
     private final SendableScript script;
 
     @JsonCreator
-    public ScriptAutonomousStep(SendableScript script) {
+    public ScriptAutonomousStep(@JsonProperty(required = true, value = "sendableScript") SendableScript script) {
         this.script = script;
     }
 
