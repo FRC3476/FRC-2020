@@ -1,4 +1,4 @@
-package frc.auton.guiauto.guiauto.serialization.reflection;
+package frc.auton.guiauto.serialization.reflection;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

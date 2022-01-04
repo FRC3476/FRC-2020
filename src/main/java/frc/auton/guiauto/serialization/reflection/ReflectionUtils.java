@@ -1,4 +1,4 @@
-package frc.auton.guiauto.guiauto.serialization.reflection;
+package frc.auton.guiauto.serialization.reflection;
 
 import java.io.File;
 import java.io.IOException;

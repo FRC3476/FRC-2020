@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.auton.*;
 import frc.auton.guiauto.NetworkAuto;
-import frc.auton.guiauto.guiauto.serialization.OsUtil;
-import frc.auton.guiauto.guiauto.serialization.reflection.ClassInformationSender;
+import frc.auton.guiauto.serialization.OsUtil;
+import frc.auton.guiauto.serialization.reflection.ClassInformationSender;
 import frc.subsystem.*;
 import frc.subsystem.Hopper.FrontMotorState;
 import frc.subsystem.Hopper.SnailMotorState;
@@ -115,12 +115,12 @@ public class Robot extends TimedRobot {
     }
 
     TrenchDashRed trenchDashRed = new TrenchDashRed();
-    OpponentStealRed opponentTrenchRed = new OpponentStealRed();
-    CenterBallsOnlyRed centerOnlyRed = new CenterBallsOnlyRed();
+    OpponentStealRed opponentTrenchRed;
+    CenterBallsOnlyRed centerOnlyRed;
 
     TrenchDashBlue trenchDashBlue = new TrenchDashBlue();
-    OpponentStealBlue opponentTrenchBlue = new OpponentStealBlue();
-    CenterBallsOnlyBlue centerOnlyBlue = new CenterBallsOnlyBlue();
+    OpponentStealBlue opponentTrenchBlue;
+    CenterBallsOnlyBlue centerOnlyBlue;
 
     /**
      * This function is run when the robot is first started up and should be used for any initialization code.
@@ -163,8 +163,6 @@ public class Robot extends TimedRobot {
         // autoPath.addListener((event) -> {
 
         // }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
-
-        ClassInformationSender.updateReflectionInformation(new File("%appdata%/AutoBuilder/robotCodeData.json"));
 
     }
 
@@ -659,6 +657,7 @@ public class Robot extends TimedRobot {
 
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 //drive.configCoast();
                 drive.configBrake();
