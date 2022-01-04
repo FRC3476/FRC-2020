@@ -115,12 +115,12 @@ public class Robot extends TimedRobot {
     }
 
     TrenchDashRed trenchDashRed = new TrenchDashRed();
-    OpponentStealRed opponentTrenchRed = new OpponentStealRed();
-    CenterBallsOnlyRed centerOnlyRed = new CenterBallsOnlyRed();
+    OpponentStealRed opponentTrenchRed;
+    CenterBallsOnlyRed centerOnlyRed;
 
     TrenchDashBlue trenchDashBlue = new TrenchDashBlue();
-    OpponentStealBlue opponentTrenchBlue = new OpponentStealBlue();
-    CenterBallsOnlyBlue centerOnlyBlue = new CenterBallsOnlyBlue();
+    OpponentStealBlue opponentTrenchBlue;
+    CenterBallsOnlyBlue centerOnlyBlue;
 
     /**
      * This function is run when the robot is first started up and should be used for any initialization code.
@@ -163,8 +163,6 @@ public class Robot extends TimedRobot {
         // autoPath.addListener((event) -> {
 
         // }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
-
-        ClassInformationSender.updateReflectionInformation(new File("%appdata%/AutoBuilder/robotCodeData.json"));
 
     }
 
