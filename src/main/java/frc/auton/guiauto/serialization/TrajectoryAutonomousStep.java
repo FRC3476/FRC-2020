@@ -36,6 +36,8 @@ public class TrajectoryAutonomousStep extends AbstractAutonomousStep {
                 if (templateAuto.isDead()) return; //Wait till the auto is done (or exit early if it is killed)
             }
         }
+
+        Drive.getInstance().stopMovement();
     }
 
     @Override
